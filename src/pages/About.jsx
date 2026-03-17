@@ -65,17 +65,17 @@ export default function About(){
 				<div className="space-y-4">
 					<div className="border-l-2 border-neon-cyan pl-4">
 						<h4 className="text-lg font-semibold text-neon-cyan">Full Stack Developer</h4>
-						<p className="text-sm text-gray-400">2025 - Present</p>
+						
 						<p className="text-gray-300 mt-1">Building web applications using React, Node.js, and database technologies. Focus on responsive design, performance optimization, and seamless user experiences.</p>
 					</div>
 					<div className="border-l-2 border-neon-purple pl-4">
 						<h4 className="text-lg font-semibold text-neon-purple">Java Backend Developer</h4>
-						<p className="text-sm text-gray-400">2023 - 2024</p>
+					
 						<p className="text-gray-300 mt-1">Developed robust backend systems and APIs using Java. Worked with databases, implemented business logic, and ensured system scalability.</p>
 					</div>
 					<div className="border-l-2 border-gray-600 pl-4">
 						<h4 className="text-lg font-semibold text-gray-200">Frontend Developer (Freelance)</h4>
-						<p className="text-sm text-gray-400">2023 - 2023</p>
+						
 						<p className="text-gray-300 mt-1">Created responsive websites and web applications. Collaborated with clients to deliver pixel-perfect designs and intuitive interfaces.</p>
 					</div>
 				</div>

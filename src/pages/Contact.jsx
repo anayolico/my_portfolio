@@ -188,7 +188,7 @@ export default function Contact(){
               <a className="px-3 py-2 bg-gray-800 rounded text-gray-200" href={`mailto:${contactEmail}`}>Email</a>
               <a className="px-3 py-2 bg-gray-800 rounded text-gray-200" href={whatsappLink} target="_blank" rel="noopener noreferrer">WhatsApp</a>
               <a className="px-3 py-2 bg-gray-800 rounded text-gray-200" href="https://github.com/anayolico" target="_blank" rel="noopener noreferrer">GitHub</a>
-              <a className="px-3 py-2 bg-gray-800 rounded text-gray-200" href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+              
             </div>
           </div>
         </div>

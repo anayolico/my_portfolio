@@ -6,7 +6,7 @@ export default function Skills(){
     {name:'HTML',level:90},{name:'CSS',level:88},{name:'JavaScript',level:85},{name:'React',level:82}
   ]
   const backend = [{name:'Java',level:75},{name:'Node.js',level:60}, {name:'mongoDB',level:70}]
-  const tools = [{name:'Git',level:82},{name:'Docker',level:45}]
+  const tools = [{name:'Git',level:82}]
 
   return (
     <section id="skills" className="py-16">
