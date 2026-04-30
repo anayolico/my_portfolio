@@ -1,9 +1,36 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import toast from "react-hot-toast"
+import toast from 'react-hot-toast'
 
-// Simple email regex for basic validation
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '')
+const CONTACT_API_URL = `${API_BASE_URL}/api/contact`
+
+function validateContactForm({ fullName, email, description }) {
+  const nextErrors = {}
+
+  if (!fullName.trim()) {
+    nextErrors.fullName = 'Full name is required'
+  } else if (fullName.trim().length < 3) {
+    nextErrors.fullName = 'Full name must be at least 3 characters'
+  } else if (!/^[a-zA-Z\s]+$/.test(fullName.trim())) {
+    nextErrors.fullName = 'Full name can only contain letters'
+  }
+
+  if (!email.trim()) {
+    nextErrors.email = 'Email is required'
+  } else if (!EMAIL_RE.test(email.trim())) {
+    nextErrors.email = 'Invalid email address'
+  }
+
+  if (!description.trim()) {
+    nextErrors.description = 'Description is required'
+  } else if (description.trim().length < 10) {
+    nextErrors.description = 'At least 10 characters required'
+  }
+
+  return nextErrors
+}
 
 export default function Contact(){
   const [fullName, setFullName] = useState('')
@@ -16,90 +43,98 @@ export default function Contact(){
     fullName: false,
     email: false,
     description: false,
-  });
+  })
 
- //LIVE VALIDATION — RUNS ON EVERY KEYSTROKE
   useEffect(() => {
-    const newErrors = {};
+    const formErrors = validateContactForm({ fullName, email, description })
+    const touchedErrors = {}
 
-    if (touched.fullName) {
-      if (!fullName.trim()) {
-        newErrors.fullName = "Full name is required";
-      } else if (fullName.trim().length < 3) {
-        newErrors.fullName = "Full name must be at least 3 characters";
-      } else if (!/^[a-zA-Z\s]+$/.test(fullName)) {
-        newErrors.fullName = "Full name can only contain letters";
-      }
+    if (touched.fullName && formErrors.fullName) {
+      touchedErrors.fullName = formErrors.fullName
     }
 
-    if (touched.email) {
-      if (!email.trim()) {
-        newErrors.email = "Email is required";
-      } else if (
-        !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email)
-      ) {
-        newErrors.email = "Invalid email address";
-      }
+    if (touched.email && formErrors.email) {
+      touchedErrors.email = formErrors.email
     }
 
-    if (touched.description) {
-      if (!description.trim()) {
-        newErrors.description = "Description is required";
-      } else if (description.trim().length < 10) {
-        newErrors.description = "At least 10 characters required";
-      }
+    if (touched.description && formErrors.description) {
+      touchedErrors.description = formErrors.description
     }
 
-    setErrors(newErrors);
-  }, [fullName, email, description, touched]);
+    setErrors(touchedErrors)
+  }, [fullName, email, description, touched])
 
+  const onSubmit = async (e) => {
+    e.preventDefault()
 
-   const onSubmit = (e) => {
-    e.preventDefault();
-
-    setTouched({
+    const nextTouched = {
       fullName: true,
       email: true,
       description: true,
-    });
+    }
+    const nextErrors = validateContactForm({ fullName, email, description })
 
-    if (Object.keys(errors).length > 0) {
-      toast.error("Please fix the errors first");
-      return;
+    setTouched(nextTouched)
+    setErrors(nextErrors)
+
+    if (Object.keys(nextErrors).length > 0) {
+      toast.error('Please fix the errors first')
+      return
     }
 
-    // ✅ FAKE SEND (UI ONLY)
-    setIsSubmitting(true);
+    setIsSubmitting(true)
+    setSubmitted(false)
 
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setSubmitted(true);
-      toast.success("Message sent!");
+    try {
+      const response = await fetch(CONTACT_API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          fullName: fullName.trim(),
+          email: email.trim(),
+          description: description.trim(),
+        }),
+      })
+      const result = await response.json().catch(() => ({}))
+
+      if (!response.ok) {
+        if (result.errors) {
+          setErrors(result.errors)
+        }
+
+        throw new Error(result.message || 'Message could not be sent')
+      }
+
+      setSubmitted(true)
+      toast.success('Message sent!')
+      onClear()
 
       setTimeout(() => {
-        onClear();
-        setSubmitted(false);
-      }, 3000);
+        setSubmitted(false)
+      }, 2500)
+    } catch (error) {
+      toast.error(error.message || 'Message failed to send')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
 
-    }, 2000); // 2 seconds delay
-  };
-
-
-  // SUBMIT HANDLER (ONLY CHECKS IF ERRORS STILL EXIST)
-  
-  // ✅ CLEAR FORM
   const onClear = () => {
-    setFullName("");
-    setEmail("");
-    setDescription("");
-    setErrors({});
-  };
+    setFullName('')
+    setEmail('')
+    setDescription('')
+    setErrors({})
+    setTouched({
+      fullName: false,
+      email: false,
+      description: false,
+    })
+  }
 
-  
-
-  // Contact details (editable)
   const contactEmail = 'acnwa1234@gmail.com'
-  const phoneNumber = '+1249165587681' // international format required for tel/whatsapp
+  const phoneNumber = '+1249165587681'
   const whatsappLink = `https://wa.me/${phoneNumber.replace(/[^0-9]/g,'')}?text=${encodeURIComponent('Hello Anayo!')}`
 
   return (
@@ -116,10 +151,11 @@ export default function Contact(){
         >
           <label className="block text-sm text-gray-300 mb-2">Full Name</label>
           <input
+            name="fullName"
             value={fullName}
             onChange={(e) => {
                setFullName(e.target.value)
-               setTouched((prev) => ({ ...prev, fullName: true }));
+               setTouched((prev) => ({ ...prev, fullName: true }))
             }}
             className="w-full p-3 rounded bg-gray-900 text-gray-200 mb-2 input-glow"
             placeholder="Your full name"
@@ -130,10 +166,12 @@ export default function Contact(){
 
           <label className="block text-sm text-gray-300 mb-2">Email</label>
           <input
+            name="email"
+            type="email"
             value={email}
             onChange={(e) => {
               setEmail(e.target.value)
-              setTouched((prev) => ({ ...prev, email: true }));
+              setTouched((prev) => ({ ...prev, email: true }))
             }}
             className="w-full p-3 rounded bg-gray-900 text-gray-200 mb-2 input-glow"
             placeholder="you@example.com"
@@ -144,10 +182,11 @@ export default function Contact(){
 
           <label className="block text-sm text-gray-300 mb-2">Description</label>
           <textarea
+            name="description"
             value={description}
             onChange={(e) => {
               setDescription(e.target.value)
-              setTouched((prev) => ({ ...prev, description: true }));
+              setTouched((prev) => ({ ...prev, description: true }))
             }}
             className="w-full p-3 rounded bg-gray-900 text-gray-200 mb-3 input-glow"
             rows={6}
@@ -162,9 +201,9 @@ export default function Contact(){
               whileHover={{ scale: 1.03 }}
               type="submit"
               disabled={isSubmitting}
-              className="px-4 py-2 bg-neon-cyan text-black rounded font-semibold"
+              className="px-4 py-2 bg-neon-cyan text-black rounded font-semibold disabled:cursor-not-allowed disabled:opacity-70"
             >
-              {isSubmitting ? "Sending..." : submitted ? "Sent ✓" : "Send Message"}
+              {isSubmitting ? 'Sending...' : submitted ? 'Sent' : 'Send Message'}
             </motion.button>
 
             <motion.button
@@ -178,7 +217,6 @@ export default function Contact(){
           </div>
         </motion.form>
 
-
         <div className="flex flex-col gap-4 justify-center">
           <div className="bg-panel p-6 rounded-xl">
             <h4 className="text-sm font-medium text-gray-100 mb-2">Get in touch</h4>
@@ -188,7 +226,6 @@ export default function Contact(){
               <a className="px-3 py-2 bg-gray-800 rounded text-gray-200" href={`mailto:${contactEmail}`}>Email</a>
               <a className="px-3 py-2 bg-gray-800 rounded text-gray-200" href={whatsappLink} target="_blank" rel="noopener noreferrer">WhatsApp</a>
               <a className="px-3 py-2 bg-gray-800 rounded text-gray-200" href="https://github.com/anayolico" target="_blank" rel="noopener noreferrer">GitHub</a>
-              
             </div>
           </div>
         </div>
