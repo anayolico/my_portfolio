@@ -11,13 +11,25 @@ cd "C:/Users/User/Downloads/vis/New folder/My profi/portfolio"
 npm install
 ```
 
-2. Run development server
+2. Create the frontend environment file
+
+```bash
+copy .env.example .env
+```
+
+For production, set the same value in your hosting dashboard:
+
+```bash
+VITE_API_BASE_URL=your key
+```
+
+3. Run development server
 
 ```bash
 npm run dev
 ```
 
-3. Build for production
+4. Build for production
 
 ```bash
 npm run build
