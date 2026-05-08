@@ -3,7 +3,7 @@ import ProjectCard from '../components/ProjectCard.jsx'
 import ima3 from '../components/ima-and/ima3.jpg'
 import ima4 from '../components/ima-and/ima4.jpg'
 import ima5 from '../components/ima-and/ima5.jpeg'
-import ima6 from '../components/ima-and/ima6.jpg'
+import ima6 from '../components/ima-and/ima6.png'
 export default function Projects(){
   const projects = [
     {
