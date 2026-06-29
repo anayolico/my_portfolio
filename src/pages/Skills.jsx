@@ -7,7 +7,7 @@ import SEO from '../components/SEO'
 const MOCK_FRONTEND = [
   {name:'HTML5',level:90},{name:'CSS3 & Sass',level:88},{name:'JavaScript (ES6+)',level:85},{name:'React.js',level:82}
 ]
-const MOCK_BACKEND = [{name:'Java Core',level:75},{name:'Node.js',level:60}, {name:'MongoDB',level:70}]
+const MOCK_BACKEND = [{name:'React Native',level:75},{name:'Node.js',level:60}, {name:'MongoDB',level:70}]
 const MOCK_TOOLS = [{name:'Git & GitHub',level:82}]
 
 export default function Skills(){
@@ -70,7 +70,7 @@ export default function Skills(){
       <SEO 
         title="Skills | Anayolico" 
         description="Technical proficiencies across frontend frameworks, backend engines, and developer pipelines." 
-        keywords="Anayolico, Caleb Anayolico, Anayo, Skills, React, JavaScript, Java, Frontend, Backend, Full Stack"
+        keywords="Anayolico, Caleb Anayolico, Anayo, Skills, React, JavaScript, React Native, Mobile Development, Frontend, Backend, Full Stack"
         url="/skills"
       />
       <section id="skills" className="py-20 space-y-10">

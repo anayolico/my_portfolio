@@ -65,7 +65,7 @@ export default function Splash({duration = 2500, onComplete = () => {}, transiti
             </motion.h1>
 
             <motion.p initial={{ y: 8, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.28, duration: 0.6 }} className="mt-2 text-sm md:text-base text-text-muted transition-colors duration-300">
-              Web Developer & Java Programmer
+              Web Developer & Mobile App Developer
             </motion.p>
 
             {/* Progress / loading */}

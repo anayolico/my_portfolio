@@ -6,9 +6,9 @@ export default function Home(){
   return (
     <>
       <SEO 
-        title="Anayolico — Web Developer & Java Programmer" 
+        title="Anayolico — Web Developer & Mobile App Developer" 
         description="I build modern, performant web applications with highly polished user experiences, smooth animations, and clean, modular architectures." 
-        keywords="Anayolico, Caleb Anayolico, Anayo, Portfolio, Web Developer, Java Programmer"
+        keywords="Anayolico, Caleb Anayolico, Anayo, Portfolio, Web Developer, Mobile App Developer"
         url="/"
       />
       <section id="home" className="pt-40 pb-24 md:pt-52 md:pb-36 relative overflow-hidden">
@@ -52,7 +52,7 @@ export default function Home(){
             transition={{ delay: 0.2, duration: 0.6 }}
             className="text-sm md:text-base uppercase tracking-[0.25em] text-accent-teal font-extrabold"
           >
-            Web Developer & Java Programmer
+            Web Developer & Mobile App Developer
           </motion.p>
         </div>
 

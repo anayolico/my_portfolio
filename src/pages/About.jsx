@@ -15,8 +15,8 @@ const MOCK_EXPERIENCES = [
   },
   {
     period: '2022 - 2024',
-    role: 'Java Backend Developer',
-    description: 'Designed, engineered, and maintained microservices and API gateways using Java. Optimized relational database queries, implemented object-oriented logic, and guaranteed systems availability.',
+    role: 'Mobile App Developer',
+    description: 'Designed, engineered, and maintained cross-platform mobile applications. Optimized performance, implemented complex UI/UX designs, and guaranteed seamless user experiences across devices.',
     dotColor: 'bg-accent-purple',
     textColor: 'text-accent-purple'
   },
@@ -80,7 +80,7 @@ export default function About(){
     <>
       <SEO 
         title="About | Anayolico" 
-        description="Learn more about Caleb Anayolico, a Web Developer and Java Programmer with a keen eye for UX/UI." 
+        description="Learn more about Caleb Anayolico, a Web Developer and Mobile App Developer with a keen eye for UX/UI." 
         keywords="Anayolico, Caleb Anayolico, Anayo, About, Web Developer, UX, UI, Resume, Experience"
         url="/about"
       />
@@ -97,7 +97,7 @@ export default function About(){
           </div>
           <div className="space-y-4 text-text-muted text-base leading-relaxed font-sans transition-colors duration-300">
             <p>
-              I'm Anayolico — a passionate Web Developer and Java Programmer dedicated to crafting modern, responsive, and beautifully animated web experiences. With a keen eye for UX/UI and a strong foundation in both frontend and backend development, I transform complex requirements into elegant, performant solutions.
+              I'm Anayolico — a passionate Web Developer and Mobile App Developer dedicated to crafting modern, responsive, and beautifully animated web and mobile experiences. With a keen eye for UX/UI and a strong foundation in both frontend and mobile development, I transform complex requirements into elegant, performant solutions.
             </p>
             <p>
               My approach combines technical excellence with creative design thinking. I believe in writing clean, maintainable code and creating interfaces that not only look stunning but are also intuitive, fast, and accessible to everyone.
@@ -105,7 +105,7 @@ export default function About(){
           </div>
 
           <div className="flex flex-wrap gap-2 pt-2">
-            {['HTML5','CSS3','JavaScript','React.js','Java','Node.js','Git','Next.js'].map(s => (
+            {['HTML5','CSS3','JavaScript','React.js','React Native','Node.js','Git','Next.js'].map(s => (
               <span 
                 key={s} 
                 className="px-3.5 py-1.5 rounded-full bg-white/40 dark:bg-white/5 border border-gray-200 dark:border-white/5 text-xs font-semibold text-accent-teal hover:border-accent-purple/50 hover:text-accent-purple transition-all duration-300 cursor-default"
@@ -249,7 +249,7 @@ export default function About(){
             </div>
             <h4 className="text-xl font-bold text-text-main font-display">Backend Architectures</h4>
             <p className="text-text-muted text-sm leading-relaxed">
-              Formulating scalable data APIs, handling secure user authorization, and orchestrating database schemas with Java and Node.
+              Formulating scalable data APIs, handling secure user authorization, and orchestrating mobile integrations with Node and React Native.
             </p>
           </div>
         </div>
