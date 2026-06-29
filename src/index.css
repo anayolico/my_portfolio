@@ -2,44 +2,119 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Global dark background and neon accents */
-html,body,#root{
-  height:100%;
-}
-body{
-  @apply bg-bg-dark text-gray-200 antialiased;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+:root {
+  /* Brand Identity */
+  --color-brand-navy: #0B2046;
+  --color-brand-navy-rgb: 11, 32, 70;
+  
+  /* Interactive Accents */
+  --color-accent-teal: #17A2B8;
+  --color-accent-teal-rgb: 23, 162, 184;
+  --color-accent-purple: #6A5ACD;
+  --color-accent-purple-rgb: 106, 90, 205;
+  
+  /* Light Theme Specifics */
+  --bg-body: #F6F5F2;
+  --bg-surface: #FFFFFF;
+  --text-main: var(--color-brand-navy);
+  --text-muted: #4A5568;
+  
+  /* UI Element Defaults */
+  --btn-primary-bg: var(--color-accent-teal);
+  --btn-primary-hover: var(--color-accent-purple);
+  --btn-text: #FFFFFF;
 }
 
-/* Neon glow utility */
-.neon-glow{
-  box-shadow: 0 6px 30px rgba(0,240,255,0.06), 0 0 18px rgba(192,132,252,0.04), inset 0 0 10px rgba(0,240,255,0.02);
+[data-theme="dark"] {
+  --bg-body: #121212;
+  --bg-surface: #1E1E1E;
+  --text-main: #F6F5F2;
+  --text-muted: #A0AEC0;
+}
+
+/* Global resets with theme transitions */
+html, body, #root {
+  height: 100%;
+}
+
+section {
+  scroll-margin-top: 6.5rem;
+}
+
+body {
+  background-color: var(--bg-body);
+  color: var(--text-main);
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), color 0.4s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  @apply antialiased;
+}
+
+/* Modern Typography Presets */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Outfit', system-ui, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+/* Premium Glassmorphic Card Styling */
+.glass-card {
+  background-color: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(11, 32, 70, 0.05);
+  box-shadow: 0 8px 32px 0 rgba(11, 32, 70, 0.02);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme="dark"] .glass-card {
+  background-color: rgba(30, 30, 30, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15);
+}
+
+.glass-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(var(--color-accent-teal-rgb), 0.3);
+  box-shadow: 0 12px 30px -10px rgba(var(--color-accent-teal-rgb), 0.12);
+}
+
+/* Custom visual glow for specific focus items */
+.neon-glow {
+  box-shadow: 0 6px 30px rgba(var(--color-accent-teal-rgb), 0.04), 0 0 18px rgba(var(--color-accent-purple-rgb), 0.02);
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
 /* Animated gradient background */
-.animated-bg{
-  background: linear-gradient(120deg, rgba(0,240,255,0.04), rgba(192,132,252,0.04));
+.animated-bg {
+  background: linear-gradient(120deg, rgba(var(--color-accent-teal-rgb), 0.04), rgba(var(--color-accent-purple-rgb), 0.04));
   background-size: 200% 200%;
   animation: bgShift 12s ease infinite;
+  transition: background 0.3s ease;
 }
-@keyframes bgShift{
-  0%{background-position:0% 50%}
-  50%{background-position:100% 50%}
-  100%{background-position:0% 50%}
+@keyframes bgShift {
+  0% { background-position: 0% 50% }
+  50% { background-position: 100% 50% }
+  100% { background-position: 0% 50% }
 }
 
 /* Subtle floating card motion */
-.floaty{
+.floaty {
   transform-origin: center;
   animation: float 6s ease-in-out infinite;
 }
-@keyframes float{
-  0%{transform: translateY(0px)}
-  50%{transform: translateY(-8px)}
-  100%{transform: translateY(0px)}
+@keyframes float {
+  0% { transform: translateY(0px) }
+  50% { transform: translateY(-6px) }
+  100% { transform: translateY(0px) }
 }
 
-/* Glow inputs */
-.input-glow:focus{
-  box-shadow: 0 6px 30px rgba(0,240,255,0.06), 0 0 30px rgba(0,240,255,0.06);
+/* Sleek bottom border inputs */
+.modern-input {
+  background-color: transparent;
+  border-bottom: 2px solid rgba(var(--color-accent-teal-rgb), 0.15);
+  border-radius: 0px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.modern-input:focus {
+  outline: none;
+  border-bottom-color: var(--color-accent-teal);
+  box-shadow: 0 4px 12px -4px rgba(var(--color-accent-teal-rgb), 0.1);
 }

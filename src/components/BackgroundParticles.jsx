@@ -37,8 +37,8 @@ export default function BackgroundParticles(){
     const PARTICLE_COUNT = Math.max(30, Math.min(160, baseCount))
     const MAX_DISTANCE = 120 // px to draw connecting line
 
-    // Colors: neon cyan and purple gradient mix
-    const colors = [ 'rgba(0,240,255,0.95)', 'rgba(192,132,252,0.95)' ]
+    // Colors: brand cyan-teal and purple gradient mix
+    const colors = [ 'rgba(23,162,184,0.95)', 'rgba(106,90,205,0.95)' ]
 
     // Particle data
     const particles = []
@@ -63,6 +63,9 @@ export default function BackgroundParticles(){
       const delta = now - lastTime
       if(delta < FRAME_INTERVAL) return // skip frame
       lastTime = now
+
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark'
+      const opacityMultiplier = isDark ? 0.65 : 0.22
 
       // clear
       ctx.clearRect(0,0,width,height)
@@ -89,8 +92,8 @@ export default function BackgroundParticles(){
         // draw glow
         const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r*12)
         const c = interpolateColor(colors[0], colors[1], p.hue)
-        gradient.addColorStop(0, withAlpha(c, 0.85))
-        gradient.addColorStop(0.4, withAlpha(c, 0.25))
+        gradient.addColorStop(0, withAlpha(c, 0.85 * opacityMultiplier))
+        gradient.addColorStop(0.4, withAlpha(c, 0.25 * opacityMultiplier))
         gradient.addColorStop(1, withAlpha(c, 0))
         ctx.fillStyle = gradient
         ctx.beginPath()
@@ -98,7 +101,7 @@ export default function BackgroundParticles(){
         ctx.fill()
 
         // core
-        ctx.fillStyle = withAlpha(c, 1)
+        ctx.fillStyle = withAlpha(c, 1 * opacityMultiplier)
         ctx.beginPath()
         ctx.arc(p.x, p.y, p.r, 0, Math.PI*2)
         ctx.fill()
@@ -114,7 +117,7 @@ export default function BackgroundParticles(){
           const dist = Math.sqrt(dx*dx + dy*dy)
           if(dist < MAX_DISTANCE){
             const t = 1 - dist / MAX_DISTANCE
-            const alpha = t * 0.18
+            const alpha = t * 0.18 * opacityMultiplier
             // mix colors
             const mix = interpolateColor(colors[0], colors[1], (a.hue + b.hue)/2)
             ctx.strokeStyle = withAlpha(mix, alpha)

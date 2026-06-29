@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import image1 from "./ima-and/ima1.png";
-import image2 from "./ima-and/ima2..jpg";
+import { useTheme } from '../context/ThemeContext.jsx'
+import image1 from "./ima-and/ima1.png"
+import image2 from "./ima-and/ima2..jpg"
+import logo from "./ima-and/logo.png"
 
 const NAV_LINKS = [
   { id: 'home', label: 'Home' },
@@ -14,9 +16,10 @@ const NAV_LINKS = [
 export default function Header(){
   const [open, setOpen] = useState(false)
   const [currentImage, setCurrentImage] = useState(0)
+  const { theme, toggleTheme } = useTheme()
   const images = [image1, image2]
 
-  // cycle profile images every 3 seconds
+  // cycle profile images every 8 seconds
   useEffect(()=>{
     const interval = setInterval(()=>{
       setCurrentImage(i => (i + 1) % images.length)
@@ -31,13 +34,6 @@ export default function Header(){
     return ()=> window.removeEventListener('keydown', onKey)
   }, [])
 
-  // prevent background scroll when open
-  useEffect(()=>{
-    const prev = document.body.style.overflow
-    document.body.style.overflow = open ? 'hidden' : prev || ''
-    return ()=> { document.body.style.overflow = prev || '' }
-  }, [open])
-
   // close menu when resizing to desktop
   useEffect(()=>{
     function onResize(){ if(window.innerWidth >= 768 && open) setOpen(false) }
@@ -45,142 +41,126 @@ export default function Header(){
     return ()=> window.removeEventListener('resize', onResize)
   }, [open])
 
-  const backdrop = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { duration: 0.18 } }
-  }
-  const panel = {
-    hidden: { x: '100%' },
-    visible: { x: 0, transition: { type: 'spring', stiffness: 300, damping: 28 } },
-    exit: { x: '100%', transition: { ease: 'easeInOut', duration: 0.22 } }
-  }
-
   return (
-    <header className="fixed top-0 left-0 right-0 z-50">
-      <div className="backdrop-blur-sm bg-black/40 border-b border-gray-800">
-        <div className="container mx-auto px-6 md:px-12 py-3 flex items-center justify-between">
-          <a href="#home" className="flex items-center gap-3 neon-glow" onClick={()=>setOpen(false)}>
-            {/* Profile image placeholder */}
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-neon-cyan to-neon-purple flex items-center justify-center text-sm font-bold text-black overflow-hidden">
-              <AnimatePresence mode="wait">
-                <motion.img
-                  key={currentImage}
-                  src={images[currentImage]}
-                  alt="Anayolico"
-                  className="w-full h-full object-cover"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.5 }}
-                />
-              </AnimatePresence>
-              
-            </div>
-            <span className="text-xl font-semibold tracking-wider text-neon-cyan">Anayolico</span>
-          </a>
+    <header className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-5xl">
+      {/* Floating Island Navigation Container */}
+      <div className="backdrop-blur-md bg-bg-surface/85 border border-gray-200/50 dark:border-white/10 shadow-lg px-6 py-2.5 rounded-full flex items-center justify-between transition-colors duration-300 relative">
+        
+        {/* Left: Brand Identity */}
+        <a href="#home" className="flex items-center gap-2" onClick={()=>setOpen(false)}>
+          <img 
+            src={logo} 
+            alt="CA Logo" 
+            className="h-8 w-auto object-contain dark:brightness-0 dark:invert transition-all duration-300"
+          />
+          <span className="text-lg font-extrabold tracking-wide font-display text-text-main transition-colors duration-300">
+            Anayolico
+          </span>
+        </a>
 
-          {/* Desktop links */}
-          <nav className="hidden md:flex items-center space-x-6">
-            {NAV_LINKS.map(l => (
-              <a key={l.id} href={`#${l.id}`} className="text-sm text-gray-300 hover:text-neon-cyan transition-transform transform hover:-translate-y-0.5">{l.label}</a>
-            ))}
-          </nav>
-
-          {/* Mobile hamburger */}
-          <div className="md:hidden">
-            <button
-              aria-label={open ? 'Close menu' : 'Open menu'}
-              aria-expanded={open}
-              onClick={()=>setOpen(v => !v)}
-              className="p-2 rounded-md text-gray-200 hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-neon-cyan"
+        {/* Desktop Links (Horizontal list) */}
+        <nav className="hidden md:flex items-center space-x-8">
+          {NAV_LINKS.map(l => (
+            <a 
+              key={l.id} 
+              href={`#${l.id}`} 
+              className="text-xs uppercase tracking-widest font-extrabold text-text-muted hover:text-accent-teal transition-all duration-200 transform hover:-translate-y-0.5"
             >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="block">
-                <motion.path
-                  initial={false}
-                  animate={open ? { d: 'M4 6L20 18' } : { d: 'M3 6h18' }}
-                  transition={{ duration: 0.18 }}
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-                <motion.path
-                  initial={false}
-                  animate={open ? { d: 'M4 18L20 6' } : { d: 'M3 12h18' }}
-                  transition={{ duration: 0.18 }}
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-                <motion.path
-                  initial={false}
-                  animate={open ? { opacity: 0 } : { d: 'M3 18h18', opacity: 1 }}
-                  transition={{ duration: 0.18 }}
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
+              {l.label}
+            </a>
+          ))}
+        </nav>
+
+        {/* Actions Section */}
+        <div className="flex items-center gap-2">
+          {/* Theme Toggle Button */}
+          <button
+            onClick={toggleTheme}
+            className="p-2 rounded-full text-text-muted hover:bg-black/5 dark:hover:bg-white/5 focus:outline-none transition-transform transform hover:scale-105"
+            aria-label="Toggle theme"
+          >
+            {theme === 'dark' ? (
+              // Sun Icon
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-accent-teal">
+                <circle cx="12" cy="12" r="4" />
+                <path d="M12 2v2" /><path d="M12 20v2" /><path d="m4.93 4.93 1.41 1.41" /><path d="m17.66 17.66 1.41 1.41" /><path d="M2 12h2" /><path d="M20 12h2" /><path d="m6.34 17.66-1.41 1.41" /><path d="m19.07 4.93-1.41 1.41" />
               </svg>
-            </button>
-          </div>
+            ) : (
+              // Moon Icon
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-accent-purple">
+                <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+              </svg>
+            )}
+          </button>
+
+          {/* Mobile Hamburger menu */}
+          <button
+            aria-label={open ? 'Close menu' : 'Open menu'}
+            aria-expanded={open}
+            onClick={()=>setOpen(v => !v)}
+            className="md:hidden p-2 rounded-full text-text-main hover:bg-black/5 dark:hover:bg-white/5 focus:outline-none"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <motion.path
+                initial={false}
+                animate={open ? { d: 'M4 6L20 18' } : { d: 'M3 6h18' }}
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+              />
+              <motion.path
+                initial={false}
+                animate={open ? { d: 'M4 18L20 6' } : { d: 'M3 12h18' }}
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+              />
+              <motion.path
+                initial={false}
+                animate={open ? { opacity: 0 } : { d: 'M3 18h18', opacity: 1 }}
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+              />
+            </svg>
+          </button>
         </div>
-      </div>
 
-      {/* Mobile menu */}
-      <AnimatePresence>
-        {open && (
-          <>
-            <motion.div key="backdrop" initial="hidden" animate="visible" exit="hidden" variants={backdrop} className="fixed inset-0 z-40 bg-black/55 md:hidden" onClick={()=>setOpen(false)} />
-
-            <motion.aside key="panel" initial="hidden" animate="visible" exit="exit" variants={panel} className="fixed top-0 right-0 z-50 w-full max-w-xs sm:max-w-sm h-full bg-gradient-to-b from-gray-900/95 to-black/95 backdrop-blur-md border-l border-gray-800 md:hidden" role="dialog" aria-modal="true">
-              <div className="h-full flex flex-col px-6 py-8">
-                <div className="flex items-center justify-between mb-8">
-                  <a href="#home" className="flex items-center gap-2" onClick={()=>setOpen(false)}>
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-neon-cyan to-neon-purple flex items-center justify-center text-xs font-bold text-black overflow-hidden">
-                      <AnimatePresence mode="wait">
-                        <motion.img
-                          key={currentImage}
-                          src={images[currentImage]}
-                          alt="Anayolico"
-                          className="w-full h-full object-cover"
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0 }}
-                          transition={{ duration: 0.5 }}
-                        />
-                      </AnimatePresence>
-                    </div>
-                    <span className="text-lg font-semibold text-neon-cyan">Anayolico</span>
+        {/* Floating Mobile Dropdown Menu Card */}
+        <AnimatePresence>
+          {open && (
+            <motion.div
+              key="dropdown"
+              initial={{ opacity: 0, y: -12, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -12, scale: 0.98 }}
+              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+              className="absolute top-[calc(100%+0.75rem)] left-0 right-0 p-6 rounded-3xl bg-bg-surface/95 border border-gray-200/50 dark:border-white/10 shadow-2xl backdrop-blur-lg flex flex-col gap-4 md:hidden transition-colors duration-300"
+            >
+              <nav className="flex flex-col gap-4">
+                {NAV_LINKS.map(link => (
+                  <a
+                    key={link.id}
+                    href={`#${link.id}`}
+                    onClick={() => setOpen(false)}
+                    className="text-lg font-bold font-display text-text-main hover:text-accent-teal transition-colors duration-200"
+                  >
+                    {link.label}
                   </a>
-                  <button onClick={()=>setOpen(false)} aria-label="Close menu" className="p-2 rounded-md text-gray-200 hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-neon-cyan">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                      <path d="M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                      <path d="M6 18L18 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                    </svg>
-                  </button>
-                </div>
-
-                <nav className="flex-1">
-                  <ul className="flex flex-col gap-6">
-                    {NAV_LINKS.map((link, i) => (
-                      <motion.li key={link.id} initial={{ y: 12, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.04 * i, duration: 0.32 }}>
-                        <a href={`#${link.id}`} onClick={()=>setOpen(false)} className="text-2xl font-medium text-gray-100 hover:text-neon-cyan block">{link.label}</a>
-                      </motion.li>
-                    ))}
-                  </ul>
-                </nav>
-
-                <div className="mt-8 text-sm text-gray-400">
-                  <p>Quick links</p>
-                  <div className="flex gap-3 mt-3">
-                    <a href="mailto:example@domain.com" onClick={()=>setOpen(false)} className="px-3 py-2 bg-gray-800 rounded text-gray-200">Email</a>
-                    <a href="#contact" onClick={()=>setOpen(false)} className="px-3 py-2 bg-gray-800 rounded text-gray-200">Contact</a>
-                  </div>
+                ))}
+              </nav>
+              <div className="h-px bg-gray-200 dark:bg-white/5 my-2" />
+              <div className="flex justify-between items-center">
+                <span className="text-[10px] uppercase tracking-widest font-extrabold text-text-muted">Connect Direct</span>
+                <div className="flex gap-2">
+                  <a href="mailto:acnwa1234@gmail.com" onClick={() => setOpen(false)} className="px-4 py-2 bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 rounded-full text-xs font-semibold text-text-main transition-colors">Email</a>
+                  <a href="#contact" onClick={() => setOpen(false)} className="px-4 py-2 bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 rounded-full text-xs font-semibold text-text-main transition-colors">Contact</a>
                 </div>
               </div>
-            </motion.aside>
-          </>
-        )}
-      </AnimatePresence>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </header>
   )
 }

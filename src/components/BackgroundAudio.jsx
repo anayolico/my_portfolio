@@ -74,14 +74,14 @@ export default function BackgroundAudio() {
           whileTap={{ scale: 0.95 }}
           animate={{
             background: isHovering
-              ? 'linear-gradient(135deg, #ff006e, #00f0ff)'
-              : 'linear-gradient(135deg, #00f0ff, #c084fc)',
+              ? 'linear-gradient(135deg, #6a5acd, #0b2046)'
+              : 'linear-gradient(135deg, #17a2b8, #6a5acd)',
             boxShadow: isHovering
-              ? '0 0 30px rgba(255, 0, 110, 0.6), 0 0 60px rgba(0, 240, 255, 0.3)'
-              : '0 10px 40px rgba(0, 240, 255, 0.2)',
+              ? '0 0 30px rgba(106, 90, 205, 0.6), 0 0 60px rgba(23, 162, 184, 0.3)'
+              : '0 10px 40px rgba(23, 162, 184, 0.2)',
           }}
           transition={{ duration: 0.3 }}
-          className="w-14 h-14 rounded-full text-black flex items-center justify-center shadow-lg relative"
+          className="w-14 h-14 rounded-full text-white flex items-center justify-center shadow-lg relative"
           aria-pressed={playing}
           aria-label={playing ? 'Pause background music' : 'Play background music'}
         >
