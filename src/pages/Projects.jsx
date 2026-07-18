@@ -24,7 +24,7 @@ const MOCK_PROJECTS = [
     title: 'AI Calculator Web App',
     desc: 'Interactive calculator powered by AI-assisted suggestions and advanced UX patterns.',
     image: ima3,
-    tech: ['Next.js','AI', 'React'],
+    tech: ['Next.js', 'AI', 'React'],
     demoLink: 'https://my-ai-calculator.vercel.app/',
     codeLink: 'https://github.com/anayolico/my-ai-calculator'
   },
@@ -32,7 +32,7 @@ const MOCK_PROJECTS = [
     title: 'Task Management Dashboard',
     desc: 'Full-featured dashboard with real-time task tracking, filtering, and user collaboration features.',
     image: ima5,
-    tech: ['React','Node.js','MongoDB'],
+    tech: ['React', 'Node.js', 'MongoDB'],
     demoLink: 'https://task-dashboard-frontend-two.vercel.app',
     codeLink: 'https://github.com/anayolico/task-dashboard-backend'
   },
@@ -40,13 +40,13 @@ const MOCK_PROJECTS = [
     title: 'Weather Forecast App',
     desc: 'Real-time weather application with location search, forecasts, and animated weather visualizations.',
     image: ima6,
-    tech: ['React','API','CSS Animations'],
+    tech: ['React', 'API', 'CSS Animations'],
     demoLink: 'https://weather-app-xi-tawny-68.vercel.app',
     codeLink: 'https://github.com/anayolico/weather-app'
   }
 ]
 
-export default function Projects(){
+export default function Projects() {
   const [activeFilter, setActiveFilter] = useState('All')
   const [projects, setProjects] = useState(MOCK_PROJECTS)
   const [loading, setLoading] = useState(true)
@@ -58,7 +58,7 @@ export default function Projects(){
       if (data && Array.isArray(data)) {
         const mapped = data.map(item => {
           const attrs = item.attributes || item
-          
+
           let imageUrl = ''
           const imgObj = attrs.image
           if (imgObj) {
@@ -111,7 +111,7 @@ export default function Projects(){
           <CmsStatus isLoading={true} />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {[1,2,3].map(i => (
+          {[1, 2, 3].map(i => (
             <div key={i} className="glass-card rounded-3xl overflow-hidden border border-gray-200/50 dark:border-white/5 animate-pulse">
               <div className="w-full h-48 bg-gray-200 dark:bg-white/5" />
               <div className="p-5 space-y-3">
@@ -132,70 +132,69 @@ export default function Projects(){
 
   return (
     <>
-      <SEO 
-        title="Projects | Anayolico" 
-        description="A showcase of recent client applications, backend architectures, and developer utilities." 
+      <SEO
+        title="Projects | Anayolico"
+        description="A showcase of recent client applications, backend architectures, and developer utilities."
         keywords="Anayolico, Caleb Anayolico, Anayo, Projects, Portfolio, Web Development, React, Node.js, Next.js"
         url="/projects"
       />
       <section id="projects" className="py-20 space-y-10">
-      <div className="text-center space-y-4">
-        <h2 className="text-3xl md:text-4xl font-bold text-text-main tracking-tight font-display transition-colors duration-300">
-          Featured Projects
-        </h2>
-        <p className="text-text-muted text-base max-w-xl mx-auto transition-colors duration-300">
-          A showcase of recent client applications, backend architectures, and developer utilities.
-        </p>
-        <div className="flex justify-center">
-          <CmsStatus isLive={isLive} isLoading={false} />
+        <div className="text-center space-y-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-text-main tracking-tight font-display transition-colors duration-300">
+            Featured Projects
+          </h2>
+          <p className="text-text-muted text-base max-w-xl mx-auto transition-colors duration-300">
+            A showcase of recent client applications, backend architectures, and developer utilities.
+          </p>
+          <div className="flex justify-center">
+            <CmsStatus isLive={isLive} isLoading={false} />
+          </div>
         </div>
-      </div>
 
-      {/* Filter Tabs */}
-      <div className="flex flex-wrap justify-center gap-3">
-        {CATEGORIES.map(category => (
-          <button
-            key={category}
-            onClick={() => setActiveFilter(category)}
-            className={`px-5 py-2 rounded-full text-sm font-semibold tracking-wide border transition-all duration-300 ${
-              activeFilter === category
-                ? 'bg-accent-teal text-white border-accent-teal shadow-md'
-                : 'bg-white/40 dark:bg-white/5 text-text-muted border-gray-200 dark:border-white/5 hover:border-accent-teal/50 hover:text-text-main'
-            }`}
-          >
-            {category}
-          </button>
-        ))}
-      </div>
-
-      {/* Projects Grid */}
-      <motion.div 
-        layout
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-      >
-        <AnimatePresence mode="popLayout">
-          {filteredProjects.map(p => (
-            <motion.div
-              layout
-              key={p.title}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.3 }}
+        {/* Filter Tabs */}
+        <div className="flex flex-wrap justify-center gap-3">
+          {CATEGORIES.map(category => (
+            <button
+              key={category}
+              onClick={() => setActiveFilter(category)}
+              className={`px-5 py-2 rounded-full text-sm font-semibold tracking-wide border transition-all duration-300 ${activeFilter === category
+                  ? 'bg-accent-teal text-white border-accent-teal shadow-md'
+                  : 'bg-white/40 dark:bg-white/5 text-text-muted border-gray-200 dark:border-white/5 hover:border-accent-teal/50 hover:text-text-main'
+                }`}
             >
-              <ProjectCard
-                title={p.title}
-                desc={p.desc}
-                image={p.image}
-                tech={p.tech}
-                demoLink={p.demoLink}
-                codeLink={p.codeLink}
-              />
-            </motion.div>
+              {category}
+            </button>
           ))}
-        </AnimatePresence>
-      </motion.div>
-    </section>
+        </div>
+
+        {/* Projects Grid */}
+        <motion.div
+          layout
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+        >
+          <AnimatePresence mode="popLayout">
+            {filteredProjects.map(p => (
+              <motion.div
+                layout
+                key={p.title}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.3 }}
+              >
+                <ProjectCard
+                  title={p.title}
+                  desc={p.desc}
+                  image={p.image}
+                  tech={p.tech}
+                  demoLink={p.demoLink}
+                  codeLink={p.codeLink}
+                />
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </motion.div>
+      </section>
     </>
   )
 }
