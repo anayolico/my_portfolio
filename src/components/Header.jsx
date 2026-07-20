@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTheme } from '../context/ThemeContext.jsx'
-import image1 from "./ima-and/ima1.png"
-import image2 from "./ima-and/ima2..jpg"
 import logo from "./ima-and/logo.png"
 
 const NAV_LINKS = [
@@ -15,17 +13,7 @@ const NAV_LINKS = [
 
 export default function Header(){
   const [open, setOpen] = useState(false)
-  const [currentImage, setCurrentImage] = useState(0)
   const { theme, toggleTheme } = useTheme()
-  const images = [image1, image2]
-
-  // cycle profile images every 8 seconds
-  useEffect(()=>{
-    const interval = setInterval(()=>{
-      setCurrentImage(i => (i + 1) % images.length)
-    }, 8000)
-    return () => clearInterval(interval)
-  }, [images.length])
 
   // close on Escape
   useEffect(()=>{
