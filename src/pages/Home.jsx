@@ -79,13 +79,13 @@ export default function Home() {
               transition={{ delay: 0.5, duration: 0.6 }}
               className="flex flex-row justify-center lg:justify-start items-center gap-3 pt-2 w-full max-w-md mx-auto lg:mx-0"
             >
-              <a href="#projects" className="flex-1">
+              <a href="/cv" className="flex-1">
                 <motion.button
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
                   className="w-full px-4 sm:px-8 py-3.5 rounded-2xl bg-gradient-to-r from-accent-teal to-cyan-500 text-white text-xs sm:text-base font-semibold shadow-lg shadow-accent-teal/25 hover:shadow-accent-teal/40 hover:brightness-110 transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap"
                 >
-                  <span>Explore Projects</span>
+                  <span>View Executive CV</span>
                   <svg className="w-4 h-4 hidden sm:inline" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                   </svg>
