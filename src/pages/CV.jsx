@@ -270,7 +270,7 @@ export default function CV() {
             {/* Clean Executive White Paper Resume Document */}
             <div
               id="cv-paper"
-              className="cv-paper bg-white text-slate-900 p-8 sm:p-12 rounded-2xl shadow-2xl shadow-black/50 border border-slate-200 space-y-7"
+              className="cv-paper bg-white text-slate-900 p-6 sm:p-10 rounded-2xl shadow-2xl shadow-black/50 border border-slate-200 space-y-5"
             >
             {/* Header / Contact Info Block */}
             <div className="border-b-2 border-teal-600 pb-6 space-y-4">
