@@ -177,11 +177,12 @@ export default function CV() {
 
       if (window.html2pdf) {
         const opt = {
-          margin: [10, 12, 10, 12],
+          margin: [12, 14, 12, 14],
           filename: `${cv.fullName ? cv.fullName.replace(/\s+/g, '_') : 'Caleb_Anayolico'}_CV.pdf`,
           image: { type: 'jpeg', quality: 0.98 },
           html2canvas: { scale: 2, useCORS: true, logging: false },
-          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+          pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
         };
         window.html2pdf().set(opt).from(element).save();
       } else {
@@ -254,14 +255,17 @@ export default function CV() {
             </button>
           </div>
 
-          {/* Clean Executive White Paper Resume Document */}
+          {/* Animated Entry Wrapper */}
           <motion.div
-            id="cv-paper"
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            className="cv-paper bg-white text-slate-900 p-8 sm:p-12 rounded-2xl shadow-2xl shadow-black/50 border border-slate-200 space-y-7"
           >
+            {/* Clean Executive White Paper Resume Document */}
+            <div
+              id="cv-paper"
+              className="cv-paper bg-white text-slate-900 p-8 sm:p-12 rounded-2xl shadow-2xl shadow-black/50 border border-slate-200 space-y-7"
+            >
             {/* Header / Contact Info Block */}
             <div className="border-b-2 border-teal-600 pb-6 space-y-4">
               <div className="flex flex-col sm:flex-row justify-between sm:items-start gap-4">
@@ -330,7 +334,7 @@ export default function CV() {
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {(cv.skills || []).map((group, idx) => (
-                  <div key={idx} className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
+                  <div key={idx} style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }} className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
                     <h3 className="text-xs font-bold text-slate-900 font-display">
                       {group.category}
                     </h3>
@@ -363,7 +367,7 @@ export default function CV() {
                     </span>
                   </div>
 
-                  <div className="p-4 sm:p-5 rounded-2xl bg-teal-50/40 border border-teal-200/80 flex flex-col sm:flex-row gap-5 items-start">
+                  <div style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }} className="p-4 sm:p-5 rounded-2xl bg-teal-50/40 border border-teal-200/80 flex flex-col sm:flex-row gap-5 items-start">
                     {/* Square Award Trophy / Certificate Photo Container */}
                     <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-xl bg-slate-900 border-2 border-teal-500/40 shadow-md flex-shrink-0 overflow-hidden flex items-center justify-center relative aspect-square">
                       {h.awardImage && h.awardImage.trim().startsWith('http') ? (
@@ -447,7 +451,7 @@ export default function CV() {
               </h2>
               <div className="space-y-4">
                 {(cv.projects || []).map((proj, idx) => (
-                  <div key={idx} className="space-y-1.5">
+                  <div key={idx} style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }} className="space-y-1.5">
                     <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
                       <h3 className="text-sm font-bold text-slate-900 font-display">
                         {proj.title} <span className="text-xs font-semibold text-teal-700">— {proj.role}</span>
@@ -470,7 +474,7 @@ export default function CV() {
               </h2>
               <div className="space-y-5">
                 {(cv.experience || []).map((exp, idx) => (
-                  <div key={idx} className="space-y-1.5">
+                  <div key={idx} style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }} className="space-y-1.5">
                     <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
                       <h3 className="text-sm font-bold text-slate-900 font-display">
                         {exp.role} <span className="text-xs font-semibold text-slate-600">| {exp.company}</span>
@@ -493,7 +497,7 @@ export default function CV() {
               </h2>
               <div className="space-y-2">
                 {(cv.education || []).map((edu, idx) => (
-                  <div key={idx} className="flex justify-between items-baseline text-xs">
+                  <div key={idx} style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }} className="flex justify-between items-baseline text-xs">
                     <div>
                       <h3 className="font-bold text-slate-900 font-display text-sm">{edu.degree}</h3>
                       <p className="text-slate-600 text-xs font-medium">{edu.institution}</p>
@@ -518,6 +522,7 @@ export default function CV() {
               </p>
             </div>
 
+            </div> {/* End of #cv-paper */}
           </motion.div>
         </div>
       </div>
