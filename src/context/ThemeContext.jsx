@@ -3,31 +3,18 @@ import React, { createContext, useContext, useEffect, useState } from 'react'
 const ThemeContext = createContext()
 
 export function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState(() => {
-    try {
-      const saved = localStorage.getItem('theme')
-      if (saved) return saved
-    } catch (e) {}
-    // Default to dark mode as the base theme is Deep Charcoal
-    return 'dark'
-  })
+  const [theme] = useState('dark')
 
   useEffect(() => {
     const root = document.documentElement
-    root.setAttribute('data-theme', theme)
-    if (theme === 'dark') {
-      root.classList.add('dark')
-    } else {
-      root.classList.remove('dark')
-    }
+    root.setAttribute('data-theme', 'dark')
+    root.classList.add('dark')
     try {
-      localStorage.setItem('theme', theme)
+      localStorage.setItem('theme', 'dark')
     } catch (e) {}
-  }, [theme])
+  }, [])
 
-  const toggleTheme = () => {
-    setTheme(prev => (prev === 'dark' ? 'light' : 'dark'))
-  }
+  const toggleTheme = () => {}
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>

@@ -1,14 +1,36 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 
+const DEFAULT_IMAGES = [
+  'https://images.unsplash.com/photo-1541888946425-d0fbb186a5b3?auto=format&fit=crop&w=800&q=80', // Construction / Building
+  'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80', // Code / IDE
+  'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80', // Dashboard / UI
+  'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80', // Tech / Cyber
+  'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=800&q=80'  // Web Design
+];
+
+function getFallbackImage(title) {
+  if (!title) return DEFAULT_IMAGES[0];
+  let hash = 0;
+  for (let i = 0; i < title.length; i++) {
+    hash = title.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const index = Math.abs(hash) % DEFAULT_IMAGES.length;
+  return DEFAULT_IMAGES[index];
+}
+
 export default function ProjectCard({title,desc,image='',tech=[],demoLink='#',codeLink='#'}){
+  const fallback = getFallbackImage(title);
+  const displayImage = (image && image.trim()) ? image : fallback;
+
   return (
     <div className="glass-card rounded-3xl p-5 flex flex-col h-full border border-gray-200/50 dark:border-white/5 transition-colors duration-300">
       {/* Zoomable Image Container */}
       <div className="w-full h-48 rounded-2xl mb-4 overflow-hidden border border-gray-200 dark:border-gray-800 transition-colors duration-300 relative group">
         <img 
-          src={image} 
+          src={displayImage} 
           alt={title} 
+          onError={(e) => { e.target.onerror = null; e.target.src = fallback; }}
           className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-108" 
         />
         {/* Soft shadow overlay */}

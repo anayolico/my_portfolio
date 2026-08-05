@@ -6,10 +6,16 @@ import About from './pages/About.jsx'
 import Projects from './pages/Projects.jsx'
 import Skills from './pages/Skills.jsx'
 import Contact from './pages/Contact.jsx'
+import CV from './pages/CV.jsx'
 
-/* App.jsx: top-level composition of the single-page portfolio. Shows a splash screen before main layout. */
+/* App.jsx: top-level composition of the single-page portfolio & standalone /cv route. */
 export default function App(){
   const [showSplash, setShowSplash] = useState(true)
+  const isCvPage = typeof window !== 'undefined' && window.location.pathname.toLowerCase().startsWith('/cv')
+
+  if (isCvPage) {
+    return <CV />
+  }
 
   return (
     <>

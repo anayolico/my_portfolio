@@ -24,7 +24,7 @@ function validateContactForm({ fullName, email, description }) {
   }
 
   if (!description.trim()) {
-    nextErrors.description = 'Description is required'
+    nextErrors.description = 'Message is required'
   } else if (description.trim().length < 10) {
     nextErrors.description = 'At least 10 characters required'
   }
@@ -32,18 +32,29 @@ function validateContactForm({ fullName, email, description }) {
   return nextErrors
 }
 
-export default function Contact(){
+const QUICK_TOPICS = [
+  { label: 'Project Inquiry', text: 'I would like to discuss a project with you: ' },
+  { label: 'Collaboration', text: 'Hi Caleb, I would love to collaborate on: ' },
+  { label: 'General Inquiry', text: 'Hi Caleb, I wanted to reach out regarding: ' },
+]
+
+export default function Contact() {
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [description, setDescription] = useState('')
+  const [activeTopic, setActiveTopic] = useState(null)
   const [errors, setErrors] = useState({})
   const [submitted, setSubmitted] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [copiedPhone, setCopiedPhone] = useState(false)
   const [touched, setTouched] = useState({
     fullName: false,
     email: false,
     description: false,
   })
+
+  const phoneNumber = '+2349165587681'
+  const whatsappLink = `https://wa.me/${phoneNumber.replace(/[^0-9]/g, '')}?text=${encodeURIComponent('Hello Caleb! I saw your portfolio and would like to connect.')}`
 
   useEffect(() => {
     const formErrors = validateContactForm({ fullName, email, description })
@@ -64,6 +75,23 @@ export default function Contact(){
     setErrors(touchedErrors)
   }, [fullName, email, description, touched])
 
+  const handleTopicClick = (topic) => {
+    setActiveTopic(topic.label)
+    if (!description.startsWith(topic.text)) {
+      setDescription(topic.text)
+      setTouched((prev) => ({ ...prev, description: true }))
+    }
+  }
+
+  const handleCopyPhone = () => {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(phoneNumber)
+      setCopiedPhone(true)
+      toast.success('Phone number copied to clipboard!')
+      setTimeout(() => setCopiedPhone(false), 2000)
+    }
+  }
+
   const onSubmit = async (e) => {
     e.preventDefault()
 
@@ -78,7 +106,7 @@ export default function Contact(){
     setErrors(nextErrors)
 
     if (Object.keys(nextErrors).length > 0) {
-      toast.error('Please fix the errors first')
+      toast.error('Please fix the errors before submitting')
       return
     }
 
@@ -93,14 +121,14 @@ export default function Contact(){
       })
 
       setSubmitted(true)
-      toast.success('Message sent!')
+      toast.success('Message sent successfully! I will reply soon.')
       onClear()
 
       setTimeout(() => {
         setSubmitted(false)
-      }, 2500)
+      }, 3000)
     } catch (error) {
-      toast.error(error.message || 'Message failed to send')
+      toast.error(error.message || 'Failed to send message. Please try again.')
     } finally {
       setIsSubmitting(false)
     }
@@ -110,6 +138,7 @@ export default function Contact(){
     setFullName('')
     setEmail('')
     setDescription('')
+    setActiveTopic(null)
     setErrors({})
     setTouched({
       fullName: false,
@@ -117,10 +146,6 @@ export default function Contact(){
       description: false,
     })
   }
-
-  const contactEmail = 'acnwa1234@gmail.com'
-  const phoneNumber = '+2349165587681'
-  const whatsappLink = `https://wa.me/${phoneNumber.replace(/[^0-9]/g,'')}?text=${encodeURIComponent('Hello Anayo!')}`
 
   return (
     <>
@@ -130,147 +155,328 @@ export default function Contact(){
         keywords="Anayolico, Caleb Anayolico, Anayo, Contact, Hire, Freelance, Web Developer"
         url="/contact"
       />
-      <section id="contact" className="py-20 space-y-10">
-        <div className="text-center space-y-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-text-main tracking-tight font-display transition-colors duration-300">
-            Get In Touch
-          </h2>
-          <p className="text-text-muted text-base max-w-xl mx-auto transition-colors duration-300">
-            Have an exciting project idea, a role, or simply want to connect? Send a message below.
-          </p>
-        </div>
+      <section id="contact" className="py-16 md:py-24 space-y-12 relative overflow-hidden">
+        {/* Ambient background glow effects */}
+        <div className="absolute top-1/4 -left-20 w-72 h-72 bg-accent-teal/10 rounded-full blur-3xl pointer-events-none -z-10" />
+        <div className="absolute bottom-10 -right-20 w-80 h-80 bg-accent-purple/10 rounded-full blur-3xl pointer-events-none -z-10" />
 
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-start">
-          {/* Left: Sleek Form */}
-          <motion.form
-            onSubmit={onSubmit}
-            initial={{ opacity: 0, y: 12 }}
+        {/* Section Header */}
+        <div className="text-center space-y-4 max-w-2xl mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="md:col-span-7 glass-card p-8 rounded-3xl border border-gray-200/50 dark:border-white/5 space-y-6"
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-accent-teal/10 border border-accent-teal/20 text-accent-teal text-xs font-bold tracking-wide uppercase"
           >
-            <div className="space-y-1">
-              <label className="block text-xs uppercase tracking-widest font-extrabold text-text-muted transition-colors duration-300">Full Name</label>
-              <input
-                name="fullName"
-                value={fullName}
-                onChange={(e) => {
-                  setFullName(e.target.value)
-                  setTouched((prev) => ({ ...prev, fullName: true }))
-                }}
-                className="w-full p-3 modern-input text-text-main"
-                placeholder="Your full name"
-              />
-              {errors.fullName && (
-                <p className="text-xs text-rose-500 font-semibold">{errors.fullName}</p>
-              )}
-            </div>
+            <span className="w-2 h-2 rounded-full bg-accent-teal animate-ping" />
+            Let's Build Something Together
+          </motion.div>
 
-            <div className="space-y-1">
-              <label className="block text-xs uppercase tracking-widest font-extrabold text-text-muted transition-colors duration-300">Email Address</label>
-              <input
-                name="email"
-                type="email"
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value)
-                  setTouched((prev) => ({ ...prev, email: true }))
-                }}
-                className="w-full p-3 modern-input text-text-main"
-                placeholder="you@example.com"
-              />
-              {errors.email && (
-                <p className="text-xs text-rose-500 font-semibold">{errors.email}</p>
-              )}
-            </div>
+          <motion.h2
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="text-3xl md:text-5xl font-extrabold text-text-main tracking-tight font-display"
+          >
+            Get In Touch
+          </motion.h2>
 
-            <div className="space-y-1">
-              <label className="block text-xs uppercase tracking-widest font-extrabold text-text-muted transition-colors duration-300">Message Details</label>
-              <textarea
-                name="description"
-                value={description}
-                onChange={(e) => {
-                  setDescription(e.target.value)
-                  setTouched((prev) => ({ ...prev, description: true }))
-                }}
-                className="w-full p-3 modern-input text-text-main h-32 resize-none"
-                placeholder="Tell me about your project or inquiry..."
-              />
-              {errors.description && (
-                <p className="text-xs text-rose-500 font-semibold">{errors.description}</p>
-              )}
-            </div>
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="text-text-muted text-base md:text-lg leading-relaxed"
+          >
+            Have an exciting project idea, a collaboration proposal, or simply want to say hello? Drop a message below and I'll get back to you promptly.
+          </motion.p>
+        </div>
 
-            <div className="flex gap-4 pt-2">
-              <motion.button
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                type="submit"
-                disabled={isSubmitting}
-                className="px-6 py-3 rounded-full bg-accent-teal text-white font-semibold shadow-lg shadow-accent-teal/10 hover:shadow-accent-teal/20 hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-70 transition-all text-sm"
-              >
-                {isSubmitting ? 'Sending...' : submitted ? 'Message Sent!' : 'Send Message'}
-              </motion.button>
-
-              <motion.button
-                type="button"
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                onClick={onClear}
-                className="px-6 py-3 rounded-full border border-gray-300 dark:border-gray-700 text-text-main hover:bg-black/5 dark:hover:bg-white/5 transition-all text-sm font-semibold"
-              >
-                Clear
-              </motion.button>
-            </div>
-          </motion.form>
-
-          {/* Right: Contact details */}
-          <div className="md:col-span-5 space-y-6">
-            {/* Card: Email */}
-            <div className="glass-card p-5 rounded-2xl border border-gray-200/50 dark:border-white/5 flex items-center gap-4 transition-colors duration-300 group hover:shadow-[0_8px_30px_rgba(var(--color-accent-teal-rgb),0.08)]">
-              <div className="w-10 h-10 rounded-xl bg-accent-teal/10 text-accent-teal flex items-center justify-center transition-all duration-300 border border-accent-teal/20 shadow-[0_0_15px_rgba(var(--color-accent-teal-rgb),0.2)] dark:shadow-[0_0_20px_rgba(var(--color-accent-teal-rgb),0.15)] group-hover:scale-105 group-hover:bg-accent-teal/15">
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-              </div>
-              <div>
-                <p className="text-[10px] uppercase tracking-widest text-text-muted font-bold">Email Me</p>
-                <a className="text-text-main font-semibold hover:text-accent-teal hover:underline transition-all text-sm" href={`mailto:${contactEmail}`}>{contactEmail}</a>
+        {/* Main Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* Left Column: Form */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="lg:col-span-7 glass-card p-6 md:p-8 rounded-3xl border border-gray-200/60 dark:border-white/10 shadow-xl relative backdrop-blur-xl"
+          >
+            {/* Quick Topic Chips (One Single Line on Mobile & Desktop) */}
+            <div className="mb-6 space-y-2 text-center sm:text-left">
+              <label className="text-xs uppercase tracking-widest font-extrabold text-text-muted block">
+                What can I help you with?
+              </label>
+              <div className="flex flex-row items-center justify-between gap-1.5 sm:gap-2.5 w-full">
+                {QUICK_TOPICS.map((topic) => (
+                  <button
+                    key={topic.label}
+                    type="button"
+                    onClick={() => handleTopicClick(topic)}
+                    className={`flex-1 py-2 px-1 sm:px-3 rounded-xl text-[10px] sm:text-xs font-bold transition-all duration-200 border cursor-pointer text-center flex items-center justify-center whitespace-nowrap ${
+                      activeTopic === topic.label
+                        ? 'bg-accent-teal text-white border-accent-teal shadow-md shadow-accent-teal/20 scale-[1.02]'
+                        : 'bg-white/50 dark:bg-white/5 text-text-main border-gray-200 dark:border-white/10 hover:border-accent-teal/40 hover:bg-black/5 dark:hover:bg-white/10'
+                    }`}
+                  >
+                    {topic.label}
+                  </button>
+                ))}
               </div>
             </div>
 
-            {/* Card: Phone */}
-            <div className="glass-card p-5 rounded-2xl border border-gray-200/50 dark:border-white/5 flex items-center gap-4 transition-colors duration-300 group hover:shadow-[0_8px_30px_rgba(var(--color-accent-purple-rgb),0.08)]">
-              <div className="w-10 h-10 rounded-xl bg-accent-purple/10 text-accent-purple flex items-center justify-center transition-all duration-300 border border-accent-purple/20 shadow-[0_0_15px_rgba(var(--color-accent-purple-rgb),0.2)] dark:shadow-[0_0_20px_rgba(var(--color-accent-purple-rgb),0.15)] group-hover:scale-105 group-hover:bg-accent-purple/15">
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                </svg>
+            <form onSubmit={onSubmit} className="space-y-5" noValidate>
+              {/* Name Field */}
+              <div className="space-y-1.5">
+                <label htmlFor="fullName" className="flex items-center justify-between text-xs uppercase tracking-widest font-bold text-text-muted">
+                  <span>Full Name</span>
+                  {errors.fullName && (
+                    <span className="text-rose-500 text-xs lowercase font-normal">{errors.fullName}</span>
+                  )}
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-text-muted">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                  </div>
+                  <input
+                    id="fullName"
+                    name="fullName"
+                    type="text"
+                    value={fullName}
+                    onChange={(e) => {
+                      setFullName(e.target.value)
+                      setTouched((prev) => ({ ...prev, fullName: true }))
+                    }}
+                    className={`w-full pl-10 pr-4 py-3 rounded-2xl bg-white/60 dark:bg-black/20 border transition-all text-text-main text-sm outline-none placeholder:text-text-muted/50 ${
+                      errors.fullName
+                        ? 'border-rose-500 focus:ring-2 focus:ring-rose-500/20'
+                        : 'border-gray-200 dark:border-white/10 focus:border-accent-teal focus:ring-2 focus:ring-accent-teal/20'
+                    }`}
+                    placeholder="e.g. John Doe"
+                  />
+                </div>
               </div>
-              <div>
-                <p className="text-[10px] uppercase tracking-widest text-text-muted font-bold">Call Me</p>
-                <a className="text-text-main font-semibold hover:text-accent-purple hover:underline transition-all text-sm" href={`tel:${phoneNumber}`}>{phoneNumber}</a>
+
+              {/* Email Field */}
+              <div className="space-y-1.5">
+                <label htmlFor="email" className="flex items-center justify-between text-xs uppercase tracking-widest font-bold text-text-muted">
+                  <span>Email Address</span>
+                  {errors.email && (
+                    <span className="text-rose-500 text-xs lowercase font-normal">{errors.email}</span>
+                  )}
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-text-muted">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value)
+                      setTouched((prev) => ({ ...prev, email: true }))
+                    }}
+                    className={`w-full pl-10 pr-4 py-3 rounded-2xl bg-white/60 dark:bg-black/20 border transition-all text-text-main text-sm outline-none placeholder:text-text-muted/50 ${
+                      errors.email
+                        ? 'border-rose-500 focus:ring-2 focus:ring-rose-500/20'
+                        : 'border-gray-200 dark:border-white/10 focus:border-accent-teal focus:ring-2 focus:ring-accent-teal/20'
+                    }`}
+                    placeholder="you@example.com"
+                  />
+                </div>
+              </div>
+
+              {/* Message Details Field */}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between text-xs uppercase tracking-widest font-bold text-text-muted">
+                  <label htmlFor="description">Message Details</label>
+                  <span className="text-[11px] font-normal lowercase text-text-muted/70">
+                    {description.length} chars
+                  </span>
+                </div>
+                <div className="relative">
+                  <textarea
+                    id="description"
+                    name="description"
+                    value={description}
+                    onChange={(e) => {
+                      setDescription(e.target.value)
+                      setTouched((prev) => ({ ...prev, description: true }))
+                    }}
+                    rows={5}
+                    className={`w-full p-4 rounded-2xl bg-white/60 dark:bg-black/20 border transition-all text-text-main text-sm outline-none resize-none placeholder:text-text-muted/50 ${
+                      errors.description
+                        ? 'border-rose-500 focus:ring-2 focus:ring-rose-500/20'
+                        : 'border-gray-200 dark:border-white/10 focus:border-accent-teal focus:ring-2 focus:ring-accent-teal/20'
+                    }`}
+                    placeholder="Tell me about your project, timeline, scope or inquiry..."
+                  />
+                </div>
+                {errors.description && (
+                  <p className="text-xs text-rose-500 font-semibold mt-1">{errors.description}</p>
+                )}
+              </div>
+
+              {/* Form Buttons */}
+              <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-gradient-to-r from-accent-teal to-accent-purple text-white font-semibold text-sm shadow-lg shadow-accent-teal/20 hover:shadow-accent-teal/30 hover:brightness-110 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all cursor-pointer"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                      </svg>
+                      Sending Message...
+                    </>
+                  ) : submitted ? (
+                    <>
+                      <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                      Message Sent!
+                    </>
+                  ) : (
+                    <>
+                      <span>Send Message</span>
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                      </svg>
+                    </>
+                  )}
+                </motion.button>
+
+                <motion.button
+                  type="button"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={onClear}
+                  className="w-full sm:w-auto px-6 py-3.5 rounded-2xl border border-gray-200 dark:border-white/10 text-text-main hover:bg-black/5 dark:hover:bg-white/5 transition-all text-sm font-semibold text-center cursor-pointer"
+                >
+                  Clear Form
+                </motion.button>
+              </div>
+            </form>
+          </motion.div>
+
+          {/* Right Column: Contact Cards & Links (NO EMAIL ME CARD) */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="lg:col-span-5 space-y-5"
+          >
+            {/* Status & Availability Card (UPDATED TO COLLABORATION & SELF-EMPLOYED) */}
+            <div className="glass-card p-6 rounded-3xl border border-gray-200/60 dark:border-white/10 space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="relative flex h-3 w-3">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500" />
+                </div>
+                <span className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+                  Open for Collaboration
+                </span>
+              </div>
+              <p className="text-text-main font-semibold text-base leading-snug">
+                full-stack engineer open for high-impact project collaborations, technical consulting, and innovative joint ventures.
+              </p>
+              <div className="pt-3 border-t border-gray-200/40 dark:border-white/10 flex items-center justify-between text-xs text-text-muted">
+                <span>Nigeria</span>
+                <span>Response 24h</span>
               </div>
             </div>
 
-            {/* Quick links panel */}
-            <div className="glass-card p-6 rounded-3xl border border-gray-200/50 dark:border-white/5 space-y-4 transition-colors duration-300">
-              <h4 className="font-bold text-text-main font-display text-lg">Follow & Connect</h4>
-              <div className="flex flex-wrap gap-2.5">
-                <a className="px-4 py-2 rounded-full bg-white/40 dark:bg-white/5 hover:bg-black/5 dark:hover:bg-white/10 text-xs font-semibold text-text-main border border-gray-200 dark:border-white/5 transition-all flex items-center gap-1.5 shadow-sm hover:shadow-[0_4px_12px_rgba(var(--color-accent-teal-rgb),0.12)] hover:border-accent-teal/30" href={whatsappLink} target="_blank" rel="noopener noreferrer">
-                  <svg className="w-3.5 h-3.5 text-[#25D366] fill-currentColor" viewBox="0 0 24 24">
-                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.746.953 3.71 1.458 5.704 1.459h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-                  </svg>
-                  WhatsApp
+            {/* Direct Call Card */}
+            <div className="glass-card p-6 rounded-3xl border border-gray-200/60 dark:border-white/10 space-y-4 transition-all duration-300 group hover:border-accent-purple/40">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-11 h-11 rounded-2xl bg-accent-purple/10 text-accent-purple flex items-center justify-center border border-accent-purple/20 shadow-md group-hover:scale-105 transition-transform">
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-[10px] uppercase tracking-widest text-text-muted font-extrabold">Direct Line</p>
+                    <a href={`tel:${phoneNumber}`} className="text-text-main font-bold text-base hover:text-accent-purple transition-colors">
+                      {phoneNumber}
+                    </a>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleCopyPhone}
+                  title="Copy Phone Number"
+                  className="p-2.5 rounded-xl bg-white/50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-text-muted hover:text-text-main hover:bg-black/5 dark:hover:bg-white/10 transition-all cursor-pointer"
+                >
+                  {copiedPhone ? (
+                    <svg className="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  ) : (
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* Quick Connect & Social Links Card */}
+            <div className="glass-card p-6 rounded-3xl border border-gray-200/60 dark:border-white/10 space-y-4">
+              <h4 className="font-bold text-text-main font-display text-base">Follow & Connect</h4>
+              <div className="grid grid-cols-2 gap-3">
+                {/* WhatsApp */}
+                <a
+                  href={whatsappLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-3.5 rounded-2xl bg-white/50 dark:bg-white/5 hover:bg-[#25D366]/10 text-text-main border border-gray-200 dark:border-white/10 hover:border-[#25D366]/40 transition-all flex items-center gap-3 group"
+                >
+                  <div className="w-9 h-9 rounded-xl bg-[#25D366]/10 text-[#25D366] flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <svg className="w-4 h-4 fill-currentColor" viewBox="0 0 24 24">
+                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.746.953 3.71 1.458 5.704 1.459h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold">WhatsApp</p>
+                    <p className="text-[10px] text-text-muted">Instant Chat</p>
+                  </div>
                 </a>
-                <a className="px-4 py-2 rounded-full bg-white/40 dark:bg-white/5 hover:bg-black/5 dark:hover:bg-white/10 text-xs font-semibold text-text-main border border-gray-200 dark:border-white/5 transition-all flex items-center gap-1.5 shadow-sm hover:shadow-[0_4px_12px_rgba(var(--color-accent-purple-rgb),0.12)] hover:border-accent-purple/30" href="https://github.com/anayolico" target="_blank" rel="noopener noreferrer">
-                  <svg className="w-3.5 h-3.5 fill-currentColor" viewBox="0 0 24 24">
-                    <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
-                  </svg>
-                  GitHub
+
+                {/* GitHub */}
+                <a
+                  href="https://github.com/anayolico"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-3.5 rounded-2xl bg-white/50 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-text-main border border-gray-200 dark:border-white/10 transition-all flex items-center gap-3 group"
+                >
+                  <div className="w-9 h-9 rounded-xl bg-gray-900/10 dark:bg-white/10 text-text-main flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <svg className="w-4 h-4 fill-currentColor" viewBox="0 0 24 24">
+                      <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold">GitHub</p>
+                    <p className="text-[10px] text-text-muted">Code Repos</p>
+                  </div>
                 </a>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
     </>

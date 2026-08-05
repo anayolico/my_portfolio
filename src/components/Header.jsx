@@ -61,26 +61,6 @@ export default function Header(){
 
         {/* Actions Section */}
         <div className="flex items-center gap-2">
-          {/* Theme Toggle Button */}
-          <button
-            onClick={toggleTheme}
-            className="p-2 rounded-full text-text-muted hover:bg-black/5 dark:hover:bg-white/5 focus:outline-none transition-transform transform hover:scale-105"
-            aria-label="Toggle theme"
-          >
-            {theme === 'dark' ? (
-              // Sun Icon
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-accent-teal">
-                <circle cx="12" cy="12" r="4" />
-                <path d="M12 2v2" /><path d="M12 20v2" /><path d="m4.93 4.93 1.41 1.41" /><path d="m17.66 17.66 1.41 1.41" /><path d="M2 12h2" /><path d="M20 12h2" /><path d="m6.34 17.66-1.41 1.41" /><path d="m19.07 4.93-1.41 1.41" />
-              </svg>
-            ) : (
-              // Moon Icon
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-accent-purple">
-                <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
-              </svg>
-            )}
-          </button>
-
           {/* Mobile Hamburger menu */}
           <button
             aria-label={open ? 'Close menu' : 'Open menu'}
@@ -123,7 +103,7 @@ export default function Header(){
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -12, scale: 0.98 }}
               transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-              className="absolute top-[calc(100%+0.75rem)] left-0 right-0 p-6 rounded-3xl bg-bg-surface/95 border border-gray-200/50 dark:border-white/10 shadow-2xl backdrop-blur-lg flex flex-col gap-4 md:hidden transition-colors duration-300"
+              className="absolute top-[calc(100%+0.75rem)] left-0 right-0 p-6 rounded-3xl bg-slate-900 border border-slate-700/80 shadow-2xl backdrop-blur-xl flex flex-col gap-4 md:hidden z-50"
             >
               <nav className="flex flex-col gap-4">
                 {NAV_LINKS.map(link => (

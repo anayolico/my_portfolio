@@ -1,11 +1,11 @@
-const API_BASE_URL = import.meta.env.VITE_STRAPI_API_URL || 'http://localhost:1337';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:1337';
 
 /**
- * Centered fetch wrapper for querying Strapi REST endpoints.
- * Returns the inner data object or null on connection failure / HTTP error,
- * allowing UI callers to fall back gracefully to static mock data.
+ * Centered fetch wrapper for querying custom Express REST endpoints.
+ * Returns the data array/object or null on connection failure,
+ * allowing UI callers to fall back gracefully to local mock data.
  */
-export async function fetchFromStrapi(endpoint) {
+export async function fetchFromApi(endpoint) {
   try {
     const res = await fetch(`${API_BASE_URL}${endpoint}`, {
       headers: {
@@ -16,20 +16,18 @@ export async function fetchFromStrapi(endpoint) {
       throw new Error(`HTTP error! status: ${res.status}`);
     }
     const json = await res.json();
-    
-    // Support both Strapi v5 flat format and basic object lists
     return json.data || json;
   } catch (err) {
-    console.warn(`[Strapi CMS] Fetch error at ${endpoint}. Gracefully falling back to mock data:`, err.message);
+    console.warn(`[Backend API] Server unreachable at ${endpoint}. Returning null.`);
     return null;
   }
 }
 
 /**
- * Submit form content to Strapi's contacts content-type.
+ * Submit form content to backend contact endpoint (dispatches Resend email & saves in DB).
  */
 export async function submitContactForm(data) {
-  const res = await fetch(`${API_BASE_URL}/api/contacts`, {
+  const res = await fetch(`${API_BASE_URL}/api/contact`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -38,7 +36,7 @@ export async function submitContactForm(data) {
   });
   if (!res.ok) {
     const errJson = await res.json().catch(() => ({}));
-    throw new Error(errJson?.error?.message || 'Failed to send message via CMS.');
+    throw new Error(errJson?.error || 'Failed to send message via API.');
   }
   return await res.json();
 }
