@@ -13,14 +13,13 @@ const SEO = ({ title, description, keywords, url, type = 'website' }) => {
     'alternateName': ['Anayolico', 'Caleb Anayo', 'Anayolico Full-Stack Engineer'],
     'url': siteUrl,
     'image': ogImage,
-    'jobTitle': 'Full-Stack Engineer & Mobile App Developer',
+    'jobTitle': 'Full-Stack Engineer & SaaS Builder',
     'worksFor': {
       '@type': 'Organization',
-      'name': 'Self-Employed / Independent Contractor'
+      'name': 'Self-Employed / SaaS Engineer'
     },
     'sameAs': [
-      'https://github.com/anayolico',
-      'https://nigeria-secure-vote.vercel.app'
+      'https://github.com/anayolico'
     ],
     'knowsAbout': [
       'React.js',
@@ -31,31 +30,43 @@ const SEO = ({ title, description, keywords, url, type = 'website' }) => {
       'PostgreSQL',
       'Prisma ORM',
       'WebAuthn',
-      'PWA'
+      'PWA',
+      'SaaS Architecture'
     ]
   };
 
-  const breadcrumbSchema = {
+  const sitelinksSchema = {
     '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
+    '@type': 'ItemList',
+    'name': 'Site Navigation Links',
     'itemListElement': [
       {
-        '@type': 'ListItem',
+        '@type': 'SiteNavigationElement',
         'position': 1,
-        'name': 'Caleb Anayolico — Official Portfolio',
-        'item': siteUrl
+        'name': 'Caleb Anayolico — CV / Resume',
+        'description': 'Executive CV and technical resume of Caleb Anayolico.',
+        'url': `${siteUrl}/cv`
       },
       {
-        '@type': 'ListItem',
+        '@type': 'SiteNavigationElement',
         'position': 2,
-        'name': 'Caleb Anayolico — Executive CV & Resume',
-        'item': `${siteUrl}/cv`
+        'name': 'Projects Showcase',
+        'description': 'Featured production software and SaaS applications.',
+        'url': `${siteUrl}#projects`
       },
       {
-        '@type': 'ListItem',
+        '@type': 'SiteNavigationElement',
         'position': 3,
-        'name': 'Caleb Anayolico — Projects Showcase',
-        'item': `${siteUrl}/projects`
+        'name': 'About Caleb Anayolico',
+        'description': 'Background, skills, and full-stack software experience.',
+        'url': `${siteUrl}#about`
+      },
+      {
+        '@type': 'SiteNavigationElement',
+        'position': 4,
+        'name': 'Contact & Collaboration',
+        'description': 'Get in touch for software projects and consulting.',
+        'url': `${siteUrl}#contact`
       }
     ]
   };
@@ -92,7 +103,7 @@ const SEO = ({ title, description, keywords, url, type = 'website' }) => {
         {JSON.stringify(personSchema)}
       </script>
       <script type="application/ld+json">
-        {JSON.stringify(breadcrumbSchema)}
+        {JSON.stringify(sitelinksSchema)}
       </script>
     </Helmet>
   );

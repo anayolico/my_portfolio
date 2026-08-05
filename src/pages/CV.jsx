@@ -196,8 +196,8 @@ export default function CV() {
   return (
     <>
       <SEO
-        title="Caleb Anayolico — Executive Curriculum Vitae (CV) & Technical Resume"
-        description="Official Executive Curriculum Vitae (CV) of Caleb Anayolico, Full-Stack Engineer. Comprehensive work history, software architecture projects, awards, and technical expertise."
+        title="Caleb Anayolico — CV / Resume | Full-Stack Engineer"
+        description="Official Executive Curriculum Vitae (CV) of Caleb Anayolico, Full-Stack Engineer & SaaS Builder. Comprehensive work history, software architecture projects, awards, and technical expertise."
         keywords="Caleb Anayolico CV, Caleb Anayolico Resume, Caleb Anayolico, Anayolico CV, Full-Stack Engineer CV, Software Developer Resume"
         url="/cv"
         type="profile"

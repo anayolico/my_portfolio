@@ -6,9 +6,9 @@ export default function Home() {
   return (
     <>
       <SEO
-        title="Caleb Anayolico — Full-Stack Engineer & Mobile App Developer | Official Portfolio"
-        description="Official portfolio of Caleb Anayolico, Full-Stack Engineer specializing in React.js, Node.js, Python FastAPI, WebAuthn biometrics, and high-performance web & mobile architectures."
-        keywords="Caleb Anayolico, Anayolico, Caleb Anayo, Anayolico Portfolio, Full-Stack Engineer, Web Developer, Mobile App Developer, Nigeria SecureVote"
+        title="Caleb Anayolico | Full-Stack Engineer & SaaS Builder"
+        description="Official portfolio of Caleb Anayolico, Full-Stack Engineer & SaaS Builder specializing in React.js, Node.js, Python FastAPI, WebAuthn biometrics, and high-performance web & mobile architectures."
+        keywords="Caleb Anayolico, Anayolico, Caleb Anayo, Anayolico Portfolio, Full-Stack Engineer, SaaS Builder, Web Developer, Mobile App Developer, Nigeria SecureVote"
         url="/"
       />
       <section id="home" className="pt-28 pb-20 md:pt-40 md:pb-32 relative overflow-hidden">
