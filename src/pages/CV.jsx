@@ -177,7 +177,7 @@ export default function CV() {
 
       if (window.html2pdf) {
         const opt = {
-          margin: [12, 14, 12, 14],
+          margin: [8, 10, 8, 10],
           filename: `${cv.fullName ? cv.fullName.replace(/\s+/g, '_') : 'Caleb_Anayolico'}_CV.pdf`,
           image: { type: 'jpeg', quality: 0.98 },
           html2canvas: { 
