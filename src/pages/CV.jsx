@@ -196,10 +196,11 @@ export default function CV() {
   return (
     <>
       <SEO
-        title={`${cv.fullName} | Executive Curriculum Vitae (CV) & Resume`}
-        description={`${cv.title} - Professional CV & Technical Experience.`}
-        keywords="Caleb Anayolico, CV, Resume, Full-Stack Engineer, Software Developer, React.js, Node.js, Port Harcourt, Nigeria"
+        title="Caleb Anayolico — Executive Curriculum Vitae (CV) & Technical Resume"
+        description="Official Executive Curriculum Vitae (CV) of Caleb Anayolico, Full-Stack Engineer. Comprehensive work history, software architecture projects, awards, and technical expertise."
+        keywords="Caleb Anayolico CV, Caleb Anayolico Resume, Caleb Anayolico, Anayolico CV, Full-Stack Engineer CV, Software Developer Resume"
         url="/cv"
+        type="profile"
       />
 
       <style>{`
