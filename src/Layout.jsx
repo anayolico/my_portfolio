@@ -7,13 +7,13 @@ import BackgroundAudio from './components/BackgroundAudio.jsx'
 /* Layout: wraps pages and provides header/footer */
 export default function Layout({children}){
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col w-full max-w-full overflow-x-hidden">
       {/* Background canvas - fixed and behind content */}
       <BackgroundParticles />
       {/* Background music control (floating button) - using free Pixabay music */}
       <BackgroundAudio />
       <Header />
-      <div className="flex-1 container mx-auto px-6 md:px-12 py-12">
+      <div className="flex-1 container mx-auto px-4 sm:px-6 md:px-12 py-12 w-full max-w-full overflow-x-hidden">
         {children}
       </div>
       <Footer />

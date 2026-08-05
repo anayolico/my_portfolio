@@ -35,6 +35,9 @@
 /* Global resets with theme transitions */
 html, body, #root {
   height: 100%;
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
 }
 
 section {
