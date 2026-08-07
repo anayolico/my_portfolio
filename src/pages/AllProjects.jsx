@@ -208,8 +208,8 @@ export default function AllProjects() {
               </AnimatePresence>
             </motion.div>
           ) : (
-            <div className="glass-card p-12 rounded-3xl text-center max-w-md mx-auto space-y-3 border border-amber-500/20">
-              <div className="w-12 h-12 rounded-full bg-amber-500/10 text-amber-400 flex items-center justify-center mx-auto text-xl font-bold">🔍</div>
+            <div className="glass-card p-12 rounded-3xl text-center max-w-md mx-auto space-y-3 border border-accent-teal/20">
+              <div className="w-12 h-12 rounded-full bg-accent-teal/10 text-accent-teal flex items-center justify-center mx-auto text-xl font-bold">🔍</div>
               <h3 className="text-lg font-bold text-text-main font-display">No Matching Projects</h3>
               <p className="text-xs text-text-muted leading-relaxed">
                 No projects matched your search criteria. Try selecting another technology filter or search term.
