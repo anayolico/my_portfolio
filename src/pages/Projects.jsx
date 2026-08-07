@@ -227,39 +227,72 @@ export default function Projects() {
           ))}
         </div>
 
-        {/* Projects Grid */}
+        {/* Projects Grid (Max 3 Cards on Homepage) */}
         {filteredProjects.length > 0 ? (
-          <motion.div
-            layout
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-          >
-            <AnimatePresence mode="popLayout">
-              {filteredProjects.map(p => (
-                <motion.div
-                  layout
-                  key={p.id || p.title}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <ProjectCard
-                    title={p.title}
-                    desc={p.desc}
-                    image={p.image}
-                    tech={p.tech}
-                    demoLink={p.demoLink}
-                    codeLink={p.codeLink}
-                  />
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </motion.div>
-        ) : (
-          <div className="glass-card p-12 rounded-3xl text-center max-w-md mx-auto space-y-3 border border-amber-500/20">
-            <div className="w-12 h-12 rounded-full bg-amber-500/10 text-amber-400 flex items-center justify-center mx-auto text-xl font-bold">📡</div>
-            <h3 className="text-lg font-bold text-text-main font-display">Server Offline</h3>
+          <div className="space-y-12">
+            <motion.div
+              layout
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+            >
+              <AnimatePresence mode="popLayout">
+                {filteredProjects.slice(0, 3).map(p => (
+                  <motion.div
+                    layout
+                    key={p.id || p.title}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <ProjectCard
+                      title={p.title}
+                      desc={p.desc}
+                      image={p.image}
+                      tech={p.tech}
+                      demoLink={p.demoLink}
+                      codeLink={p.codeLink}
+                    />
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </motion.div>
 
+            {/* View More Projects Button (Linking to /projects Page) */}
+            <div className="flex justify-center pt-4">
+              <a
+                href="/projects"
+                onClick={(e) => {
+                  e.preventDefault()
+                  window.history.pushState({}, '', '/projects')
+                  window.dispatchEvent(new Event('popstate'))
+                }}
+              >
+                <motion.button
+                  whileHover={{ scale: 1.04, y: -2 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-accent-teal to-cyan-500 hover:from-teal-400 hover:to-cyan-400 text-white font-extrabold text-sm sm:text-base shadow-xl shadow-accent-teal/25 hover:shadow-accent-teal/40 transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer group tracking-wide border border-cyan-400/30"
+                >
+                  <span>View More Projects</span>
+                  <svg
+                    className="w-4 h-4 group-hover:translate-x-1.5 transition-transform duration-300"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </motion.button>
+              </a>
+            </div>
+          </div>
+        ) : (
+          <div className="glass-card p-12 rounded-3xl text-center max-w-md mx-auto space-y-3 border border-accent-teal/20">
+            <div className="w-12 h-12 rounded-full bg-accent-teal/10 text-accent-teal flex items-center justify-center mx-auto text-xl font-bold">📡</div>
+            <h3 className="text-lg font-bold text-text-main font-display">Server Offline</h3>
+            <p className="text-xs text-text-muted leading-relaxed">
+              No live projects found. Please start your backend server (<code className="text-accent-teal font-mono">node src/server.js</code> in <code className="text-accent-teal font-mono">backend/</code>) to load your live portfolio content.
+            </p>
           </div>
         )}
       </section>

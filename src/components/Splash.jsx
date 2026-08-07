@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import image1 from "./ima-and/ima2..jpg"
+import image1 from "./ima-and/caleb-profile.png"
 
 export default function Splash({duration = 2500, onComplete = () => {}, transitionStyle = 'fade'}){
   const [visible, setVisible] = useState(true)

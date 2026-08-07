@@ -4,7 +4,6 @@ import ProjectCard from '../components/ProjectCard.jsx'
 import CmsStatus from '../components/CmsStatus.jsx'
 import { fetchFromApi } from '../services/api.js'
 import SEO from '../components/SEO'
-import Header from '../components/Header.jsx'
 import Footer from '../components/Footer.jsx'
 
 export default function AllProjects() {
@@ -98,7 +97,7 @@ export default function AllProjects() {
       />
 
       <div className="min-h-screen bg-bg-body text-text-main flex flex-col justify-between selection:bg-accent-teal selection:text-white">
-        <Header />
+        
 
         <main className="max-w-7xl mx-auto px-4 sm:px-6 pt-32 pb-24 w-full flex-grow space-y-12">
           {/* Top Bar: Back Button */}
@@ -132,7 +131,7 @@ export default function AllProjects() {
             </h1>
             <p className="text-text-muted text-base sm:text-xl max-w-2xl font-sans">
               A complete collection of my work — full-stack apps, tools, and everything in between.{' '}
-              <span className="text-amber-500 dark:text-amber-400 font-extrabold font-mono">({projects.length})</span>
+              <span className="text-accent-teal font-extrabold font-mono">({projects.length})</span>
             </p>
             <div className="pt-2">
               <CmsStatus isLive={isLive} isLoading={loading} />
@@ -162,7 +161,7 @@ export default function AllProjects() {
                   key={tag}
                   onClick={() => setActiveFilter(tag)}
                   className={`px-4 py-2 rounded-xl text-xs font-semibold tracking-wide border transition-all duration-300 cursor-pointer ${activeFilter === tag
-                      ? 'bg-amber-500 text-slate-950 border-amber-500 font-bold shadow-md shadow-amber-500/20'
+                      ? 'bg-accent-teal text-white border-accent-teal font-bold shadow-md shadow-accent-teal/30'
                       : 'bg-white/40 dark:bg-white/5 text-text-muted border-gray-200 dark:border-white/5 hover:border-accent-teal/50 hover:text-text-main'
                     }`}
                 >
