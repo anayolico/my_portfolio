@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import image1 from "../components/ima-and/ima2..jpg"
 import CmsStatus from '../components/CmsStatus.jsx'
 import { fetchFromApi } from '../services/api.js'
 import SEO from '../components/SEO'
@@ -70,55 +69,79 @@ export default function About(){
         url="/about"
       />
       <section id="about" className="py-20 space-y-16">
-        {/* Intro Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          {/* Left: Bio info */}
+        {/* Intro Section - 2 Column Grid (Bio Text on Left, 5+ Years Card on Right) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+          {/* Left Column: Bio Text */}
           <div className="lg:col-span-7 space-y-6">
-            <h2 className="text-3xl md:text-4xl font-bold text-text-main tracking-tight font-display transition-colors duration-300">
+            <h2 className="text-3xl md:text-5xl font-bold text-text-main tracking-tight font-display transition-colors duration-300">
               About Me
             </h2>
             <div className="flex items-center gap-3 flex-wrap">
               <CmsStatus isLive={isLive} isLoading={false} />
             </div>
-            <div className="space-y-4 text-text-muted text-base leading-relaxed font-sans transition-colors duration-300">
+            <div className="space-y-4 text-text-muted text-base md:text-lg leading-relaxed font-sans transition-colors duration-300">
               <p>
                 I’m Caleb Anayolico — a Full-Stack Software Engineer and Mobile Developer passionate about building high-impact digital products. With expertise spanning client-side interfaces (React.js, Next.js, React Native) and robust backends (Node.js, Python FastAPI, Java), I transform complex ideas into elegant, secure, and performant solutions.
               </p>
               <p>
                 My engineering philosophy centers on clean maintainable code, optimized database structures (PostgreSQL, Prisma, MongoDB), and user-centric UI/UX design. Whether building secure payment integrations (Paystack, Flutterwave) or cloud deployments, I deliver scalable software built for real-world growth.
               </p>
-              <p><span><em>A graduate of NIIT with a Diploma in Software Engineering</em> </span></p>
             </div>
-
-            {/* <div className="flex flex-wrap gap-2 pt-2">
-              {['HTML5', 'CSS3', 'JavaScript', 'React.js', 'React Native', 'Node.js', 'Git', 'Next.js'].map(s => (
-                <span
-                  key={s}
-                  className="px-3.5 py-1.5 rounded-full bg-white/40 dark:bg-white/5 border border-gray-200 dark:border-white/5 text-xs font-semibold text-accent-teal hover:border-accent-purple/50 hover:text-accent-purple transition-all duration-300 cursor-default"
-                >
-                  {s}
-                </span>
-              ))}
-            </div> */}
           </div>
 
-          {/* Right: Premium rotating profile card */}
-          <div className="lg:col-span-5 flex justify-center">
+          {/* Right Column: Animated Floating "5+ Years Experience" Card */}
+          <div className="lg:col-span-5 flex justify-center lg:justify-end">
             <motion.div
-              className="w-64 h-64 md:w-80 md:h-80 rounded-[2.5rem] bg-gradient-to-br from-accent-teal to-accent-purple p-1 flex items-center justify-center shadow-xl relative overflow-hidden group"
-              whileHover={{ scale: 1.02 }}
-              transition={{ type: 'spring' }}
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{
+                opacity: 1,
+                scale: 1,
+                y: [0, -10, 0],
+              }}
+              transition={{
+                opacity: { duration: 0.6 },
+                scale: { duration: 0.6 },
+                y: {
+                  duration: 5,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                },
+              }}
+              whileHover={{ y: -14, scale: 1.04 }}
+              className="w-full max-w-sm glass-card p-8 rounded-3xl border border-accent-teal/30 dark:border-accent-teal/20 flex flex-col items-center justify-center text-center space-y-4 relative overflow-hidden group shadow-[0_20px_50px_rgba(23,162,184,0.2)] hover:shadow-[0_25px_60px_rgba(23,162,184,0.35)] transition-all duration-500 cursor-pointer"
             >
-              {/* Overlay border animation effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-accent-purple to-accent-teal opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+              {/* Pulsing Ambient Backdrop Glow */}
+              <div className="absolute -inset-10 bg-gradient-to-tr from-accent-teal/30 via-cyan-400/20 to-amber-400/30 rounded-full blur-2xl -z-10 animate-pulse" />
+              <div className="absolute -inset-2 bg-gradient-to-r from-accent-teal/10 to-amber-400/10 rounded-3xl blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-              <div className="w-full h-full rounded-[2.35rem] bg-bg-surface flex items-center justify-center overflow-hidden z-10 transition-colors duration-300">
-                <img
-                  src={image1}
-                  alt="Anayolico"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                />
-              </div>
+              {/* Pulsing Circular Icon Badge */}
+              <motion.div
+                animate={{ scale: [1, 1.08, 1] }}
+                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                className="w-16 h-16 rounded-full bg-accent-teal/15 border border-accent-teal/40 flex items-center justify-center text-accent-teal group-hover:bg-accent-teal group-hover:text-white transition-all duration-500 shadow-lg shadow-accent-teal/20"
+              >
+                {/* Briefcase Icon */}
+                <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+              </motion.div>
+
+              {/* Bold Animated Stat Counter */}
+              <motion.div
+                whileHover={{ scale: 1.1 }}
+                transition={{ type: 'spring', stiffness: 400 }}
+                className="text-5xl sm:text-6xl font-extrabold font-display bg-gradient-to-r from-accent-teal via-cyan-400 to-amber-400 bg-clip-text text-transparent drop-shadow-md tracking-tight"
+              >
+                5+
+              </motion.div>
+
+              {/* Label */}
+              <p className="text-base sm:text-lg font-bold text-text-main tracking-wide font-sans group-hover:text-accent-teal transition-colors duration-300">
+                Years Experience
+              </p>
+
+              {/* Animated Accent Underline */}
+              <div className="w-16 h-1 bg-gradient-to-r from-accent-teal via-cyan-400 to-amber-400 rounded-full opacity-70 group-hover:w-28 group-hover:opacity-100 transition-all duration-500 shadow-sm" />
             </motion.div>
           </div>
         </div>

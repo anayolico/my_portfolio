@@ -22,7 +22,7 @@ export default function Projects() {
         if (cv && cv.hackathonProject) {
           setHackathonProject(cv.hackathonProject)
         }
-      } catch (e) {}
+      } catch (e) { }
 
       const data = await fetchFromApi('/api/projects')
       if (data && Array.isArray(data)) {
@@ -134,7 +134,7 @@ export default function Projects() {
           <div className="flex flex-col md:flex-row justify-between items-center sm:items-start md:items-center gap-4 border-b border-accent-teal/20 pb-4 text-center sm:text-left">
             <div className="space-y-1 flex flex-col items-center sm:items-start">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent-teal/10 text-accent-teal border border-accent-teal/30 text-xs font-bold uppercase tracking-wider">
-                <span>🏆</span> Hackathon 1st Place Winner
+                Hackathon 1st Place Winner
               </span>
               <h3 className="text-2xl font-black text-white font-display">Nigeria SecureVote</h3>
               <p className="text-xs text-accent-teal font-semibold">Lead Architect & Full-Stack Developer — Award-Winning E-Voting Platform</p>
@@ -147,14 +147,6 @@ export default function Projects() {
                 className="px-4 py-2.5 rounded-xl bg-accent-teal hover:bg-teal-400 text-slate-950 font-bold text-xs shadow-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer flex-1 sm:flex-initial"
               >
                 <span>Live App</span>
-              </a>
-              <a
-                href="https://github.com/anayolico/onetime"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white border border-white/20 font-bold text-xs shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer flex-1 sm:flex-initial"
-              >
-                <span>GitHub Repository</span>
               </a>
             </div>
           </div>
@@ -209,7 +201,7 @@ export default function Projects() {
               </div>
 
               <div className="flex flex-wrap justify-center sm:justify-start gap-2 pt-2">
-                {["React", "Vite", "Node.js", "Express", "Python (FastAPI)", "Prisma ORM", "Neon DB", "Supabase", "Prembly NIMC API", "WebAuthn", "PWA"].map(t => (
+                {["React", "Node.js", "Python (FastAPI)", "Neon DB", "Prembly NIMC API", "PWA"].map(t => (
                   <span key={t} className="px-3 py-1.5 rounded-full bg-accent-teal/10 text-accent-teal border border-accent-teal/30 text-[11px] sm:text-xs font-semibold backdrop-blur-sm shadow-sm transition-all hover:bg-accent-teal/20">
                     {t}
                   </span>
@@ -226,8 +218,8 @@ export default function Projects() {
               key={category}
               onClick={() => setActiveFilter(category)}
               className={`px-5 py-2 rounded-full text-sm font-semibold tracking-wide border transition-all duration-300 ${activeFilter === category
-                  ? 'bg-accent-teal text-white border-accent-teal shadow-md'
-                  : 'bg-white/40 dark:bg-white/5 text-text-muted border-gray-200 dark:border-white/5 hover:border-accent-teal/50 hover:text-text-main'
+                ? 'bg-accent-teal text-white border-accent-teal shadow-md'
+                : 'bg-white/40 dark:bg-white/5 text-text-muted border-gray-200 dark:border-white/5 hover:border-accent-teal/50 hover:text-text-main'
                 }`}
             >
               {category}
@@ -267,9 +259,7 @@ export default function Projects() {
           <div className="glass-card p-12 rounded-3xl text-center max-w-md mx-auto space-y-3 border border-amber-500/20">
             <div className="w-12 h-12 rounded-full bg-amber-500/10 text-amber-400 flex items-center justify-center mx-auto text-xl font-bold">📡</div>
             <h3 className="text-lg font-bold text-text-main font-display">Server Offline</h3>
-            <p className="text-xs text-text-muted leading-relaxed">
-              No live projects found. Please start your backend server (<code className="text-accent-teal font-mono">node src/server.js</code> in <code className="text-accent-teal font-mono">backend/</code>) to load your live portfolio content.
-            </p>
+
           </div>
         )}
       </section>
