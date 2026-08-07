@@ -201,7 +201,7 @@ export default function Projects() {
               </div>
 
               <div className="flex flex-wrap justify-center sm:justify-start gap-2 pt-2">
-                {["React", "Node.js", "Python (FastAPI)", "Neon DB", "Prembly NIMC API", "PWA"].map(t => (
+                {["React", "Node.js", "Python (FastAPI)", "Neon DB", "PWA Offline Sync"].map(t => (
                   <span key={t} className="px-3 py-1.5 rounded-full bg-accent-teal/10 text-accent-teal border border-accent-teal/30 text-[11px] sm:text-xs font-semibold backdrop-blur-sm shadow-sm transition-all hover:bg-accent-teal/20">
                     {t}
                   </span>
