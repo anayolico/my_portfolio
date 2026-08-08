@@ -10,64 +10,67 @@ const CATEGORIES = ['All', 'React', 'Node.js', 'Next.js', 'AI']
 export default function Projects() {
   const [activeFilter, setActiveFilter] = useState('All')
   const [projects, setProjects] = useState([])
-  const [hackathonProject, setHackathonProject] = useState(null)
   const [loading, setLoading] = useState(true)
   const [isLive, setIsLive] = useState(false)
 
   useEffect(() => {
     async function getProjects() {
       try {
-        const cvRes = await fetchFromApi('/api/cv')
-        const cv = cvRes?.data || cvRes
-        if (cv && cv.hackathonProject) {
-          setHackathonProject(cv.hackathonProject)
-        }
-      } catch (e) { }
+        const data = await fetchFromApi('/api/projects')
+        const items = Array.isArray(data) ? data : (data?.data || [])
 
-      const data = await fetchFromApi('/api/projects')
-      if (data && Array.isArray(data)) {
-        const seenTitles = new Set()
-        const mapped = []
+        if (items && items.length > 0) {
+          const seenTitles = new Set()
+          const mapped = []
 
-        data.forEach(item => {
-          const attrs = item.attributes || item
-          const title = attrs.title || ''
-          if (!title || seenTitles.has(title.toLowerCase())) return;
-          seenTitles.add(title.toLowerCase())
+          items.forEach(item => {
+            const attrs = item.attributes || item
+            const title = attrs.title || ''
+            if (!title || seenTitles.has(title.toLowerCase())) return
+            seenTitles.add(title.toLowerCase())
 
-          let imageUrl = attrs.image || ''
-          if (imageUrl.startsWith('/')) {
-            imageUrl = `${import.meta.env.VITE_API_BASE_URL || ''}${imageUrl}`
-          }
-
-          let techArray = []
-          if (Array.isArray(attrs.tech)) {
-            techArray = attrs.tech
-          } else if (attrs.tech) {
-            try {
-              techArray = typeof attrs.tech === 'string' ? JSON.parse(attrs.tech) : attrs.tech
-            } catch (e) {
-              techArray = attrs.tech.split(',').map(s => s.trim())
+            let imageUrl = attrs.image || ''
+            if (imageUrl.startsWith('/')) {
+              imageUrl = `${import.meta.env.VITE_API_BASE_URL || ''}${imageUrl}`
             }
-          }
 
-          mapped.push({
-            id: attrs.id || title,
-            title,
-            desc: attrs.desc || attrs.description || '',
-            image: imageUrl || '',
-            tech: techArray,
-            demoLink: attrs.demoLink || attrs.demo_link || '#',
-            codeLink: attrs.codeLink || attrs.code_link || '#'
+            let techArray = []
+            if (Array.isArray(attrs.tech)) {
+              techArray = attrs.tech
+            } else if (attrs.tech) {
+              try {
+                techArray = typeof attrs.tech === 'string' ? JSON.parse(attrs.tech) : attrs.tech
+              } catch (e) {
+                techArray = attrs.tech.split(',').map(s => s.trim())
+              }
+            }
+
+            const isWinner = title.toLowerCase().includes('securevote') || Boolean(attrs.is_hackathon)
+
+            mapped.push({
+              id: attrs.id || title,
+              title,
+              desc: attrs.desc || attrs.description || '',
+              image: imageUrl || '',
+              tech: techArray,
+              demoLink: attrs.demoLink || attrs.demo_link || '#',
+              codeLink: attrs.codeLink || attrs.code_link || '#',
+              isHackathonWinner: isWinner
+            })
           })
-        })
-        setProjects(mapped)
-        setIsLive(mapped.length > 0)
-      } else {
-        setProjects([])
+
+          setProjects(mapped)
+          setIsLive(true)
+        } else {
+          setProjects([])
+          setIsLive(false)
+        }
+      } catch (err) {
+        console.error('Error loading projects from backend:', err)
         setIsLive(false)
+      } finally {
+        setLoading(false)
       }
-      setLoading(false)
     }
     getProjects()
   }, [])
@@ -125,92 +128,6 @@ export default function Projects() {
           </div>
         </div>
 
-        {/* Special Award-Winning Hackathon Spotlight Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="glass-card p-6 md:p-8 rounded-3xl border-2 border-accent-teal/30 bg-gradient-to-br from-teal-950/20 via-slate-900/90 to-slate-900 shadow-2xl relative overflow-hidden space-y-6"
-        >
-          <div className="flex flex-col md:flex-row justify-between items-center sm:items-start md:items-center gap-4 border-b border-accent-teal/20 pb-4 text-center sm:text-left">
-            <div className="space-y-1 flex flex-col items-center sm:items-start">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent-teal/10 text-accent-teal border border-accent-teal/30 text-xs font-bold uppercase tracking-wider">
-                Hackathon 1st Place Winner
-              </span>
-              <h3 className="text-2xl font-black text-white font-display">Nigeria SecureVote</h3>
-              <p className="text-xs text-accent-teal font-semibold">Lead Architect & Full-Stack Developer — Award-Winning E-Voting Platform</p>
-            </div>
-            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 w-full md:w-auto">
-              <a
-                href="https://nigeria-secure-vote.vercel.app"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-4 py-2.5 rounded-xl bg-accent-teal hover:bg-teal-400 text-slate-950 font-bold text-xs shadow-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer flex-1 sm:flex-initial"
-              >
-                <span>Live App</span>
-              </a>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-            {/* Square Award Trophy / Certificate Photo Container */}
-            <div className="lg:col-span-4 flex justify-center">
-              <div className="w-44 h-44 md:w-52 md:h-52 rounded-2xl bg-black/60 border-2 border-accent-teal/40 shadow-xl overflow-hidden flex items-center justify-center relative aspect-square group">
-                {hackathonProject?.awardImage && hackathonProject.awardImage.trim().startsWith('http') ? (
-                  <img
-                    src={hackathonProject.awardImage}
-                    alt="Hackathon Award Trophy / Certificate"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-slate-900 via-teal-950/40 to-slate-950 p-4 flex flex-col items-center justify-center text-center space-y-2">
-                    <span className="text-4xl group-hover:scale-110 transition-transform">🏆</span>
-                    <span className="text-xs font-extrabold text-accent-teal font-display uppercase tracking-widest">
-                      Hackathon Winner
-                    </span>
-                    <span className="text-[10px] text-teal-200/70 leading-tight">
-                      Award Certificate / Trophy Photo
-                    </span>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Deep Technical Overview & Features */}
-            <div className="lg:col-span-8 space-y-4 text-center sm:text-left">
-              <p className="text-sm text-gray-300 leading-relaxed font-sans">
-                Next-generation cryptographic E-Voting & Identity Ingestion platform engineered for high-security multi-service elections. Combines NIMC NIN citizen lookup, PWA offline vote protection, WebAuthn biometric authorization, and real-time audit streaming.
-              </p>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-gray-300 text-left">
-                <div className="flex items-start gap-2">
-                  <span className="text-accent-teal font-bold">•</span>
-                  <span><strong>Real-Time NIMC NIN Verification:</strong> Identity ingestion via Prembly API.</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-accent-teal font-bold">•</span>
-                  <span><strong>PWA Offline Vote Resilience:</strong> Local cryptographic signing & background sync.</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-accent-teal font-bold">•</span>
-                  <span><strong>WebAuthn Biometric Check:</strong> Native fingerprint/TouchID double-vote prevention.</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-accent-teal font-bold">•</span>
-                  <span><strong>FastAPI Analytics Engine:</strong> State voter distribution & fraud detection.</span>
-                </div>
-              </div>
-
-              <div className="flex flex-wrap justify-center sm:justify-start gap-2 pt-2">
-                {["React", "Node.js", "Python (FastAPI)", "Neon DB", "PWA Offline Sync"].map(t => (
-                  <span key={t} className="px-3 py-1.5 rounded-full bg-accent-teal/10 text-accent-teal border border-accent-teal/30 text-[11px] sm:text-xs font-semibold backdrop-blur-sm shadow-sm transition-all hover:bg-accent-teal/20">
-                    {t}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
         {/* Filter Tabs */}
         <div className="flex flex-wrap justify-center gap-3">
           {CATEGORIES.map(category => (
@@ -244,21 +161,79 @@ export default function Projects() {
                     exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <ProjectCard
-                      title={p.title}
-                      desc={p.desc}
-                      image={p.image}
-                      tech={p.tech}
-                      demoLink={p.demoLink}
-                      codeLink={p.codeLink}
-                    />
+                    {p.isHackathonWinner ? (
+                      <div className="glass-card p-6 rounded-3xl border-2 border-amber-400/60 bg-gradient-to-br from-amber-500/10 via-slate-900/90 to-slate-950 shadow-xl shadow-amber-500/15 flex flex-col justify-between space-y-4 hover:border-amber-400 transition-all duration-300 group relative">
+                        <div className="space-y-3">
+                          {/* Top Gold Pill Badge */}
+                          <div className="flex items-center justify-between">
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[11px] font-extrabold uppercase tracking-wider font-mono">
+                              🏆 HACKATHON WINNER
+                            </span>
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-amber-400/80 font-mono">1ST PLACE</span>
+                          </div>
+
+                          {/* Trophy Image Preview */}
+                          <div className="w-full h-44 rounded-2xl bg-black/60 border border-amber-400/30 overflow-hidden flex items-center justify-center relative aspect-video">
+                            {p.image && p.image.trim().startsWith('http') ? (
+                              <img src={p.image} alt="Hackathon Trophy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                            ) : (
+                              <div className="w-full h-full bg-gradient-to-br from-slate-900 via-amber-950/30 to-slate-950 flex flex-col items-center justify-center text-center p-3 space-y-1">
+                                <span className="text-3xl">🏆</span>
+                                <span className="text-xs font-bold text-amber-300 font-display">Nigeria SecureVote</span>
+                                <span className="text-[10px] text-amber-400/70 font-mono">1st Place Award Winner</span>
+                              </div>
+                            )}
+                          </div>
+
+                          <h3 className="text-xl font-extrabold text-white font-display leading-tight group-hover:text-amber-400 transition-colors">
+                            {p.title}
+                          </h3>
+                          <p className="text-xs text-amber-200/80 font-semibold leading-tight">
+                            Lead Architect & Full-Stack Developer — Award-Winning E-Voting Platform
+                          </p>
+                          <p className="text-xs text-gray-300 leading-relaxed line-clamp-3 font-sans">
+                            {p.desc}
+                          </p>
+
+                          {/* Tech Tags */}
+                          <div className="flex flex-wrap gap-1.5 pt-1">
+                            {p.tech.map(t => (
+                              <span key={t} className="px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-300 border border-amber-500/30 text-[10px] font-semibold">
+                                {t}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Bottom Button */}
+                        <div className="pt-3 border-t border-amber-500/20 flex justify-end">
+                          <a
+                            href={p.demoLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-black text-xs shadow-md shadow-amber-500/20 flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                          >
+                            <span>Live App ↗</span>
+                          </a>
+                        </div>
+                      </div>
+                    ) : (
+                      <ProjectCard
+                        title={p.title}
+                        desc={p.desc}
+                        image={p.image}
+                        tech={p.tech}
+                        demoLink={p.demoLink}
+                        codeLink={p.codeLink}
+                      />
+                    )}
                   </motion.div>
                 ))}
               </AnimatePresence>
             </motion.div>
 
-            {/* View More Projects Button (Linking to /projects Page) */}
-            <div className="flex justify-center pt-4">
+            {/* Buttons Row (View More Projects & Source Code Store) */}
+            <div className="flex flex-wrap justify-center gap-4 pt-4">
               <a
                 href="/projects"
                 onClick={(e) => {
@@ -273,6 +248,32 @@ export default function Projects() {
                   className="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-accent-teal to-cyan-500 hover:from-teal-400 hover:to-cyan-400 text-white font-extrabold text-sm sm:text-base shadow-xl shadow-accent-teal/25 hover:shadow-accent-teal/40 transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer group tracking-wide border border-cyan-400/30"
                 >
                   <span>View More Projects</span>
+                  <svg
+                    className="w-4 h-4 group-hover:translate-x-1.5 transition-transform duration-300"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </motion.button>
+              </a>
+
+              <a
+                href="/source-code"
+                onClick={(e) => {
+                  e.preventDefault()
+                  window.history.pushState({}, '', '/source-code')
+                  window.dispatchEvent(new Event('popstate'))
+                }}
+              >
+                <motion.button
+                  whileHover={{ scale: 1.04, y: -2 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="px-8 py-3.5 rounded-2xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/40 text-amber-300 font-extrabold text-sm sm:text-base shadow-xl transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer group tracking-wide"
+                >
+                  <span>⚡ Source Code Store</span>
                   <svg
                     className="w-4 h-4 group-hover:translate-x-1.5 transition-transform duration-300"
                     fill="none"

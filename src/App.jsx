@@ -8,8 +8,9 @@ import Skills from './pages/Skills.jsx'
 import Contact from './pages/Contact.jsx'
 import CV from './pages/CV.jsx'
 import AllProjects from './pages/AllProjects.jsx'
+import SourceCode from './pages/SourceCode.jsx'
 
-/* App.jsx: top-level composition of the single-page portfolio & standalone /cv & /projects routes. */
+/* App.jsx: top-level composition of the single-page portfolio & standalone /cv, /projects & /source-code routes. */
 export default function App(){
   const [showSplash, setShowSplash] = useState(true)
   const [currentPath, setCurrentPath] = useState(
@@ -26,6 +27,7 @@ export default function App(){
 
   const isCvPage = currentPath.startsWith('/cv')
   const isProjectsPage = currentPath.startsWith('/projects')
+  const isSourceCodePage = currentPath.startsWith('/source-code')
 
   if (isCvPage) {
     return <CV />
@@ -33,6 +35,10 @@ export default function App(){
 
   if (isProjectsPage) {
     return <AllProjects />
+  }
+
+  if (isSourceCodePage) {
+    return <SourceCode />
   }
 
   return (

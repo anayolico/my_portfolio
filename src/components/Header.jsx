@@ -4,11 +4,12 @@ import { useTheme } from '../context/ThemeContext.jsx'
 import logo from "./ima-and/logo.png"
 
 const NAV_LINKS = [
-  { id: 'home', label: 'Home' },
-  { id: 'about', label: 'About' },
-  { id: 'projects', label: 'Projects' },
-  { id: 'skills', label: 'Skills' },
-  { id: 'contact', label: 'Contact' },
+  { id: 'home', label: 'Home', href: '#home' },
+  { id: 'about', label: 'About', href: '#about' },
+  { id: 'projects', label: 'Projects', href: '#projects' },
+  { id: 'source-code', label: 'Source Code', href: '/source-code' },
+  { id: 'skills', label: 'Skills', href: '#skills' },
+  { id: 'contact', label: 'Contact', href: '#contact' },
 ]
 
 export default function Header(){
@@ -47,14 +48,26 @@ export default function Header(){
         </a>
 
         {/* Desktop Links (Horizontal list) */}
-        <nav className="hidden md:flex items-center space-x-8">
+        <nav className="hidden md:flex items-center space-x-6">
           {NAV_LINKS.map(l => (
             <a 
               key={l.id} 
-              href={`#${l.id}`} 
-              className="text-xs uppercase tracking-widest font-extrabold text-text-muted hover:text-accent-teal transition-all duration-200 transform hover:-translate-y-0.5"
+              href={l.href}
+              onClick={(e) => {
+                if (l.href.startsWith('/')) {
+                  e.preventDefault()
+                  window.history.pushState({}, '', l.href)
+                  window.dispatchEvent(new Event('popstate'))
+                }
+              }}
+              className={`text-xs uppercase tracking-widest font-extrabold transition-all duration-200 transform hover:-translate-y-0.5 ${
+                l.id === 'source-code' 
+                  ? 'text-amber-400 hover:text-amber-300 flex items-center gap-1 font-mono bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-full' 
+                  : 'text-text-muted hover:text-accent-teal'
+              }`}
             >
-              {l.label}
+              {l.id === 'source-code' && <span>⚡</span>}
+              <span>{l.label}</span>
             </a>
           ))}
         </nav>
@@ -109,9 +122,18 @@ export default function Header(){
                 {NAV_LINKS.map(link => (
                   <a
                     key={link.id}
-                    href={`#${link.id}`}
-                    onClick={() => setOpen(false)}
-                    className="text-lg font-bold font-display text-text-main hover:text-accent-teal transition-colors duration-200"
+                    href={link.href}
+                    onClick={(e) => {
+                      setOpen(false)
+                      if (link.href.startsWith('/')) {
+                        e.preventDefault()
+                        window.history.pushState({}, '', link.href)
+                        window.dispatchEvent(new Event('popstate'))
+                      }
+                    }}
+                    className={`text-lg font-bold font-display transition-colors duration-200 ${
+                      link.id === 'source-code' ? 'text-amber-400 font-mono' : 'text-text-main hover:text-accent-teal'
+                    }`}
                   >
                     {link.label}
                   </a>

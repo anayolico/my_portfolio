@@ -15,50 +15,62 @@ export default function AllProjects() {
 
   useEffect(() => {
     async function getProjects() {
-      const data = await fetchFromApi('/api/projects')
-      if (data && Array.isArray(data)) {
-        const seenTitles = new Set()
-        const mapped = []
+      try {
+        const data = await fetchFromApi('/api/projects')
+        const items = Array.isArray(data) ? data : (data?.data || [])
 
-        data.forEach(item => {
-          const attrs = item.attributes || item
-          const title = attrs.title || ''
-          if (!title || seenTitles.has(title.toLowerCase())) return;
-          seenTitles.add(title.toLowerCase())
+        if (items && items.length > 0) {
+          const seenTitles = new Set()
+          const mapped = []
 
-          let imageUrl = attrs.image || ''
-          if (imageUrl.startsWith('/')) {
-            imageUrl = `${import.meta.env.VITE_API_BASE_URL || ''}${imageUrl}`
-          }
+          items.forEach(item => {
+            const attrs = item.attributes || item
+            const title = attrs.title || ''
+            if (!title || seenTitles.has(title.toLowerCase())) return
+            seenTitles.add(title.toLowerCase())
 
-          let techArray = []
-          if (Array.isArray(attrs.tech)) {
-            techArray = attrs.tech
-          } else if (attrs.tech) {
-            try {
-              techArray = typeof attrs.tech === 'string' ? JSON.parse(attrs.tech) : attrs.tech
-            } catch (e) {
-              techArray = attrs.tech.split(',').map(s => s.trim())
+            let imageUrl = attrs.image || ''
+            if (imageUrl.startsWith('/')) {
+              imageUrl = `${import.meta.env.VITE_API_BASE_URL || ''}${imageUrl}`
             }
-          }
 
-          mapped.push({
-            id: attrs.id || title,
-            title,
-            desc: attrs.desc || attrs.description || '',
-            image: imageUrl || '',
-            tech: techArray,
-            demoLink: attrs.demoLink || attrs.demo_link || '#',
-            codeLink: attrs.codeLink || attrs.code_link || '#'
+            let techArray = []
+            if (Array.isArray(attrs.tech)) {
+              techArray = attrs.tech
+            } else if (attrs.tech) {
+              try {
+                techArray = typeof attrs.tech === 'string' ? JSON.parse(attrs.tech) : attrs.tech
+              } catch (e) {
+                techArray = attrs.tech.split(',').map(s => s.trim())
+              }
+            }
+
+            const isWinner = title.toLowerCase().includes('securevote') || Boolean(attrs.is_hackathon)
+
+            mapped.push({
+              id: attrs.id || title,
+              title,
+              desc: attrs.desc || attrs.description || '',
+              image: imageUrl || '',
+              tech: techArray,
+              demoLink: attrs.demoLink || attrs.demo_link || '#',
+              codeLink: attrs.codeLink || attrs.code_link || '#',
+              isHackathonWinner: isWinner
+            })
           })
-        })
-        setProjects(mapped)
-        setIsLive(mapped.length > 0)
-      } else {
-        setProjects([])
+
+          setProjects(mapped)
+          setIsLive(true)
+        } else {
+          setProjects([])
+          setIsLive(false)
+        }
+      } catch (err) {
+        console.error('Error loading projects in AllProjects:', err)
         setIsLive(false)
+      } finally {
+        setLoading(false)
       }
-      setLoading(false)
     }
     getProjects()
   }, [])
@@ -195,14 +207,72 @@ export default function AllProjects() {
                     exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <ProjectCard
-                      title={p.title}
-                      desc={p.desc}
-                      image={p.image}
-                      tech={p.tech}
-                      demoLink={p.demoLink}
-                      codeLink={p.codeLink}
-                    />
+                    {p.isHackathonWinner ? (
+                      <div className="glass-card p-6 rounded-3xl border-2 border-amber-400/60 bg-gradient-to-br from-amber-500/10 via-slate-900/90 to-slate-950 shadow-xl shadow-amber-500/15 flex flex-col justify-between space-y-4 hover:border-amber-400 transition-all duration-300 group relative h-full">
+                        <div className="space-y-3">
+                          {/* Top Gold Pill Badge */}
+                          <div className="flex items-center justify-between">
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[11px] font-extrabold uppercase tracking-wider font-mono">
+                              🏆 HACKATHON WINNER
+                            </span>
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-amber-400/80 font-mono">1ST PLACE</span>
+                          </div>
+
+                          {/* Trophy Image Preview */}
+                          <div className="w-full h-44 rounded-2xl bg-black/60 border border-amber-400/30 overflow-hidden flex items-center justify-center relative aspect-video">
+                            {p.image && p.image.trim().startsWith('http') ? (
+                              <img src={p.image} alt="Hackathon Trophy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                            ) : (
+                              <div className="w-full h-full bg-gradient-to-br from-slate-900 via-amber-950/30 to-slate-950 flex flex-col items-center justify-center text-center p-3 space-y-1">
+                                <span className="text-3xl">🏆</span>
+                                <span className="text-xs font-bold text-amber-300 font-display">Nigeria SecureVote</span>
+                                <span className="text-[10px] text-amber-400/70 font-mono">1st Place Award Winner</span>
+                              </div>
+                            )}
+                          </div>
+
+                          <h3 className="text-xl font-extrabold text-white font-display leading-tight group-hover:text-amber-400 transition-colors">
+                            {p.title}
+                          </h3>
+                          <p className="text-xs text-amber-200/80 font-semibold leading-tight">
+                            Lead Architect & Full-Stack Developer — Award-Winning E-Voting Platform
+                          </p>
+                          <p className="text-xs text-gray-300 leading-relaxed line-clamp-3 font-sans">
+                            {p.desc}
+                          </p>
+
+                          {/* Tech Tags */}
+                          <div className="flex flex-wrap gap-1.5 pt-1">
+                            {p.tech.map(t => (
+                              <span key={t} className="px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-300 border border-amber-500/30 text-[10px] font-semibold">
+                                {t}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Bottom Button */}
+                        <div className="pt-3 border-t border-amber-500/20 flex justify-end">
+                          <a
+                            href={p.demoLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-black text-xs shadow-md shadow-amber-500/20 flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                          >
+                            <span>Live App ↗</span>
+                          </a>
+                        </div>
+                      </div>
+                    ) : (
+                      <ProjectCard
+                        title={p.title}
+                        desc={p.desc}
+                        image={p.image}
+                        tech={p.tech}
+                        demoLink={p.demoLink}
+                        codeLink={p.codeLink}
+                      />
+                    )}
                   </motion.div>
                 ))}
               </AnimatePresence>
