@@ -59,6 +59,13 @@ export default function AllProjects() {
             })
           })
 
+          // Ensure Nigeria SecureVote Gold Card is placed first at index 0 (Card #1)
+          mapped.sort((a, b) => {
+            if (a.isHackathonWinner) return -1
+            if (b.isHackathonWinner) return 1
+            return 0
+          })
+
           setProjects(mapped)
           setIsLive(true)
         } else {
