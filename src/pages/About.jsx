@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import CmsStatus from '../components/CmsStatus.jsx'
 import { fetchFromApi } from '../services/api.js'
 import SEO from '../components/SEO'
+import ServerOfflineBot from '../components/ServerOfflineBot.jsx'
 
 export default function About(){
   const [activeTab, setActiveTab] = useState('experience')
@@ -180,18 +181,25 @@ export default function About(){
                   className="space-y-6"
                 >
                   <div className="relative border-l-2 border-gray-200 dark:border-gray-800 pl-6 ml-3 space-y-8">
-                    {experiences.map((exp, idx) => (
-                      <div key={idx} className="relative">
-                        <div className={`absolute -left-[31px] top-1.5 w-4 h-4 rounded-full ${exp.dotColor || 'bg-accent-teal'} border-4 border-bg-body transition-all`} />
-                        <div>
-                          <span className={`text-xs font-bold ${exp.textColor || 'text-accent-teal'} uppercase tracking-widest`}>{exp.period}</span>
-                          <h4 className="text-xl font-bold text-text-main font-display">{exp.role}</h4>
-                          <p className="text-text-muted mt-2 text-sm leading-relaxed max-w-2xl">
-                            {exp.description}
-                          </p>
+                    {experiences.length > 0 ? (
+                      experiences.map((exp, idx) => (
+                        <div key={idx} className="relative">
+                          <div className={`absolute -left-[31px] top-1.5 w-4 h-4 rounded-full ${exp.dotColor || 'bg-accent-teal'} border-4 border-bg-body transition-all`} />
+                          <div>
+                            <span className={`text-xs font-bold ${exp.textColor || 'text-accent-teal'} uppercase tracking-widest`}>{exp.period}</span>
+                            <h4 className="text-xl font-bold text-text-main font-display">{exp.role}</h4>
+                            <p className="text-text-muted mt-2 text-sm leading-relaxed max-w-2xl">
+                              {exp.description}
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      ))
+                    ) : (
+                      <ServerOfflineBot 
+                        title="Server Offline" 
+                        message="Could not load work experience." 
+                      />
+                    )}
                   </div>
                 </motion.div>
               ) : (
@@ -201,17 +209,24 @@ export default function About(){
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -15 }}
                   transition={{ duration: 0.3 }}
-                  className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                  className={strengths.length > 0 ? "grid grid-cols-1 md:grid-cols-2 gap-6" : ""}
                 >
-                  {strengths.map((s, idx) => (
-                    <div key={idx} className="glass-card p-6 rounded-2xl flex gap-4 items-start">
-                      <div className={`w-3 h-3 rounded-full ${s.dot || 'bg-accent-teal'} mt-1.5 flex-shrink-0`} />
-                      <div className="space-y-1">
-                        <h4 className="font-bold text-text-main font-display text-lg">{s.title}</h4>
-                        <p className="text-sm text-text-muted leading-relaxed">{s.desc}</p>
+                  {strengths.length > 0 ? (
+                    strengths.map((s, idx) => (
+                      <div key={idx} className="glass-card p-6 rounded-2xl flex gap-4 items-start">
+                        <div className={`w-3 h-3 rounded-full ${s.dot || 'bg-accent-teal'} mt-1.5 flex-shrink-0`} />
+                        <div className="space-y-1">
+                          <h4 className="font-bold text-text-main font-display text-lg">{s.title}</h4>
+                          <p className="text-sm text-text-muted leading-relaxed">{s.desc}</p>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))
+                  ) : (
+                    <ServerOfflineBot 
+                      title="Server Offline" 
+                      message="Could not load core strengths." 
+                    />
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>

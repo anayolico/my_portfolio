@@ -4,6 +4,7 @@ import ProjectCard from '../components/ProjectCard.jsx'
 import CmsStatus from '../components/CmsStatus.jsx'
 import { fetchFromApi } from '../services/api.js'
 import SEO from '../components/SEO'
+import ServerOfflineBot from '../components/ServerOfflineBot.jsx'
 
 const CATEGORIES = ['All', 'React', 'Node.js', 'Next.js', 'AI']
 
@@ -295,13 +296,10 @@ export default function Projects() {
             </div>
           </div>
         ) : (
-          <div className="glass-card p-12 rounded-3xl text-center max-w-md mx-auto space-y-3 border border-accent-teal/20">
-            <div className="w-12 h-12 rounded-full bg-accent-teal/10 text-accent-teal flex items-center justify-center mx-auto text-xl font-bold">📡</div>
-            <h3 className="text-lg font-bold text-text-main font-display">Server Offline</h3>
-            <p className="text-xs text-text-muted leading-relaxed">
-              No live projects found. Please start your backend server (<code className="text-accent-teal font-mono">node src/server.js</code> in <code className="text-accent-teal font-mono">backend/</code>) to load your live portfolio content.
-            </p>
-          </div>
+          <ServerOfflineBot 
+            title="Server Offline" 
+            message="Could not connect to the database to load featured projects." 
+          />
         )}
       </section>
     </>

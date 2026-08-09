@@ -5,6 +5,8 @@ import CmsStatus from '../components/CmsStatus.jsx'
 import { fetchFromApi } from '../services/api.js'
 import SEO from '../components/SEO'
 import Footer from '../components/Footer.jsx'
+import Header from '../components/Header.jsx'
+import ServerOfflineBot from '../components/ServerOfflineBot.jsx'
 
 export default function AllProjects() {
   const [activeFilter, setActiveFilter] = useState('All')
@@ -285,13 +287,10 @@ export default function AllProjects() {
               </AnimatePresence>
             </motion.div>
           ) : (
-            <div className="glass-card p-12 rounded-3xl text-center max-w-md mx-auto space-y-3 border border-accent-teal/20">
-              <div className="w-12 h-12 rounded-full bg-accent-teal/10 text-accent-teal flex items-center justify-center mx-auto text-xl font-bold">🔍</div>
-              <h3 className="text-lg font-bold text-text-main font-display">No Matching Projects</h3>
-              <p className="text-xs text-text-muted leading-relaxed">
-                No projects matched your search criteria. Try selecting another technology filter or search term.
-              </p>
-            </div>
+            <ServerOfflineBot 
+              title="No Projects Found" 
+              message="No projects matched your search or the server is offline." 
+            />
           )}
         </main>
 

@@ -3,6 +3,7 @@ import SkillBadge from '../components/SkillBadge.jsx'
 import CmsStatus from '../components/CmsStatus.jsx'
 import { fetchFromApi } from '../services/api.js'
 import SEO from '../components/SEO'
+import ServerOfflineBot from '../components/ServerOfflineBot.jsx'
 
 export default function Skills() {
   const [frontend, setFrontend] = useState([])
@@ -127,10 +128,10 @@ export default function Skills() {
             </div>
           </div>
         ) : (
-          <div className="glass-card p-12 rounded-3xl text-center max-w-md mx-auto space-y-3 border border-amber-500/20">
-            <div className="w-12 h-12 rounded-full bg-amber-500/10 text-amber-400 flex items-center justify-center mx-auto text-xl font-bold">⚡</div>
-            <h3 className="text-lg font-bold text-text-main font-display">Server Offline</h3>
-          </div>
+          <ServerOfflineBot 
+            title="Server Offline" 
+            message="Could not connect to the database to load skills." 
+          />
         )}
       </section>
     </>
