@@ -479,7 +479,7 @@ export default function Contact() {
             {/* Twitter / X */}
             <motion.a
               whileHover={{ y: -4, scale: 1.02 }}
-              href="https://facebook.com/caleb anayolico" target="_blank" rel="noopener noreferrer"
+              href="https://facebook.com/calebanayolico" target="_blank" rel="noopener noreferrer"
               className="flex items-center justify-between p-4 rounded-2xl bg-white/60 dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:border-white/30 hover:shadow-lg hover:shadow-white/5 transition-all duration-300 group"
             >
               <div className="flex items-center gap-3">
