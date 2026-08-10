@@ -84,15 +84,6 @@ export default function AllProjects() {
     getProjects()
   }, [])
 
-  // Extract all unique tech tags for filter pills
-  const allTechTags = ['All']
-  projects.forEach(p => {
-    p.tech.forEach(t => {
-      if (!allTechTags.includes(t)) {
-        allTechTags.push(t)
-      }
-    })
-  })
 
   // Filter projects by active filter tab & search query
   const filteredProjects = projects.filter(p => {
@@ -175,21 +166,6 @@ export default function AllProjects() {
               </svg>
             </div>
 
-            {/* Technology Pill Filters */}
-            <div className="flex flex-wrap gap-2.5">
-              {allTechTags.map(tag => (
-                <button
-                  key={tag}
-                  onClick={() => setActiveFilter(tag)}
-                  className={`px-4 py-2 rounded-xl text-xs font-semibold tracking-wide border transition-all duration-300 cursor-pointer ${activeFilter === tag
-                      ? 'bg-accent-teal text-white border-accent-teal font-bold shadow-md shadow-accent-teal/30'
-                      : 'bg-white/40 dark:bg-white/5 text-text-muted border-gray-200 dark:border-white/5 hover:border-accent-teal/50 hover:text-text-main'
-                    }`}
-                >
-                  {tag}
-                </button>
-              ))}
-            </div>
           </div>
 
           {/* Projects Count Header */}
