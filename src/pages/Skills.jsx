@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import SkillBadge from '../components/SkillBadge.jsx'
 import CmsStatus from '../components/CmsStatus.jsx'
 import { fetchFromApi } from '../services/api.js'
-import SEO from '../components/SEO'
+
 import ServerOfflineBot from '../components/ServerOfflineBot.jsx'
 
 export default function Skills() {
@@ -76,12 +76,7 @@ export default function Skills() {
 
   return (
     <>
-      <SEO
-        title="Skills | Anayolico"
-        description="Technical proficiencies across frontend frameworks, backend engines, and developer pipelines."
-        keywords="Anayolico, Caleb Anayolico, Anayo, Skills, React, JavaScript, React Native, Mobile Development, Frontend, Backend, Full Stack"
-        url="/skills"
-      />
+
       <section id="skills" className="py-20 space-y-10">
         <div className="text-center space-y-4">
           <h2 className="text-3xl md:text-4xl font-bold text-text-main tracking-tight font-display transition-colors duration-300">

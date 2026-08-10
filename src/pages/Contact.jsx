@@ -193,15 +193,15 @@ export default function Contact() {
           </motion.p>
         </div>
 
-        {/* Main Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* Centered Contact Form Container */}
+        <div className="max-w-5xl mx-auto px-4 w-full">
           {/* Left Column: Form */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="lg:col-span-7 glass-card p-6 md:p-8 rounded-3xl border border-gray-200/60 dark:border-white/10 shadow-xl relative backdrop-blur-xl"
+            className="w-full glass-card p-6 md:p-8 rounded-3xl border border-gray-200/60 dark:border-white/10 shadow-xl relative backdrop-blur-xl"
           >
             {/* Quick Topic Chips (One Single Line on Mobile & Desktop) */}
             <div className="mb-6 space-y-2 text-center sm:text-left">
@@ -369,32 +369,13 @@ export default function Contact() {
                 </motion.button>
               </div>
             </form>
-          </motion.div>
 
-          {/* Right Column: Contact Cards & Links (NO EMAIL ME CARD) */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="lg:col-span-5 space-y-5"
-          >
-            {/* Status & Availability Card (UPDATED TO COLLABORATION & SELF-EMPLOYED) */}
-            <div className="glass-card p-6 rounded-3xl border border-gray-200/60 dark:border-white/10 space-y-4">
-              <div className="flex items-center gap-3">
-                <div className="relative flex h-3 w-3">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500" />
-                </div>
-                <span className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
-                  Open for Collaboration
-                </span>
-              </div>
-              <p className="text-text-main font-semibold text-base leading-snug">
+            {/* Status & Availability Text (Inside Form, Centered) */}
+            <div className="pt-6 border-t border-gray-250/20 dark:border-white/5 mt-6 space-y-4 text-center">
+              <p className="text-text-main font-semibold text-sm w-full leading-relaxed">
                 full-stack engineer open for high-impact project collaborations, technical consulting, and innovative joint ventures.
               </p>
-              <div className="pt-3 border-t border-gray-200/40 dark:border-white/10 flex items-center justify-between text-xs text-text-muted">
-                <span>Nigeria</span>
+              <div className="flex items-center justify-end text-xs text-text-muted w-full pt-3 border-t border-gray-250/20 dark:border-white/5">
                 <span>Response 24h</span>
               </div>
             </div>
@@ -421,7 +402,7 @@ export default function Contact() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-3xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto">
             {/* Instagram */}
             <motion.a
               whileHover={{ y: -4, scale: 1.02 }}

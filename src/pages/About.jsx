@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import CmsStatus from '../components/CmsStatus.jsx'
 import { fetchFromApi } from '../services/api.js'
-import SEO from '../components/SEO'
 import ServerOfflineBot from '../components/ServerOfflineBot.jsx'
 
 export default function About(){
@@ -63,12 +62,6 @@ export default function About(){
 
   return (
     <>
-      <SEO
-        title="About | Anayolico"
-        description="Learn more about Caleb Anayolico, a Web Developer and Mobile App Developer with a keen eye for UX/UI."
-        keywords="Anayolico, Caleb Anayolico, Anayo, About, Web Developer, UX, UI, Resume, Experience"
-        url="/about"
-      />
       <section id="about" className="py-20 space-y-16">
         {/* Intro Section - 2 Column Grid (Bio Text on Left, 5+ Years Card on Right) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">

@@ -249,7 +249,22 @@ export default function CV() {
         <div className="max-w-4xl mx-auto space-y-6">
 
           {/* Floating Action Header Bar */}
-          <div className="no-print flex justify-end items-center gap-4 bg-slate-900/90 backdrop-blur-xl p-4 rounded-2xl border border-slate-800 shadow-xl">
+          <div className="no-print flex justify-between items-center gap-4 bg-slate-900/90 backdrop-blur-xl p-4 rounded-2xl border border-slate-800 shadow-xl">
+            <a
+              href="/"
+              onClick={(e) => {
+                e.preventDefault()
+                window.history.pushState({}, '', '/')
+                window.dispatchEvent(new Event('popstate'))
+              }}
+              className="px-4 py-2.5 rounded-xl bg-slate-800/50 hover:bg-slate-800 border border-slate-700/50 hover:border-slate-600 text-slate-300 hover:text-white font-bold text-xs transition-all flex items-center gap-2 cursor-pointer active:scale-95"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+              <span>Back to Portfolio</span>
+            </a>
+
             <button
               onClick={handleDownloadPdf}
               className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-500 hover:brightness-110 text-white font-bold text-xs shadow-lg shadow-teal-500/25 transition-all flex items-center gap-2 cursor-pointer active:scale-95"

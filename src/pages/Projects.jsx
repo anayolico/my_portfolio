@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import ProjectCard from '../components/ProjectCard.jsx'
 import CmsStatus from '../components/CmsStatus.jsx'
 import { fetchFromApi } from '../services/api.js'
-import SEO from '../components/SEO'
+
 import ServerOfflineBot from '../components/ServerOfflineBot.jsx'
 
 const CATEGORIES = ['All', 'React', 'Node.js', 'Next.js', 'AI']
@@ -117,12 +117,7 @@ export default function Projects() {
 
   return (
     <>
-      <SEO
-        title="Projects | Anayolico"
-        description="A showcase of recent client applications, backend architectures, and developer utilities."
-        keywords="Anayolico, Caleb Anayolico, Anayo, Projects, Portfolio, Web Development, React, Node.js, Next.js"
-        url="/projects"
-      />
+
       <section id="projects" className="py-20 space-y-10">
         <div className="text-center space-y-4">
           <h2 className="text-3xl md:text-4xl font-bold text-text-main tracking-tight font-display transition-colors duration-300">
