@@ -281,7 +281,7 @@ export default function Projects() {
                   whileTap={{ scale: 0.97 }}
                   className="px-8 py-3.5 rounded-2xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/40 text-amber-300 font-extrabold text-sm sm:text-base shadow-xl transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer group tracking-wide"
                 >
-                  <span>⚡ Source Code Store</span>
+                  <span>Source Code Store</span>
                   <svg
                     className="w-4 h-4 group-hover:translate-x-1.5 transition-transform duration-300"
                     fill="none"

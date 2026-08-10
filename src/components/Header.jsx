@@ -66,7 +66,6 @@ export default function Header(){
                   : 'text-text-muted hover:text-accent-teal'
               }`}
             >
-              {l.id === 'source-code' && <span>⚡</span>}
               <span>{l.label}</span>
             </a>
           ))}

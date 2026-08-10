@@ -340,15 +340,15 @@ export default function CV() {
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {(cv.skills || []).map((group, idx) => (
-                  <div key={idx} style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }} className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
-                    <h3 className="text-xs font-bold text-slate-900 font-display">
+                  <div key={idx} style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }} className="p-4 rounded-2xl bg-slate-50/80 border border-slate-200/60 space-y-3 shadow-sm">
+                    <h3 className="text-xs font-black uppercase tracking-wider text-slate-800 font-display">
                       {group.category}
                     </h3>
                     <div className="flex flex-wrap gap-1.5">
                       {(group.items || []).map((item, i) => (
                         <span
                           key={i}
-                          className="text-[11px] font-bold px-2.5 py-0.5 rounded-md bg-teal-50 text-teal-900 border border-teal-200/90"
+                          className="text-[11px] sm:text-xs font-semibold px-3 py-1 rounded-full bg-teal-50 text-teal-950 border border-teal-100 shadow-sm hover:bg-teal-100/50 transition-colors"
                         >
                           {item}
                         </span>
@@ -364,18 +364,18 @@ export default function CV() {
               const h = cv.hackathonProject || DEFAULT_CV.hackathonProject;
               return (
                 <div className="space-y-4 pt-2">
-                  <div className="flex items-center justify-between border-b border-teal-200/80 pb-1">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-teal-200/80 pb-2 gap-2">
                     <h2 className="text-xs font-black uppercase tracking-widest text-teal-800 font-display flex items-center gap-1.5">
                       <span>🏆</span> {h.awardTitle || "Award-Winning Hackathon Project"}
                     </h2>
-                    <span className="text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-teal-100 text-teal-950 border border-teal-300">
+                    <span className="text-[10px] font-extrabold uppercase px-3 py-1 rounded-full bg-teal-100 text-teal-950 border border-teal-300 whitespace-nowrap self-start sm:self-auto">
                       1st Place Winner
                     </span>
                   </div>
 
-                  <div style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }} className="p-4 sm:p-5 rounded-2xl bg-teal-50/40 border border-teal-200/80 flex flex-col sm:flex-row gap-5 items-start">
+                  <div style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }} className="p-4 sm:p-5 rounded-2xl bg-teal-50/40 border border-teal-200/80 flex flex-col sm:flex-row gap-5 items-center sm:items-start">
                     {/* Square Award Trophy / Certificate Photo Container */}
-                    <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-xl bg-slate-900 border-2 border-teal-500/40 shadow-md flex-shrink-0 overflow-hidden flex items-center justify-center relative aspect-square">
+                    <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-xl bg-slate-900 border-2 border-teal-500/40 shadow-md flex-shrink-0 overflow-hidden flex items-center justify-center relative aspect-square mx-auto sm:mx-0">
                       {h.awardImage && h.awardImage.trim().startsWith('http') ? (
                         <img
                           src={h.awardImage}
@@ -396,12 +396,12 @@ export default function CV() {
                     </div>
 
                     {/* Technical Details */}
-                    <div className="flex-1 space-y-2">
-                      <div className="flex flex-wrap items-baseline justify-between gap-2">
+                    <div className="flex-1 space-y-2 w-full text-center sm:text-left">
+                      <div className="flex flex-col md:flex-row md:items-baseline justify-between gap-2">
                         <h3 className="text-base font-extrabold text-slate-900 font-display">
                           {h.title} <span className="text-xs font-bold text-teal-800">— {h.role}</span>
                         </h3>
-                        <div className="flex items-center gap-3 text-xs font-bold">
+                        <div className="flex items-center justify-center sm:justify-start gap-3 text-xs font-bold">
                           <a
                             href="https://onetime-voter.vercel.app"
                             target="_blank"
@@ -428,17 +428,17 @@ export default function CV() {
                         {h.summary}
                       </p>
 
-                      <ul className="list-disc list-outside ml-4 space-y-1 text-xs text-slate-700 leading-relaxed font-normal">
+                      <ul className="list-disc list-inside ml-4 space-y-1 text-xs text-slate-700 leading-relaxed font-normal text-left">
                         {(h.keyFeatures || []).map((feat, fIdx) => (
                           <li key={fIdx}>{feat}</li>
                         ))}
                       </ul>
 
-                      <div className="flex flex-wrap gap-1.5 pt-1">
+                      <div className="flex flex-wrap justify-center sm:justify-start gap-1.5 pt-1">
                         {(h.tech || []).map((t, tIdx) => (
                           <span
                             key={tIdx}
-                            className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-teal-50 text-teal-900 border border-teal-200/90"
+                            className="text-[10px] font-semibold px-2.5 py-1 rounded-full bg-teal-50 text-teal-900 border border-teal-100 shadow-sm"
                           >
                             {t}
                           </span>

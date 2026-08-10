@@ -476,22 +476,22 @@ export default function Contact() {
               <svg className="w-4 h-4 text-text-muted group-hover:text-blue-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
             </motion.a>
 
-            {/* Twitter / X */}
+            {/* Facebook */}
             <motion.a
               whileHover={{ y: -4, scale: 1.02 }}
               href="https://facebook.com/calebanayolico" target="_blank" rel="noopener noreferrer"
-              className="flex items-center justify-between p-4 rounded-2xl bg-white/60 dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:border-white/30 hover:shadow-lg hover:shadow-white/5 transition-all duration-300 group"
+              className="flex items-center justify-between p-4 rounded-2xl bg-white/60 dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:border-blue-600/40 hover:shadow-lg hover:shadow-blue-600/10 transition-all duration-300 group"
             >
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-black flex items-center justify-center shadow-md">
-                  <svg className="w-4 h-4 fill-white" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                <div className="w-10 h-10 rounded-xl bg-[#1877F2] flex items-center justify-center shadow-md">
+                  <svg className="w-5 h-5 fill-white" viewBox="0 0 24 24"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/></svg>
                 </div>
                 <div>
                   <p className="text-sm font-bold text-text-main">Facebook</p>
                   <p className="text-[11px] text-text-muted">@anayolico</p>
                 </div>
               </div>
-              <svg className="w-4 h-4 text-text-muted group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+              <svg className="w-4 h-4 text-text-muted group-hover:text-blue-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
             </motion.a>
 
             {/* WhatsApp */}

@@ -7,6 +7,7 @@ import SEO from '../components/SEO'
 import Footer from '../components/Footer.jsx'
 import Header from '../components/Header.jsx'
 import ServerOfflineBot from '../components/ServerOfflineBot.jsx'
+import BackgroundParticles from '../components/BackgroundParticles.jsx'
 
 export default function AllProjects() {
   const [activeFilter, setActiveFilter] = useState('All')
@@ -108,8 +109,8 @@ export default function AllProjects() {
         url="/projects"
       />
 
-      <div className="min-h-screen bg-bg-body text-text-main flex flex-col justify-between selection:bg-accent-teal selection:text-white">
-        
+      <div className="min-h-screen text-text-main flex flex-col justify-between selection:bg-accent-teal selection:text-white">
+        <BackgroundParticles />
 
         <main className="max-w-7xl mx-auto px-4 sm:px-6 pt-32 pb-24 w-full flex-grow space-y-12">
           {/* Top Bar: Back Button */}
@@ -128,7 +129,7 @@ export default function AllProjects() {
               <span>Back to Portfolio</span>
             </button>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent-teal/10 border border-accent-teal/30 text-accent-teal text-xs font-bold uppercase tracking-wider">
-              <span>● FULL PORTFOLIO</span>
+              <span>FULL PORTFOLIO</span>
             </div>
           </motion.div>
 
@@ -149,24 +150,6 @@ export default function AllProjects() {
               <CmsStatus isLive={isLive} isLoading={loading} />
             </div>
           </motion.div>
-
-          {/* Search Input & Tech Tag Filters */}
-          <div className="space-y-6">
-            {/* Search Input */}
-            <div className="relative max-w-xl">
-              <input
-                type="text"
-                placeholder="Search projects or tech..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full px-5 py-3.5 pl-12 rounded-2xl bg-white/60 dark:bg-slate-900/80 border border-gray-200 dark:border-white/10 text-text-main placeholder-text-muted focus:outline-none focus:border-accent-teal focus:ring-2 focus:ring-accent-teal/20 transition-all text-sm font-sans shadow-sm"
-              />
-              <svg className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </div>
-
-          </div>
 
           {/* Projects Count Header */}
           <div className="text-xs font-mono font-bold text-text-muted uppercase tracking-widest">
