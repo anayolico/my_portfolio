@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import SEO from '../components/SEO'
 import { fetchFromApi } from '../services/api'
-import logo from '../components/ima-and/logo.png'
 
 const DEFAULT_CV = {
   fullName: "Caleb Anayolico",
@@ -12,6 +11,7 @@ const DEFAULT_CV = {
   email: "acnwa1234@gmail.com",
   portfolio: "https://anayolico.name.ng",
   github: "github.com/anayolico",
+  linkedin: "linkedin.com/in/caleb-anayolico-9861a8350",
   summary: "Driven Full-Stack Software Engineer with a clear trajectory of growth, evolving from a design focus to becoming a complete application architect. Proficient across the entire stack—leveraging React.js, Next.js, and React Native for dynamic interfaces, alongside Node.js, Python (FastAPI), and Java for scalable server architectures. Skilled in configuring relational and document databases (PostgreSQL, Prisma ORM, MongoDB, Supabase), integrating local/international payment gateways (Paystack, Flutterwave), and deploying cloud infrastructure. A graduate of NIIT with a Diploma in Software Engineering, and currently an intern at Fowgate, actively applying and refining full-stack skills on enterprise-level applications. Proven track record delivering both client solutions and robust production applications.",
   skills: [
     {
@@ -144,9 +144,9 @@ export default function CV() {
       try {
         const res = await fetchFromApi('/api/cv');
         if (res && res.fullName) {
-          setCv(res);
+          setCv({ ...DEFAULT_CV, ...res });
         } else if (res && res.data && res.data.fullName) {
-          setCv(res.data);
+          setCv({ ...DEFAULT_CV, ...res.data });
         }
       } catch (err) {
         console.warn('Using default CV fallback');
@@ -300,11 +300,6 @@ export default function CV() {
                 </div>
 
                 <div className="flex flex-col items-start sm:items-end text-xs text-slate-700 space-y-1 sm:text-right font-medium leading-tight">
-                  <img
-                    src={logo}
-                    alt="Caleb Anayolico Logo"
-                    className="h-10 sm:h-12 w-auto object-contain mb-1"
-                  />
                   <p className="text-slate-800 font-semibold">{cv.location}</p>
                   <p className="text-slate-700">{cv.phone}</p>
                   <a href={`mailto:${cv.email}`} className="text-teal-700 font-semibold hover:underline">
@@ -313,8 +308,8 @@ export default function CV() {
                 </div>
               </div>
 
-              {/* Clean Clickable Links (Fully preserved in exported PDF) */}
-              <div className="flex flex-wrap items-center gap-6 text-xs font-bold pt-2 border-t border-slate-100">
+              {/* Clean Clickable Links with Full URLs (Fully preserved in exported PDF & Print) */}
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs font-bold pt-2 border-t border-slate-100">
                 {cv.portfolio && (
                   <a
                     href={cv.portfolio.startsWith('http') ? cv.portfolio : `https://${cv.portfolio}`}
@@ -322,7 +317,7 @@ export default function CV() {
                     rel="noopener noreferrer"
                     className="text-teal-700 hover:text-teal-900 hover:underline inline-flex items-center cursor-pointer"
                   >
-                    <span>Portfolio Website</span>
+                    <span>Portfolio Website: {cv.portfolio.startsWith('http') ? cv.portfolio : `https://${cv.portfolio}`}</span>
                   </a>
                 )}
                 {cv.github && (
@@ -332,7 +327,17 @@ export default function CV() {
                     rel="noopener noreferrer"
                     className="text-teal-700 hover:text-teal-900 hover:underline inline-flex items-center cursor-pointer"
                   >
-                    <span>GitHub Profile</span>
+                    <span>GitHub Profile: https://{cv.github.replace(/^https?:\/\//, '')}</span>
+                  </a>
+                )}
+                {cv.linkedin && (
+                  <a
+                    href={cv.linkedin.startsWith('http') ? cv.linkedin : `https://${cv.linkedin}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-teal-700 hover:text-teal-900 hover:underline inline-flex items-center cursor-pointer"
+                  >
+                    <span>LinkedIn Profile: https://{cv.linkedin.replace(/^https?:\/\//, '')}</span>
                   </a>
                 )}
               </div>

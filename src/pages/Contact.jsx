@@ -442,7 +442,7 @@ export default function Contact() {
             {/* LinkedIn */}
             <motion.a
               whileHover={{ y: -4, scale: 1.02 }}
-              href="https://linkedin.com/in/anayolico" target="_blank" rel="noopener noreferrer"
+              href="https://www.linkedin.com/in/caleb-anayolico-9861a8350" target="_blank" rel="noopener noreferrer"
               className="flex items-center justify-between p-4 rounded-2xl bg-white/60 dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:border-blue-500/40 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300 group"
             >
               <div className="flex items-center gap-3">
@@ -460,7 +460,7 @@ export default function Contact() {
             {/* Facebook */}
             <motion.a
               whileHover={{ y: -4, scale: 1.02 }}
-              href="https://facebook.com/calebanayolico" target="_blank" rel="noopener noreferrer"
+              href="https://facebook.com/anayolicoDevCode" target="_blank" rel="noopener noreferrer"
               className="flex items-center justify-between p-4 rounded-2xl bg-white/60 dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:border-blue-600/40 hover:shadow-lg hover:shadow-blue-600/10 transition-all duration-300 group"
             >
               <div className="flex items-center gap-3">
