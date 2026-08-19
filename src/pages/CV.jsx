@@ -177,18 +177,18 @@ export default function CV() {
 
       if (window.html2pdf) {
         const opt = {
-          margin: [8, 10, 8, 10],
+          margin: [10, 12, 10, 12],
           filename: `${cv.fullName ? cv.fullName.replace(/\s+/g, '_') : 'Caleb_Anayolico'}_CV.pdf`,
           image: { type: 'jpeg', quality: 0.98 },
           html2canvas: { 
             scale: 2, 
             useCORS: true, 
             logging: false,
-            scrollY: 0,
+            scrollY: -window.scrollY,
             scrollX: 0
           },
           jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-          pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+          pagebreak: { mode: [] }
         };
         window.html2pdf().set(opt).from(element).save();
       } else {
@@ -213,8 +213,8 @@ export default function CV() {
       <style>{`
         @media print {
           @page {
-            margin: 12mm 15mm;
-            size: auto;
+            margin: 10mm 12mm;
+            size: A4;
           }
           body {
             background: #ffffff !important;
@@ -285,10 +285,10 @@ export default function CV() {
             {/* Clean Executive White Paper Resume Document */}
             <div
               id="cv-paper"
-              className="cv-paper bg-white text-slate-900 p-6 sm:p-10 rounded-2xl shadow-2xl shadow-black/50 border border-slate-200 space-y-5"
+              className="cv-paper bg-white text-slate-900 p-5 sm:p-8 rounded-2xl shadow-2xl shadow-black/50 border border-slate-200 space-y-4"
             >
             {/* Header / Contact Info Block */}
-            <div className="border-b-2 border-teal-600 pb-6 space-y-4">
+            <div className="border-b-2 border-teal-600 pb-4 space-y-3">
               <div className="flex flex-col sm:flex-row justify-between sm:items-start gap-4">
                 <div>
                   <h1 className="text-3xl sm:text-4xl font-extrabold font-display text-slate-900 tracking-tight">
@@ -344,31 +344,31 @@ export default function CV() {
             </div>
 
             {/* Professional Summary */}
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <h2 className="text-xs font-black uppercase tracking-widest text-teal-800 font-display pb-1 border-b border-slate-200">
                 Professional Summary
               </h2>
-              <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-normal">
+              <p className="text-[11px] sm:text-xs text-slate-700 leading-snug font-normal">
                 {cv.summary}
               </p>
             </div>
 
             {/* Technical Skills & Proficiencies */}
-            <div className="space-y-3">
+            <div className="space-y-2">
               <h2 className="text-xs font-black uppercase tracking-widest text-teal-800 font-display pb-1 border-b border-slate-200">
                 Technical Skills & Proficiencies
               </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {(cv.skills || []).map((group, idx) => (
-                  <div key={idx} style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }} className="p-4 rounded-2xl bg-slate-50/80 border border-slate-200/60 space-y-3 shadow-sm">
-                    <h3 className="text-xs font-black uppercase tracking-wider text-slate-800 font-display">
+                  <div key={idx} className="p-3 rounded-xl bg-slate-50/80 border border-slate-200/60 space-y-2 shadow-sm">
+                    <h3 className="text-[10px] font-black uppercase tracking-wider text-slate-800 font-display">
                       {group.category}
                     </h3>
-                    <div className="flex flex-wrap gap-1.5">
+                    <div className="flex flex-wrap gap-1">
                       {(group.items || []).map((item, i) => (
                         <span
                           key={i}
-                          className="text-[11px] sm:text-xs font-semibold px-3 py-1 rounded-full bg-teal-50 text-teal-950 border border-teal-100 shadow-sm hover:bg-teal-100/50 transition-colors"
+                          className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-teal-50 text-teal-950 border border-teal-100 shadow-sm hover:bg-teal-100/50 transition-colors"
                         >
                           {item}
                         </span>
@@ -383,7 +383,7 @@ export default function CV() {
             {(cv.hackathonProject || DEFAULT_CV.hackathonProject) && (() => {
               const h = cv.hackathonProject || DEFAULT_CV.hackathonProject;
               return (
-                <div className="space-y-4 pt-2">
+                <div className="space-y-2">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-teal-200/80 pb-2 gap-2">
                     <h2 className="text-xs font-black uppercase tracking-widest text-teal-800 font-display flex items-center gap-1.5">
                       <span>🏆</span> {h.awardTitle || "Award-Winning Hackathon Project"}
@@ -393,9 +393,9 @@ export default function CV() {
                     </span>
                   </div>
 
-                  <div style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }} className="p-4 sm:p-5 rounded-2xl bg-teal-50/40 border border-teal-200/80 flex flex-col sm:flex-row gap-5 items-center sm:items-start">
+                  <div className="p-3 sm:p-4 rounded-2xl bg-teal-50/40 border border-teal-200/80 flex flex-col sm:flex-row gap-3 items-center sm:items-start">
                     {/* Square Award Trophy / Certificate Photo Container */}
-                    <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-xl bg-slate-900 border-2 border-teal-500/40 shadow-md flex-shrink-0 overflow-hidden flex items-center justify-center relative aspect-square mx-auto sm:mx-0">
+                    <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-xl bg-slate-900 border-2 border-teal-500/40 shadow-md flex-shrink-0 overflow-hidden flex items-center justify-center relative aspect-square mx-auto sm:mx-0">
                       {h.awardImage && h.awardImage.trim().startsWith('http') ? (
                         <img
                           src={h.awardImage}
@@ -471,19 +471,19 @@ export default function CV() {
             })()}
 
             {/* Featured Software Projects */}
-            <div className="space-y-4">
+            <div className="space-y-2">
               <h2 className="text-xs font-black uppercase tracking-widest text-teal-800 font-display pb-1 border-b border-slate-200">
                 Featured Software Projects
               </h2>
-              <div className="space-y-4">
+              <div className="space-y-2">
                 {(cv.projects || []).map((proj, idx) => (
-                  <div key={idx} style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }} className="space-y-1.5">
+                  <div key={idx} className="space-y-1">
                     <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
-                      <h3 className="text-sm font-bold text-slate-900 font-display">
-                        {proj.title} <span className="text-xs font-semibold text-teal-700">— {proj.role}</span>
+                      <h3 className="text-xs font-bold text-slate-900 font-display">
+                        {proj.title} <span className="text-[10px] font-semibold text-teal-700">— {proj.role}</span>
                       </h3>
                     </div>
-                    <ul className="list-disc list-outside ml-4 space-y-1 text-xs text-slate-700 leading-relaxed font-normal">
+                    <ul className="list-disc list-outside ml-4 space-y-0.5 text-[11px] text-slate-700 leading-snug font-normal">
                       {(proj.bullets || []).map((bullet, bIdx) => (
                         <li key={bIdx}>{bullet}</li>
                       ))}
@@ -494,19 +494,19 @@ export default function CV() {
             </div>
 
             {/* Professional Experience */}
-            <div className="space-y-4">
+            <div className="space-y-2">
               <h2 className="text-xs font-black uppercase tracking-widest text-teal-800 font-display pb-1 border-b border-slate-200">
                 Professional Experience
               </h2>
-              <div className="space-y-5">
+              <div className="space-y-2">
                 {(cv.experience || []).map((exp, idx) => (
-                  <div key={idx} style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }} className="space-y-1.5">
+                  <div key={idx} className="space-y-1">
                     <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
-                      <h3 className="text-sm font-bold text-slate-900 font-display">
-                        {exp.role} <span className="text-xs font-semibold text-slate-600">| {exp.company}</span>
+                      <h3 className="text-xs font-bold text-slate-900 font-display">
+                        {exp.role} <span className="text-[10px] font-semibold text-slate-600">| {exp.company}</span>
                       </h3>
                     </div>
-                    <ul className="list-disc list-outside ml-4 space-y-1 text-xs text-slate-700 leading-relaxed font-normal">
+                    <ul className="list-disc list-outside ml-4 space-y-0.5 text-[11px] text-slate-700 leading-snug font-normal">
                       {(exp.bullets || []).map((bullet, bIdx) => (
                         <li key={bIdx}>{bullet}</li>
                       ))}
@@ -517,19 +517,19 @@ export default function CV() {
             </div>
 
             {/* Education */}
-            <div className="space-y-3">
+            <div className="space-y-2">
               <h2 className="text-xs font-black uppercase tracking-widest text-teal-800 font-display pb-1 border-b border-slate-200">
                 Education
               </h2>
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 {(cv.education || []).map((edu, idx) => (
-                  <div key={idx} style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }} className="flex justify-between items-baseline text-xs">
+                  <div key={idx} className="flex justify-between items-baseline text-xs">
                     <div>
-                      <h3 className="font-bold text-slate-900 font-display text-sm">{edu.degree}</h3>
-                      <p className="text-slate-600 text-xs font-medium">{edu.institution}</p>
+                      <h3 className="font-bold text-slate-900 font-display text-xs">{edu.degree}</h3>
+                      <p className="text-slate-600 text-[10px] font-medium">{edu.institution}</p>
                     </div>
                     {edu.period && (
-                      <span className="text-teal-800 font-bold text-[11px] bg-teal-50 border border-teal-200/80 px-2 py-0.5 rounded-md">
+                      <span className="text-teal-800 font-bold text-[10px] bg-teal-50 border border-teal-200/80 px-2 py-0.5 rounded-md">
                         {edu.period}
                       </span>
                     )}
@@ -539,11 +539,11 @@ export default function CV() {
             </div>
 
             {/* Open for Collaboration Section */}
-            <div className="space-y-2 pt-4 border-t-2 border-teal-600">
+            <div className="space-y-1 pt-2 border-t-2 border-teal-600">
               <h2 className="text-xs font-black uppercase tracking-widest text-teal-800 font-display">
                 Open for Collaboration
               </h2>
-              <p className="text-xs sm:text-sm text-slate-700 font-medium leading-relaxed">
+              <p className="text-[11px] sm:text-xs text-slate-700 font-medium leading-snug">
                 Full-Stack Engineer open for high-impact project collaborations, technical consulting, and innovative joint ventures.
               </p>
             </div>

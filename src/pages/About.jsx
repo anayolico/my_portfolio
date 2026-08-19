@@ -322,7 +322,7 @@ export default function About(){
               </div>
               <h4 className="text-xl font-bold text-text-main font-display">Cloud & DevOps Deployment</h4>
               <p className="text-text-muted text-sm leading-relaxed">
-                Deploying, mapping custom domains, and monitoring live apps across Vercel, Render, Host Africa, and Supabase.
+                Deploying, mapping custom domains, and monitoring live apps across Vercel, Render, AWS, and Supabase.
               </p>
             </div>
           </div>
