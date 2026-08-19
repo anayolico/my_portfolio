@@ -177,18 +177,18 @@ export default function CV() {
 
       if (window.html2pdf) {
         const opt = {
-          margin: [10, 12, 10, 12],
+          margin: [8, 10, 8, 10],
           filename: `${cv.fullName ? cv.fullName.replace(/\s+/g, '_') : 'Caleb_Anayolico'}_CV.pdf`,
           image: { type: 'jpeg', quality: 0.98 },
-          html2canvas: { 
-            scale: 2, 
-            useCORS: true, 
+          html2canvas: {
+            scale: 2,
+            useCORS: true,
             logging: false,
-            scrollY: -window.scrollY,
+            scrollY: 0,
             scrollX: 0
           },
           jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-          pagebreak: { mode: [] }
+          pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
         };
         window.html2pdf().set(opt).from(element).save();
       } else {
@@ -213,8 +213,8 @@ export default function CV() {
       <style>{`
         @media print {
           @page {
-            margin: 10mm 12mm;
-            size: A4;
+            margin: 12mm 15mm;
+            size: auto;
           }
           body {
             background: #ffffff !important;
@@ -285,268 +285,247 @@ export default function CV() {
             {/* Clean Executive White Paper Resume Document */}
             <div
               id="cv-paper"
-              className="cv-paper bg-white text-slate-900 p-5 sm:p-8 rounded-2xl shadow-2xl shadow-black/50 border border-slate-200 space-y-4"
+              className="cv-paper bg-white text-slate-900 p-6 sm:p-10 rounded-2xl shadow-2xl shadow-black/50 border border-slate-200 space-y-5"
             >
-            {/* Header / Contact Info Block */}
-            <div className="border-b-2 border-teal-600 pb-4 space-y-3">
-              <div className="flex flex-col sm:flex-row justify-between sm:items-start gap-4">
-                <div>
-                  <h1 className="text-3xl sm:text-4xl font-extrabold font-display text-slate-900 tracking-tight">
-                    {cv.fullName}
-                  </h1>
-                  <p className="text-sm sm:text-base font-bold text-teal-700 tracking-wide uppercase mt-1">
-                    {cv.title}
-                  </p>
-                </div>
-
-                <div className="flex flex-col items-start sm:items-end text-xs text-slate-700 space-y-1 sm:text-right font-medium leading-tight">
-                  <p className="text-slate-800 font-semibold">{cv.location}</p>
-                  <p className="text-slate-700">{cv.phone}</p>
-                  <a href={`mailto:${cv.email}`} className="text-teal-700 font-semibold hover:underline">
-                    {cv.email}
-                  </a>
-                </div>
-              </div>
-
-              {/* Clean Clickable Links with Full URLs (Fully preserved in exported PDF & Print) */}
-              <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs font-bold pt-2 border-t border-slate-100">
-                {cv.portfolio && (
-                  <a
-                    href={cv.portfolio.startsWith('http') ? cv.portfolio : `https://${cv.portfolio}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-teal-700 hover:text-teal-900 hover:underline inline-flex items-center cursor-pointer"
-                  >
-                    <span>Portfolio Website: {cv.portfolio.startsWith('http') ? cv.portfolio : `https://${cv.portfolio}`}</span>
-                  </a>
-                )}
-                {cv.github && (
-                  <a
-                    href={cv.github.startsWith('http') ? cv.github : `https://${cv.github}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-teal-700 hover:text-teal-900 hover:underline inline-flex items-center cursor-pointer"
-                  >
-                    <span>GitHub Profile: https://{cv.github.replace(/^https?:\/\//, '')}</span>
-                  </a>
-                )}
-                {cv.linkedin && (
-                  <a
-                    href={cv.linkedin.startsWith('http') ? cv.linkedin : `https://${cv.linkedin}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-teal-700 hover:text-teal-900 hover:underline inline-flex items-center cursor-pointer"
-                  >
-                    <span>LinkedIn Profile: https://{cv.linkedin.replace(/^https?:\/\//, '')}</span>
-                  </a>
-                )}
-              </div>
-            </div>
-
-            {/* Professional Summary */}
-            <div className="space-y-1.5">
-              <h2 className="text-xs font-black uppercase tracking-widest text-teal-800 font-display pb-1 border-b border-slate-200">
-                Professional Summary
-              </h2>
-              <p className="text-[11px] sm:text-xs text-slate-700 leading-snug font-normal">
-                {cv.summary}
-              </p>
-            </div>
-
-            {/* Technical Skills & Proficiencies */}
-            <div className="space-y-2">
-              <h2 className="text-xs font-black uppercase tracking-widest text-teal-800 font-display pb-1 border-b border-slate-200">
-                Technical Skills & Proficiencies
-              </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {(cv.skills || []).map((group, idx) => (
-                  <div key={idx} className="p-3 rounded-xl bg-slate-50/80 border border-slate-200/60 space-y-2 shadow-sm">
-                    <h3 className="text-[10px] font-black uppercase tracking-wider text-slate-800 font-display">
-                      {group.category}
-                    </h3>
-                    <div className="flex flex-wrap gap-1">
-                      {(group.items || []).map((item, i) => (
-                        <span
-                          key={i}
-                          className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-teal-50 text-teal-950 border border-teal-100 shadow-sm hover:bg-teal-100/50 transition-colors"
-                        >
-                          {item}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Award-Winning Hackathon Showcase Section */}
-            {(cv.hackathonProject || DEFAULT_CV.hackathonProject) && (() => {
-              const h = cv.hackathonProject || DEFAULT_CV.hackathonProject;
-              return (
-                <div className="space-y-2">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-teal-200/80 pb-2 gap-2">
-                    <h2 className="text-xs font-black uppercase tracking-widest text-teal-800 font-display flex items-center gap-1.5">
-                      <span>🏆</span> {h.awardTitle || "Award-Winning Hackathon Project"}
-                    </h2>
-                    <span className="text-[10px] font-extrabold uppercase px-3 py-1 rounded-full bg-teal-100 text-teal-950 border border-teal-300 whitespace-nowrap self-start sm:self-auto">
-                      1st Place Winner
-                    </span>
+              {/* Header / Contact Info Block */}
+              <div className="border-b-2 border-teal-600 pb-6 space-y-4">
+                <div className="flex flex-col sm:flex-row justify-between sm:items-start gap-4">
+                  <div>
+                    <h1 className="text-3xl sm:text-4xl font-extrabold font-display text-slate-900 tracking-tight">
+                      {cv.fullName}
+                    </h1>
+                    <p className="text-sm sm:text-base font-bold text-teal-700 tracking-wide uppercase mt-1">
+                      {cv.title}
+                    </p>
                   </div>
 
-                  <div className="p-3 sm:p-4 rounded-2xl bg-teal-50/40 border border-teal-200/80 flex flex-col sm:flex-row gap-3 items-center sm:items-start">
-                    {/* Square Award Trophy / Certificate Photo Container */}
-                    <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-xl bg-slate-900 border-2 border-teal-500/40 shadow-md flex-shrink-0 overflow-hidden flex items-center justify-center relative aspect-square mx-auto sm:mx-0">
-                      {h.awardImage && h.awardImage.trim().startsWith('http') ? (
-                        <img
-                          src={h.awardImage}
-                          alt="Hackathon Award Trophy"
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-slate-900 via-teal-950/60 to-slate-900 p-3 flex flex-col items-center justify-center text-center space-y-1">
-                          <span className="text-2xl">🏆</span>
-                          <span className="text-[10px] font-extrabold text-teal-300 font-display uppercase tracking-wider">
-                            Hackathon Winner
-                          </span>
-                          <span className="text-[9px] text-teal-200/70 leading-tight">
-                            Award Certificate
-                          </span>
-                        </div>
-                      )}
-                    </div>
+                  <div className="flex flex-col items-start sm:items-end text-xs text-slate-700 space-y-1 sm:text-right font-medium leading-tight">
+                    <p className="text-slate-800 font-semibold">{cv.location}</p>
+                    <p className="text-slate-700">{cv.phone}</p>
+                    <a href={`mailto:${cv.email}`} className="text-teal-700 font-semibold hover:underline">
+                      {cv.email}
+                    </a>
+                  </div>
+                </div>
 
-                    {/* Technical Details */}
-                    <div className="flex-1 space-y-2 w-full text-center sm:text-left">
-                      <div className="flex flex-col md:flex-row md:items-baseline justify-between gap-2">
-                        <h3 className="text-base font-extrabold text-slate-900 font-display">
-                          {h.title} <span className="text-xs font-bold text-teal-800">— {h.role}</span>
-                        </h3>
-                        <div className="flex items-center justify-center sm:justify-start gap-3 text-xs font-bold">
-                          <a
-                            href="https://onetime-voter.vercel.app"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-teal-800 hover:underline"
+                {/* Clean Clickable Links with Full URLs (Fully preserved in exported PDF & Print) */}
+                <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs font-bold pt-2 border-t border-slate-100">
+                  {cv.portfolio && (
+                    <a
+                      href={cv.portfolio.startsWith('http') ? cv.portfolio : `https://${cv.portfolio}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-teal-700 hover:text-teal-900 hover:underline inline-flex items-center cursor-pointer"
+                    >
+                      <span>Portfolio Website: {cv.portfolio.startsWith('http') ? cv.portfolio : `https://${cv.portfolio}`}</span>
+                    </a>
+                  )}
+                  {cv.github && (
+                    <a
+                      href={cv.github.startsWith('http') ? cv.github : `https://${cv.github}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-teal-700 hover:text-teal-900 hover:underline inline-flex items-center cursor-pointer"
+                    >
+                      <span>GitHub Profile: https://{cv.github.replace(/^https?:\/\//, '')}</span>
+                    </a>
+                  )}
+                  {cv.linkedin && (
+                    <a
+                      href={cv.linkedin.startsWith('http') ? cv.linkedin : `https://${cv.linkedin}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-teal-700 hover:text-teal-900 hover:underline inline-flex items-center cursor-pointer"
+                    >
+                      <span>LinkedIn Profile: https://{cv.linkedin.replace(/^https?:\/\//, '')}</span>
+                    </a>
+                  )}
+                </div>
+              </div>
+
+              {/* Professional Summary */}
+              <div className="space-y-2">
+                <h2 className="text-xs font-black uppercase tracking-widest text-teal-800 font-display pb-1 border-b border-slate-200">
+                  Professional Summary
+                </h2>
+                <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-normal">
+                  {cv.summary}
+                </p>
+              </div>
+
+              {/* Technical Skills & Proficiencies */}
+              <div className="space-y-3">
+                <h2 className="text-xs font-black uppercase tracking-widest text-teal-800 font-display pb-1 border-b border-slate-200">
+                  Technical Skills & Proficiencies
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {(cv.skills || []).map((group, idx) => (
+                    <div key={idx} style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }} className="p-4 rounded-2xl bg-slate-50/80 border border-slate-200/60 space-y-3 shadow-sm">
+                      <h3 className="text-xs font-black uppercase tracking-wider text-slate-800 font-display">
+                        {group.category}
+                      </h3>
+                      <div className="flex flex-wrap gap-1.5">
+                        {(group.items || []).map((item, i) => (
+                          <span
+                            key={i}
+                            className="text-[11px] sm:text-xs font-semibold px-3 py-1 rounded-full bg-teal-50 text-teal-950 border border-teal-100 shadow-sm hover:bg-teal-100/50 transition-colors"
                           >
-                            View Live App
-                          </a>
-                          <span className="text-slate-300">•</span>
-                          {h.codeLink && (
-                            <a
-                              href={h.codeLink}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-teal-800 hover:underline"
-                            >
-                              View GitHub Repository
-                            </a>
-                          )}
-                        </div>
+                            {item}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Award-Winning Hackathon Showcase Section */}
+              {(cv.hackathonProject || DEFAULT_CV.hackathonProject) && (() => {
+                const h = cv.hackathonProject || DEFAULT_CV.hackathonProject;
+                return (
+                  <div className="space-y-4 pt-2">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-teal-200/80 pb-2 gap-2">
+                      <h2 className="text-xs font-black uppercase tracking-widest text-teal-800 font-display flex items-center gap-1.5">
+                        <span>🏆</span> {h.awardTitle || "Award-Winning Hackathon Project"}
+                      </h2>
+                      <span className="text-[10px] font-extrabold uppercase px-3 py-1 rounded-full bg-teal-100 text-teal-950 border border-teal-300 whitespace-nowrap self-start sm:self-auto">
+                        1st Place Winner
+                      </span>
+                    </div>
+
+                    <div style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }} className="p-4 sm:p-5 rounded-2xl bg-teal-50/40 border border-teal-200/80 flex flex-col sm:flex-row gap-5 items-center sm:items-start">
+                      {/* Square Award Trophy / Certificate Photo Container */}
+                      <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-xl bg-slate-900 border-2 border-teal-500/40 shadow-md flex-shrink-0 overflow-hidden flex items-center justify-center relative aspect-square mx-auto sm:mx-0">
+                        {h.awardImage && h.awardImage.trim().startsWith('http') ? (
+                          <img
+                            src={h.awardImage}
+                            alt="Hackathon Award Trophy"
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-gradient-to-br from-slate-900 via-teal-950/60 to-slate-900 p-3 flex flex-col items-center justify-center text-center space-y-1">
+                            <span className="text-2xl">🏆</span>
+                            <span className="text-[10px] font-extrabold text-teal-300 font-display uppercase tracking-wider">
+                              Hackathon Winner
+                            </span>
+                            <span className="text-[9px] text-teal-200/70 leading-tight">
+                              Award Certificate
+                            </span>
+                          </div>
+                        )}
                       </div>
 
-                      <p className="text-xs text-slate-700 leading-relaxed font-medium">
-                        {h.summary}
-                      </p>
+                      {/* Technical Details */}
+                      <div className="flex-1 space-y-2 w-full text-center sm:text-left">
+                        <div className="flex flex-col md:flex-row md:items-baseline justify-between gap-2">
+                          <h3 className="text-base font-extrabold text-slate-900 font-display">
+                            {h.title} <span className="text-xs font-bold text-teal-800">— {h.role}</span>
+                          </h3>
+                        </div>
 
-                      <ul className="list-disc list-inside ml-4 space-y-1 text-xs text-slate-700 leading-relaxed font-normal text-left">
-                        {(h.keyFeatures || []).map((feat, fIdx) => (
-                          <li key={fIdx}>{feat}</li>
+                        <p className="text-xs text-slate-700 leading-relaxed font-medium">
+                          {h.summary}
+                        </p>
+
+                        <ul className="list-disc list-inside ml-4 space-y-1 text-xs text-slate-700 leading-relaxed font-normal text-left">
+                          {(h.keyFeatures || []).map((feat, fIdx) => (
+                            <li key={fIdx}>{feat}</li>
+                          ))}
+                        </ul>
+
+                        <div className="flex flex-wrap justify-center sm:justify-start gap-1.5 pt-1">
+                          {(h.tech || []).map((t, tIdx) => (
+                            <span
+                              key={tIdx}
+                              className="text-[10px] font-semibold px-2.5 py-1 rounded-full bg-teal-50 text-teal-900 border border-teal-100 shadow-sm"
+                            >
+                              {t}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* Featured Software Projects */}
+              <div className="space-y-4">
+                <h2 className="text-xs font-black uppercase tracking-widest text-teal-800 font-display pb-1 border-b border-slate-200">
+                  Featured Software Projects
+                </h2>
+                <div className="space-y-4">
+                  {(cv.projects || []).map((proj, idx) => (
+                    <div key={idx} style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }} className="space-y-1.5">
+                      <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
+                        <h3 className="text-sm font-bold text-slate-900 font-display">
+                          {proj.title} <span className="text-xs font-semibold text-teal-700">— {proj.role}</span>
+                        </h3>
+                      </div>
+                      <ul className="list-disc list-outside ml-4 space-y-1 text-xs text-slate-700 leading-relaxed font-normal">
+                        {(proj.bullets || []).map((bullet, bIdx) => (
+                          <li key={bIdx}>{bullet}</li>
                         ))}
                       </ul>
-
-                      <div className="flex flex-wrap justify-center sm:justify-start gap-1.5 pt-1">
-                        {(h.tech || []).map((t, tIdx) => (
-                          <span
-                            key={tIdx}
-                            className="text-[10px] font-semibold px-2.5 py-1 rounded-full bg-teal-50 text-teal-900 border border-teal-100 shadow-sm"
-                          >
-                            {t}
-                          </span>
-                        ))}
-                      </div>
                     </div>
-                  </div>
+                  ))}
                 </div>
-              );
-            })()}
-
-            {/* Featured Software Projects */}
-            <div className="space-y-2">
-              <h2 className="text-xs font-black uppercase tracking-widest text-teal-800 font-display pb-1 border-b border-slate-200">
-                Featured Software Projects
-              </h2>
-              <div className="space-y-2">
-                {(cv.projects || []).map((proj, idx) => (
-                  <div key={idx} className="space-y-1">
-                    <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
-                      <h3 className="text-xs font-bold text-slate-900 font-display">
-                        {proj.title} <span className="text-[10px] font-semibold text-teal-700">— {proj.role}</span>
-                      </h3>
-                    </div>
-                    <ul className="list-disc list-outside ml-4 space-y-0.5 text-[11px] text-slate-700 leading-snug font-normal">
-                      {(proj.bullets || []).map((bullet, bIdx) => (
-                        <li key={bIdx}>{bullet}</li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
               </div>
-            </div>
 
-            {/* Professional Experience */}
-            <div className="space-y-2">
-              <h2 className="text-xs font-black uppercase tracking-widest text-teal-800 font-display pb-1 border-b border-slate-200">
-                Professional Experience
-              </h2>
-              <div className="space-y-2">
-                {(cv.experience || []).map((exp, idx) => (
-                  <div key={idx} className="space-y-1">
-                    <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
-                      <h3 className="text-xs font-bold text-slate-900 font-display">
-                        {exp.role} <span className="text-[10px] font-semibold text-slate-600">| {exp.company}</span>
-                      </h3>
+              {/* Professional Experience */}
+              <div className="space-y-4">
+                <h2 className="text-xs font-black uppercase tracking-widest text-teal-800 font-display pb-1 border-b border-slate-200">
+                  Professional Experience
+                </h2>
+                <div className="space-y-5">
+                  {(cv.experience || []).map((exp, idx) => (
+                    <div key={idx} style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }} className="space-y-1.5">
+                      <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
+                        <h3 className="text-sm font-bold text-slate-900 font-display">
+                          {exp.role} <span className="text-xs font-semibold text-slate-600">| {exp.company}</span>
+                        </h3>
+                      </div>
+                      <ul className="list-disc list-outside ml-4 space-y-1 text-xs text-slate-700 leading-relaxed font-normal">
+                        {(exp.bullets || []).map((bullet, bIdx) => (
+                          <li key={bIdx}>{bullet}</li>
+                        ))}
+                      </ul>
                     </div>
-                    <ul className="list-disc list-outside ml-4 space-y-0.5 text-[11px] text-slate-700 leading-snug font-normal">
-                      {(exp.bullets || []).map((bullet, bIdx) => (
-                        <li key={bIdx}>{bullet}</li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
 
-            {/* Education */}
-            <div className="space-y-2">
-              <h2 className="text-xs font-black uppercase tracking-widest text-teal-800 font-display pb-1 border-b border-slate-200">
-                Education
-              </h2>
-              <div className="space-y-1.5">
-                {(cv.education || []).map((edu, idx) => (
-                  <div key={idx} className="flex justify-between items-baseline text-xs">
-                    <div>
-                      <h3 className="font-bold text-slate-900 font-display text-xs">{edu.degree}</h3>
-                      <p className="text-slate-600 text-[10px] font-medium">{edu.institution}</p>
+              {/* Education */}
+              <div className="space-y-3">
+                <h2 className="text-xs font-black uppercase tracking-widest text-teal-800 font-display pb-1 border-b border-slate-200">
+                  Education
+                </h2>
+                <div className="space-y-2">
+                  {(cv.education || []).map((edu, idx) => (
+                    <div key={idx} style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }} className="flex justify-between items-baseline text-xs">
+                      <div>
+                        <h3 className="font-bold text-slate-900 font-display text-sm">{edu.degree}</h3>
+                        <p className="text-slate-600 text-xs font-medium">{edu.institution}</p>
+                      </div>
+                      {edu.period && (
+                        <span className="text-teal-800 font-bold text-[11px] bg-teal-50 border border-teal-200/80 px-2 py-0.5 rounded-md">
+                          {edu.period}
+                        </span>
+                      )}
                     </div>
-                    {edu.period && (
-                      <span className="text-teal-800 font-bold text-[10px] bg-teal-50 border border-teal-200/80 px-2 py-0.5 rounded-md">
-                        {edu.period}
-                      </span>
-                    )}
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
 
-            {/* Open for Collaboration Section */}
-            <div className="space-y-1 pt-2 border-t-2 border-teal-600">
-              <h2 className="text-xs font-black uppercase tracking-widest text-teal-800 font-display">
-                Open for Collaboration
-              </h2>
-              <p className="text-[11px] sm:text-xs text-slate-700 font-medium leading-snug">
-                Full-Stack Engineer open for high-impact project collaborations, technical consulting, and innovative joint ventures.
-              </p>
-            </div>
+              {/* Open for Collaboration Section */}
+              <div className="space-y-2 pt-4 border-t-2 border-teal-600">
+                <h2 className="text-xs font-black uppercase tracking-widest text-teal-800 font-display">
+                  Open for Collaboration
+                </h2>
+                <p className="text-xs sm:text-sm text-slate-700 font-medium leading-relaxed">
+                  Full-Stack Engineer open for high-impact project collaborations, technical consulting, and innovative joint ventures.
+                </p>
+              </div>
 
             </div> {/* End of #cv-paper */}
           </motion.div>
