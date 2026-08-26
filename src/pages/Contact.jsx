@@ -150,7 +150,7 @@ export default function Contact() {
   return (
     <>
       <SEO
-        title="Contact | Anayolico"
+        title="Contact Caleb Anayolico | Full-Stack & Backend Engineer"
         description="Have an exciting project idea, a role, or simply want to connect? Send a message."
         keywords="Anayolico, Caleb Anayolico, Anayo, Contact, Hire, Freelance, Web Developer"
         url="/contact"

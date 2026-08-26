@@ -13,13 +13,14 @@ const SEO = ({ title, description, keywords, url, type = 'website' }) => {
     'alternateName': ['Anayolico', 'Caleb Anayo', 'Anayolico Full-Stack Engineer'],
     'url': siteUrl,
     'image': ogImage,
-    'jobTitle': 'Full-Stack Engineer & SaaS Builder',
+    'jobTitle': 'Full-Stack & Backend Engineer / Mobile Application Developer',
     'worksFor': {
       '@type': 'Organization',
-      'name': 'Self-Employed / SaaS Engineer'
+      'name': 'Full-Stack Software Engineer & SaaS Builder'
     },
     'sameAs': [
-      'https://github.com/anayolico'
+      'https://github.com/anayolico',
+      'https://www.linkedin.com/in/caleb-anayolico-9861a8350'
     ],
     'knowsAbout': [
       'React.js',

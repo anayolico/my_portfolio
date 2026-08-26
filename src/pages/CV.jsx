@@ -255,6 +255,13 @@ export default function CV() {
         }
       `}</style>
 
+      <SEO
+        title="Caleb Anayolico — Executive CV / Resume | Full-Stack & Backend Engineer"
+        description="Official executive resume & technical CV of Caleb Anayolico — Full-Stack & Backend Engineer, Mobile Application Developer, and Cloud Infrastructure Engineer."
+        keywords="Caleb Anayolico CV, Anayolico Resume, Caleb Anayolico Resume, Full-Stack Engineer CV, Backend Developer Resume, Nigeria"
+        url="/cv"
+      />
+
       <div className="cv-page-bg min-h-screen bg-slate-950 py-8 px-4 md:px-8 selection:bg-blue-600 selection:text-white">
         <div className="max-w-4xl mx-auto space-y-6">
 
@@ -302,7 +309,7 @@ export default function CV() {
                 <h1 className="text-3xl sm:text-4xl font-extrabold text-blue-900 tracking-tight font-sans">
                   {cv.fullName}
                 </h1>
-                <p className="text-xs sm:text-sm font-extrabold text-blue-700 tracking-wide uppercase">
+                <p className="text-xs sm:text-sm font-extrabold text-blue-700 tracking-wide">
                   {cv.title}
                 </p>
 
