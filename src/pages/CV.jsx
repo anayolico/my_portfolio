@@ -5,93 +5,94 @@ import { fetchFromApi } from '../services/api'
 
 const DEFAULT_CV = {
   fullName: "Caleb Anayolico",
-  title: "Full-Stack Web & Mobile Application Engineer",
+  title: "Full-Stack Web & Mobile Application Engineer | SaaS Builder",
   location: "Port Harcourt, Rivers State, Nigeria",
   phone: "+234 916 558 7681",
   email: "acnwa1234@gmail.com",
   portfolio: "https://anayolico.name.ng",
   github: "github.com/anayolico",
   linkedin: "linkedin.com/in/caleb-anayolico-9861a8350",
-  summary: "Driven Full-Stack Software Engineer with a clear trajectory of growth, evolving from a design focus to becoming a complete application architect. Proficient across the entire stack—leveraging React.js, Next.js, and React Native for dynamic interfaces, alongside Node.js, Python (FastAPI), and Java for scalable server architectures. Skilled in configuring relational and document databases (PostgreSQL, Prisma ORM, MongoDB, Supabase), integrating local/international payment gateways (Paystack, Flutterwave), and deploying cloud infrastructure. A graduate of NIIT with a Diploma in Software Engineering, and currently an intern at Fowgate, actively applying and refining full-stack skills on enterprise-level applications. Proven track record delivering both client solutions and robust production applications.",
+  summary: "Driven Full-Stack & Backend Engineer with hands-on experience designing, shipping, and maintaining production-grade web and mobile applications across fintech, SaaS, and security domains. Strong command of React.js, Next.js, Node.js, Express, Python (FastAPI), React Native, and PostgreSQL (Prisma ORM, Neon DB), paired with cloud deployment experience on Vercel, Render, and AWS (S3). Skilled in configuring relational and document databases, integrating payment gateways (Paystack, Flutterwave), and deploying scalable server infrastructure.",
   skills: [
     {
-      category: "Frontend Development",
-      items: ["React.js", "Next.js", "JavaScript (ES6+)", "HTML5", "CSS3 & Sass", "Tailwind CSS", "Vite", "React Native", "Responsive Web Design", "UI/UX Animations"]
+      category: "Backend",
+      items: ["Node.js", "Express.js", "Python (FastAPI)", "Java (Android)", "RESTful API Design", "JWT Authentication", "WebSockets", "Automation Systems"]
     },
     {
-      category: "Backend & Mobile Development",
-      items: ["Node.js & Express", "Python (FastAPI)", "Java (Android)", "React Native", "PostgreSQL & Prisma ORM", "MongoDB", "RESTful APIs", "Automation Systems"]
+      category: "Frontend",
+      items: ["React.js", "Next.js", "JavaScript (ES6+)", "HTML5", "CSS3 & Sass", "Tailwind CSS", "Vite", "React Native", "Responsive Web Design"]
     },
     {
-      category: "Databases & Storage",
+      category: "Databases",
       items: ["PostgreSQL", "Prisma ORM", "MongoDB", "Supabase", "SQL", "Neon Database"]
     },
     {
-      category: "Integrations & Cloud Services",
-      items: ["Paystack", "Flutterwave", "Stripe", "Vercel", "Render", "Hostinger & VPS", "AWS (S3)", "Supabase/Clerk", "Mailgun & Resend"]
+      category: "Cloud & DevOps",
+      items: ["Vercel", "Render", "Hostinger & VPS", "AWS (S3)", "Docker", "Git & GitHub Actions (CI/CD)", "Postman & API Testing"]
     },
     {
-      category: "DevOps & Developer Tools",
-      items: ["Git & GitHub Actions (CI/CD)", "Postman & API Testing", "Progressive Web Apps (PWA)", "Figma & UI Prototyping", "CloudConvert & Sharp API"]
+      category: "Integrations & Tools",
+      items: ["Paystack", "Flutterwave", "Stripe", "Clerk", "Mailgun & Resend", "CloudConvert & Sharp API", "Figma"]
+    },
+    {
+      category: "AI & Automation",
+      items: ["Google Generative AI (Gemini API)", "OpenAI API", "Prompt Engineering", "Agentic Workflow Integration"]
     }
   ],
   projects: [
     {
-      title: "LuminaConvert",
-      role: "Full-Stack Creator & Architect",
+      title: "Nigeria SecureVote",
+      subtitle: "1st Place Hackathon Winner & Best Security Architecture",
+      tech: "React, Node.js, Python (FastAPI), Neon DB, PWA Offline Sync",
       bullets: [
-        "Engineered an online multi-format image & media conversion workstation with high-speed backend execution pipelines and an integrated AI assistant.",
-        "Integrated React, Vite, Node.js, Express, Prisma ORM, Neon PostgreSQL, Supabase, CloudConvert, Sharp API, Google Generative AI, and Resend."
+        "Engineered an award-winning next-generation cryptographic E-Voting & Identity Ingestion platform for high-security multi-service elections.",
+        "Integrated real-time National Identity (NIMC/NIN) verification & dynamic citizen profile ingestion via Prembly API.",
+        "Built a PWA offline-first resilient vote queue with local cryptographic signing and WebAuthn biometric authorization enforcing single-vote integrity.",
+        "Developed a Python FastAPI fraud detection engine and real-time public transparency audit ledger."
+      ]
+    },
+    {
+      title: "LuminaConvert",
+      subtitle: "Online Media Converter & AI Workstation",
+      tech: "React, Vite, Node.js, Express, Prisma ORM, Neon PostgreSQL, Supabase, Google Generative AI",
+      bullets: [
+        "Engineered an online multi-format image & media conversion workstation with high-speed backend execution pipelines.",
+        "Integrated CloudConvert API, Sharp API, Google Generative AI assistant, and automated Resend transactional email workflows."
       ]
     },
     {
       title: "Mindful Canvas",
-      role: "Full-Stack Developer",
+      subtitle: "Distraction-Free Note-Taking Application",
+      tech: "React, Vite, Node.js, Express, PostgreSQL, Neon DB, Supabase",
       bullets: [
-        "Designed a minimalist note-taking application providing a distraction-free writing environment with secure authentication, real-time auto-saving, and React Markdown parsing.",
-        "Built with React, Vite, Node.js, Express, PostgreSQL, Neon Database, and Supabase."
+        "Designed a minimalist note-taking platform with secure authentication, real-time auto-saving, and React Markdown parsing."
       ]
     },
     {
       title: "Construction Company Web Platform",
-      role: "Full-Stack Developer",
+      subtitle: "Commercial Web Platform & Engineering Flow",
+      tech: "React.js, Node.js, Express, Tailwind CSS",
       bullets: [
         "Designed and engineered a commercial web platform for a Nigerian construction firm using React.js, Node.js, and Tailwind CSS with interactive project galleries and service inquiry flows."
       ]
     },
     {
       title: "Weather Forecast App",
-      role: "Frontend & API Engineer",
+      subtitle: "Real-Time Weather Visualization & API Service",
+      tech: "React, OpenWeather API, CSS Weather Animations",
       bullets: [
         "Developed a real-time weather application with location search, multi-day forecasts, and smooth CSS weather visualizations."
       ]
     }
   ],
-  hackathonProject: {
-    title: "Nigeria SecureVote",
-    awardTitle: "1st Place Hackathon Winner & Best Security Architecture",
-    role: "Lead Architect & Full-Stack Developer",
-    awardImage: "",
-    summary: "Award-winning next-generation cryptographic E-Voting & Identity Ingestion platform engineered for secure, transparent multi-service election processing.",
-    keyFeatures: [
-      "Real-time National Identity (NIMC/NIN) verification & dynamic citizen profile ingestion via Prembly API.",
-      "PWA Offline-First Resilient Vote Queue with local cryptographic signing and auto-reconnection background sync.",
-      "WebAuthn Biometric Authorization (fingerprint / TouchID / FaceID) enforcing strict single-vote integrity.",
-      "Cryptographic Token & Digital PVC Card Generation featuring 6-digit VIN, 16-character security tokens, and QR verification.",
-      "Python FastAPI Fraud Detection Engine & Real-Time Public Transparency Audit Ledger."
-    ],
-    tech: ["React", "Node.js", "Python (FastAPI)", "Neon Database", "PWA Offline Sync"],
-    demoLink: "#",
-    codeLink: "https://github.com/anayolico/onetime"
-  },
   experience: [
     {
       period: "",
       role: "Full-Stack Software Engineer (Intern)",
       company: "Fowgate",
       bullets: [
-        "Contributing as a Full-Stack Engineer intern building enterprise features, internal application modules, and scaling frontend UI performance using React.js and Next.js.",
-        "Architecting scalable state management solutions, integrating RESTful API endpoints, and optimizing server payload loading speeds."
+        "Building enterprise features, internal application modules, and optimizing frontend performance using React.js and Next.js.",
+        "Architecting scalable state management solutions, integrating RESTful API endpoints, and improving server payload loading speeds."
       ]
     },
     {
@@ -100,7 +101,7 @@ const DEFAULT_CV = {
       company: "Self-Employed / NIIT",
       bullets: [
         "Earned a Diploma in Software Engineering from the National Institute of Information Technology (NIIT).",
-        "Delivered custom software applications across e-commerce and real estate, integrating Paystack and Flutterwave payment gateways and designing PostgreSQL / Prisma schemas."
+        "Delivered custom web and SaaS applications, integrating Paystack and Flutterwave payment gateways and designing normalized PostgreSQL database schemas."
       ]
     },
     {
@@ -109,7 +110,7 @@ const DEFAULT_CV = {
       company: "Freelance Client Work",
       bullets: [
         "Engineered cross-platform mobile applications using React Native and Java (Android).",
-        "Focused on smooth 60fps UI performance, offline data persistence, and native mobile component integrations."
+        "Optimized mobile component render speeds, implemented offline data persistence, and integrated native mobile capabilities."
       ]
     },
     {
@@ -117,7 +118,7 @@ const DEFAULT_CV = {
       role: "UI/UX & Web Designer",
       company: "Independent Client Work",
       bullets: [
-        "Spearheaded user interface research and wireframing using Figma, translating visual designs into clean responsive HTML5/CSS3/JavaScript codebases."
+        "Spearheaded user interface research and wireframing in Figma, translating visual mockups into clean, responsive frontend codebases."
       ]
     }
   ],
@@ -126,12 +127,11 @@ const DEFAULT_CV = {
       degree: "Diploma in Software Engineering",
       institution: "National Institute of Information Technology (NIIT)",
       period: "Graduated"
-    },
-    {
-      degree: "Bachelor of Science (B.Sc.) Candidate — Computer Science / Engineering",
-      institution: "University Degree Program",
-      period: "Graduation Pending"
     }
+  ],
+  certifications: [
+    { title: "Diploma in Software Engineering", issuer: "NIIT", year: "2024" },
+    { title: "Google AI & Web Architecture Fundamentals", issuer: "Google", year: "2024" }
   ]
 };
 
@@ -203,7 +203,7 @@ export default function CV() {
   return (
     <>
       <SEO
-        title="Caleb Anayolico — CV / Resume | Full-Stack Engineer"
+        title="Caleb Anayolico — Executive CV / Resume | Full-Stack Engineer"
         description="Official Executive Curriculum Vitae (CV) of Caleb Anayolico, Full-Stack Engineer & SaaS Builder. Comprehensive work history, software architecture projects, awards, and technical expertise."
         keywords="Caleb Anayolico CV, Caleb Anayolico Resume, Caleb Anayolico, Anayolico CV, Full-Stack Engineer CV, Software Developer Resume"
         url="/cv"
@@ -213,8 +213,8 @@ export default function CV() {
       <style>{`
         @media print {
           @page {
-            margin: 12mm 15mm;
-            size: auto;
+            margin: 10mm 12mm 10mm 12mm;
+            size: A4 portrait;
           }
           body {
             background: #ffffff !important;
@@ -238,14 +238,18 @@ export default function CV() {
             margin: 0 !important;
             border-radius: 0 !important;
           }
+          .cv-section-title {
+            color: #1d4ed8 !important;
+            border-bottom-color: #2563eb !important;
+          }
           a {
-            color: #0f766e !important;
-            text-decoration: underline !important;
+            color: #2563eb !important;
+            text-decoration: none !important;
           }
         }
       `}</style>
 
-      <div className="cv-page-bg min-h-screen bg-slate-950 py-8 px-4 md:px-8 selection:bg-teal-500 selection:text-white">
+      <div className="cv-page-bg min-h-screen bg-slate-950 py-8 px-4 md:px-8 selection:bg-blue-600 selection:text-white">
         <div className="max-w-4xl mx-auto space-y-6">
 
           {/* Floating Action Header Bar */}
@@ -267,7 +271,7 @@ export default function CV() {
 
             <button
               onClick={handleDownloadPdf}
-              className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-500 hover:brightness-110 text-white font-bold text-xs shadow-lg shadow-teal-500/25 transition-all flex items-center gap-2 cursor-pointer active:scale-95"
+              className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:brightness-110 text-white font-bold text-xs shadow-lg shadow-blue-500/25 transition-all flex items-center gap-2 cursor-pointer active:scale-95"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -282,210 +286,109 @@ export default function CV() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
           >
-            {/* Clean Executive White Paper Resume Document */}
+            {/* Executive White Paper Document modeled after Winner OrluVictor's PDF */}
             <div
               id="cv-paper"
-              className="cv-paper bg-white text-slate-900 p-6 sm:p-10 rounded-2xl shadow-2xl shadow-black/50 border border-slate-200 space-y-5"
+              className="cv-paper bg-white text-slate-900 p-8 sm:p-12 rounded-2xl shadow-2xl shadow-black/50 border border-slate-200 space-y-5 font-sans"
             >
-              {/* Header / Contact Info Block */}
-              <div className="border-b-2 border-teal-600 pb-6 space-y-4">
-                <div className="flex flex-col sm:flex-row justify-between sm:items-start gap-4">
-                  <div>
-                    <h1 className="text-3xl sm:text-4xl font-extrabold font-display text-slate-900 tracking-tight">
-                      {cv.fullName}
-                    </h1>
-                    <p className="text-sm sm:text-base font-bold text-teal-700 tracking-wide uppercase mt-1">
-                      {cv.title}
-                    </p>
-                  </div>
+              {/* Header / Contact Info Header Banner */}
+              <div className="text-center border-b border-slate-200 pb-4 space-y-2">
+                <h1 className="text-3xl sm:text-4xl font-extrabold text-blue-900 tracking-tight font-sans">
+                  {cv.fullName}
+                </h1>
+                <p className="text-xs sm:text-sm font-extrabold text-blue-700 tracking-wide uppercase">
+                  {cv.title}
+                </p>
 
-                  <div className="flex flex-col items-start sm:items-end text-xs text-slate-700 space-y-1 sm:text-right font-medium leading-tight">
-                    <p className="text-slate-800 font-semibold">{cv.location}</p>
-                    <p className="text-slate-700">{cv.phone}</p>
-                    <a href={`mailto:${cv.email}`} className="text-teal-700 font-semibold hover:underline">
-                      {cv.email}
-                    </a>
-                  </div>
-                </div>
-
-                {/* Clean Clickable Links with Full URLs (Fully preserved in exported PDF & Print) */}
-                <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs font-bold pt-2 border-t border-slate-100">
+                {/* Primary Contact Details Single Line */}
+                <div className="flex flex-wrap justify-center items-center gap-x-3 gap-y-1 text-xs font-semibold text-slate-600 pt-1">
+                  <a href={`mailto:${cv.email}`} className="text-blue-700 hover:underline">
+                    {cv.email}
+                  </a>
+                  <span className="text-slate-400">|</span>
+                  <span>{cv.phone}</span>
+                  <span className="text-slate-400">|</span>
                   {cv.portfolio && (
                     <a
                       href={cv.portfolio.startsWith('http') ? cv.portfolio : `https://${cv.portfolio}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-teal-700 hover:text-teal-900 hover:underline inline-flex items-center cursor-pointer"
+                      className="text-blue-700 hover:underline"
                     >
-                      <span>Portfolio Website: {cv.portfolio.startsWith('http') ? cv.portfolio : `https://${cv.portfolio}`}</span>
+                      {cv.portfolio.replace(/^https?:\/\//, '')}
                     </a>
                   )}
+                  <span className="text-slate-400">|</span>
+                  <span className="text-slate-700 font-medium">Remote / {cv.location}</span>
+                </div>
+
+                {/* Social Profiles Row */}
+                <div className="flex flex-wrap justify-center items-center gap-x-4 gap-y-1 text-[11px] font-semibold text-slate-600">
                   {cv.github && (
                     <a
                       href={cv.github.startsWith('http') ? cv.github : `https://${cv.github}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-teal-700 hover:text-teal-900 hover:underline inline-flex items-center cursor-pointer"
+                      className="text-blue-700 hover:underline"
                     >
-                      <span>GitHub Profile: https://{cv.github.replace(/^https?:\/\//, '')}</span>
+                      GitHub: {cv.github.replace(/^https?:\/\//, '')}
                     </a>
                   )}
                   {cv.linkedin && (
-                    <a
-                      href={cv.linkedin.startsWith('http') ? cv.linkedin : `https://${cv.linkedin}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-teal-700 hover:text-teal-900 hover:underline inline-flex items-center cursor-pointer"
-                    >
-                      <span>LinkedIn Profile: https://{cv.linkedin.replace(/^https?:\/\//, '')}</span>
-                    </a>
+                    <>
+                      <span className="text-slate-300">•</span>
+                      <a
+                        href={cv.linkedin.startsWith('http') ? cv.linkedin : `https://${cv.linkedin}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-700 hover:underline"
+                      >
+                        LinkedIn: {cv.linkedin.replace(/^https?:\/\//, '')}
+                      </a>
+                    </>
                   )}
                 </div>
               </div>
 
-              {/* Professional Summary */}
-              <div className="space-y-2">
-                <h2 className="text-xs font-black uppercase tracking-widest text-teal-800 font-display pb-1 border-b border-slate-200">
-                  Professional Summary
+              {/* 1. PROFESSIONAL SUMMARY */}
+              <div style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }} className="space-y-1.5">
+                <h2 className="cv-section-title text-xs font-extrabold uppercase tracking-widest text-blue-900 border-b-2 border-blue-600 pb-1">
+                  PROFESSIONAL SUMMARY
                 </h2>
-                <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-normal">
+                <p className="text-[11px] sm:text-xs text-slate-800 leading-relaxed font-normal text-justify">
                   {cv.summary}
                 </p>
               </div>
 
-              {/* Technical Skills & Proficiencies */}
-              <div className="space-y-3">
-                <h2 className="text-xs font-black uppercase tracking-widest text-teal-800 font-display pb-1 border-b border-slate-200">
-                  Technical Skills & Proficiencies
+              {/* 2. TECHNICAL SKILLS */}
+              <div style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }} className="space-y-2">
+                <h2 className="cv-section-title text-xs font-extrabold uppercase tracking-widest text-blue-900 border-b-2 border-blue-600 pb-1">
+                  TECHNICAL SKILLS
                 </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1 text-[11px] sm:text-xs text-slate-800 leading-relaxed">
                   {(cv.skills || []).map((group, idx) => (
-                    <div key={idx} style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }} className="p-4 rounded-2xl bg-slate-50/80 border border-slate-200/60 space-y-3 shadow-sm">
-                      <h3 className="text-xs font-black uppercase tracking-wider text-slate-800 font-display">
-                        {group.category}
-                      </h3>
-                      <div className="flex flex-wrap gap-1.5">
-                        {(group.items || []).map((item, i) => (
-                          <span
-                            key={i}
-                            className="text-[11px] sm:text-xs font-semibold px-3 py-1 rounded-full bg-teal-50 text-teal-950 border border-teal-100 shadow-sm hover:bg-teal-100/50 transition-colors"
-                          >
-                            {item}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
+                    <p key={idx}>
+                      <strong className="font-extrabold text-blue-950">{group.category}: </strong>
+                      <span>{Array.isArray(group.items) ? group.items.join(', ') : group.items}</span>
+                    </p>
                   ))}
                 </div>
               </div>
 
-              {/* Award-Winning Hackathon Showcase Section */}
-              {(cv.hackathonProject || DEFAULT_CV.hackathonProject) && (() => {
-                const h = cv.hackathonProject || DEFAULT_CV.hackathonProject;
-                return (
-                  <div className="space-y-4 pt-2">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-teal-200/80 pb-2 gap-2">
-                      <h2 className="text-xs font-black uppercase tracking-widest text-teal-800 font-display flex items-center gap-1.5">
-                        <span>🏆</span> {h.awardTitle || "Award-Winning Hackathon Project"}
-                      </h2>
-                      <span className="text-[10px] font-extrabold uppercase px-3 py-1 rounded-full bg-teal-100 text-teal-950 border border-teal-300 whitespace-nowrap self-start sm:self-auto">
-                        1st Place Winner
-                      </span>
-                    </div>
-
-                    <div style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }} className="p-4 sm:p-5 rounded-2xl bg-teal-50/40 border border-teal-200/80 flex flex-col sm:flex-row gap-5 items-center sm:items-start">
-                      {/* Square Award Trophy / Certificate Photo Container */}
-                      <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-xl bg-slate-900 border-2 border-teal-500/40 shadow-md flex-shrink-0 overflow-hidden flex items-center justify-center relative aspect-square mx-auto sm:mx-0">
-                        {h.awardImage && h.awardImage.trim().startsWith('http') ? (
-                          <img
-                            src={h.awardImage}
-                            alt="Hackathon Award Trophy"
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-gradient-to-br from-slate-900 via-teal-950/60 to-slate-900 p-3 flex flex-col items-center justify-center text-center space-y-1">
-                            <span className="text-2xl">🏆</span>
-                            <span className="text-[10px] font-extrabold text-teal-300 font-display uppercase tracking-wider">
-                              Hackathon Winner
-                            </span>
-                            <span className="text-[9px] text-teal-200/70 leading-tight">
-                              Award Certificate
-                            </span>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Technical Details */}
-                      <div className="flex-1 space-y-2 w-full text-center sm:text-left">
-                        <div className="flex flex-col md:flex-row md:items-baseline justify-between gap-2">
-                          <h3 className="text-base font-extrabold text-slate-900 font-display">
-                            {h.title} <span className="text-xs font-bold text-teal-800">— {h.role}</span>
-                          </h3>
-                        </div>
-
-                        <p className="text-xs text-slate-700 leading-relaxed font-medium">
-                          {h.summary}
-                        </p>
-
-                        <ul className="list-disc list-inside ml-4 space-y-1 text-xs text-slate-700 leading-relaxed font-normal text-left">
-                          {(h.keyFeatures || []).map((feat, fIdx) => (
-                            <li key={fIdx}>{feat}</li>
-                          ))}
-                        </ul>
-
-                        <div className="flex flex-wrap justify-center sm:justify-start gap-1.5 pt-1">
-                          {(h.tech || []).map((t, tIdx) => (
-                            <span
-                              key={tIdx}
-                              className="text-[10px] font-semibold px-2.5 py-1 rounded-full bg-teal-50 text-teal-900 border border-teal-100 shadow-sm"
-                            >
-                              {t}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })()}
-
-              {/* Featured Software Projects */}
-              <div className="space-y-4">
-                <h2 className="text-xs font-black uppercase tracking-widest text-teal-800 font-display pb-1 border-b border-slate-200">
-                  Featured Software Projects
+              {/* 3. WORK EXPERIENCE */}
+              <div style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }} className="space-y-3">
+                <h2 className="cv-section-title text-xs font-extrabold uppercase tracking-widest text-blue-900 border-b-2 border-blue-600 pb-1">
+                  WORK EXPERIENCE
                 </h2>
-                <div className="space-y-4">
-                  {(cv.projects || []).map((proj, idx) => (
-                    <div key={idx} style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }} className="space-y-1.5">
-                      <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
-                        <h3 className="text-sm font-bold text-slate-900 font-display">
-                          {proj.title} <span className="text-xs font-semibold text-teal-700">— {proj.role}</span>
-                        </h3>
-                      </div>
-                      <ul className="list-disc list-outside ml-4 space-y-1 text-xs text-slate-700 leading-relaxed font-normal">
-                        {(proj.bullets || []).map((bullet, bIdx) => (
-                          <li key={bIdx}>{bullet}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Professional Experience */}
-              <div className="space-y-4">
-                <h2 className="text-xs font-black uppercase tracking-widest text-teal-800 font-display pb-1 border-b border-slate-200">
-                  Professional Experience
-                </h2>
-                <div className="space-y-5">
+                <div className="space-y-3.5">
                   {(cv.experience || []).map((exp, idx) => (
-                    <div key={idx} style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }} className="space-y-1.5">
-                      <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
-                        <h3 className="text-sm font-bold text-slate-900 font-display">
-                          {exp.role} <span className="text-xs font-semibold text-slate-600">| {exp.company}</span>
-                        </h3>
+                    <div key={idx} style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }} className="space-y-1">
+                      <div className="flex justify-between items-baseline flex-wrap text-xs sm:text-sm">
+                        <div className="font-extrabold text-slate-900">
+                          {exp.role} <span className="font-bold text-blue-700">| {exp.company}</span>
+                        </div>
                       </div>
-                      <ul className="list-disc list-outside ml-4 space-y-1 text-xs text-slate-700 leading-relaxed font-normal">
+                      <ul className="list-disc list-outside ml-4 space-y-1 text-[11px] sm:text-xs text-slate-800 leading-relaxed">
                         {(exp.bullets || []).map((bullet, bIdx) => (
                           <li key={bIdx}>{bullet}</li>
                         ))}
@@ -495,20 +398,54 @@ export default function CV() {
                 </div>
               </div>
 
-              {/* Education */}
-              <div className="space-y-3">
-                <h2 className="text-xs font-black uppercase tracking-widest text-teal-800 font-display pb-1 border-b border-slate-200">
-                  Education
+              {/* 4. PROJECTS */}
+              <div style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }} className="space-y-3">
+                <h2 className="cv-section-title text-xs font-extrabold uppercase tracking-widest text-blue-900 border-b-2 border-blue-600 pb-1">
+                  PROJECTS
+                </h2>
+                <div className="space-y-3.5">
+                  {(cv.projects || []).map((proj, idx) => (
+                    <div key={idx} style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }} className="space-y-1">
+                      <div className="flex justify-between items-baseline flex-wrap text-xs sm:text-sm">
+                        <div className="font-extrabold text-slate-900">
+                          {proj.title}
+                          {proj.subtitle && (
+                            <span className="font-semibold text-blue-700 italic"> — {proj.subtitle}</span>
+                          )}
+                          {proj.role && !proj.subtitle && (
+                            <span className="font-semibold text-blue-700"> — {proj.role}</span>
+                          )}
+                        </div>
+                      </div>
+                      {proj.tech && (
+                        <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wide">
+                          Tech Stack: {proj.tech}
+                        </p>
+                      )}
+                      <ul className="list-disc list-outside ml-4 space-y-1 text-[11px] sm:text-xs text-slate-800 leading-relaxed">
+                        {(proj.bullets || []).map((bullet, bIdx) => (
+                          <li key={bIdx}>{bullet}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 5. EDUCATION */}
+              <div style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }} className="space-y-2">
+                <h2 className="cv-section-title text-xs font-extrabold uppercase tracking-widest text-blue-900 border-b-2 border-blue-600 pb-1">
+                  EDUCATION
                 </h2>
                 <div className="space-y-2">
                   {(cv.education || []).map((edu, idx) => (
-                    <div key={idx} style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }} className="flex justify-between items-baseline text-xs">
+                    <div key={idx} style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }} className="flex justify-between items-baseline text-xs sm:text-sm">
                       <div>
-                        <h3 className="font-bold text-slate-900 font-display text-sm">{edu.degree}</h3>
-                        <p className="text-slate-600 text-xs font-medium">{edu.institution}</p>
+                        <span className="font-extrabold text-slate-900">{edu.degree}</span>
+                        <span className="text-slate-600"> — {edu.institution}</span>
                       </div>
                       {edu.period && (
-                        <span className="text-teal-800 font-bold text-[11px] bg-teal-50 border border-teal-200/80 px-2 py-0.5 rounded-md">
+                        <span className="text-[11px] font-semibold text-slate-500 ml-2">
                           {edu.period}
                         </span>
                       )}
@@ -517,15 +454,24 @@ export default function CV() {
                 </div>
               </div>
 
-              {/* Open for Collaboration Section */}
-              <div className="space-y-2 pt-4 border-t-2 border-teal-600">
-                <h2 className="text-xs font-black uppercase tracking-widest text-teal-800 font-display">
-                  Open for Collaboration
-                </h2>
-                <p className="text-xs sm:text-sm text-slate-700 font-medium leading-relaxed">
-                  Full-Stack Engineer open for high-impact project collaborations, technical consulting, and innovative joint ventures.
-                </p>
-              </div>
+              {/* 6. CERTIFICATIONS */}
+              {cv.certifications && cv.certifications.length > 0 && (
+                <div style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }} className="space-y-2">
+                  <h2 className="cv-section-title text-xs font-extrabold uppercase tracking-widest text-blue-900 border-b-2 border-blue-600 pb-1">
+                    CERTIFICATIONS
+                  </h2>
+                  <ul className="list-disc list-outside ml-4 space-y-1 text-[11px] sm:text-xs text-slate-800 leading-relaxed">
+                    {cv.certifications.map((cert, idx) => (
+                      <li key={idx}>
+                        <strong className="font-bold">{typeof cert === 'string' ? cert : cert.title}</strong>
+                        {typeof cert !== 'string' && cert.issuer && (
+                          <span className="text-slate-600"> — {cert.issuer} {cert.year && `(${cert.year})`}</span>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
 
             </div> {/* End of #cv-paper */}
           </motion.div>
@@ -534,4 +480,3 @@ export default function CV() {
     </>
   )
 }
-
