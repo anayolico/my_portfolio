@@ -6,7 +6,7 @@ import { fetchFromApi } from '../services/api'
 const DEFAULT_CV = {
   fullName: "Caleb Anayolico",
   title: "Full-Stack Web & Mobile Application Engineer | SaaS Builder",
-  location: "Port Harcourt, Rivers State, Nigeria",
+  location: "Nigeria",
   phone: "+234 916 558 7681",
   email: "acnwa1234@gmail.com",
   portfolio: "https://anayolico.name.ng",
@@ -126,12 +126,18 @@ const DEFAULT_CV = {
     {
       degree: "Diploma in Software Engineering",
       institution: "National Institute of Information Technology (NIIT)",
-      period: "Graduated"
+      period: "Graduated",
+      bullets: [
+        "Algorithms, data structures, software engineering principles, and systems design."
+      ]
     }
   ],
   certifications: [
-    { title: "Diploma in Software Engineering", issuer: "NIIT", year: "2024" },
-    { title: "Google AI & Web Architecture Fundamentals", issuer: "Google", year: "2024" }
+    { title: "Google AI Essentials", issuer: "Google" },
+    { title: "AWS AI Practitioner", issuer: "Amazon Web Services" },
+    { title: "LangChain for LLM Application Development", issuer: "DeepLearning.AI" },
+    { title: "Backend Web Development, Python & Django", issuer: "Code Camp" },
+    { title: "Diploma in Software Engineering", issuer: "NIIT" }
   ]
 };
 
@@ -437,17 +443,26 @@ export default function CV() {
                 <h2 className="cv-section-title text-xs font-extrabold uppercase tracking-widest text-blue-900 border-b-2 border-blue-600 pb-1">
                   EDUCATION
                 </h2>
-                <div className="space-y-2">
+                <div className="space-y-2.5">
                   {(cv.education || []).map((edu, idx) => (
-                    <div key={idx} style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }} className="flex justify-between items-baseline text-xs sm:text-sm">
-                      <div>
-                        <span className="font-extrabold text-slate-900">{edu.degree}</span>
-                        <span className="text-slate-600"> — {edu.institution}</span>
+                    <div key={idx} style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }} className="space-y-1">
+                      <div className="flex justify-between items-baseline text-xs sm:text-sm">
+                        <div>
+                          <span className="font-extrabold text-slate-900">{edu.degree}</span>
+                          <span className="text-slate-600"> — {edu.institution}</span>
+                        </div>
+                        {edu.period && (
+                          <span className="text-[11px] font-semibold text-slate-500 ml-2">
+                            {edu.period}
+                          </span>
+                        )}
                       </div>
-                      {edu.period && (
-                        <span className="text-[11px] font-semibold text-slate-500 ml-2">
-                          {edu.period}
-                        </span>
+                      {edu.bullets && edu.bullets.length > 0 && (
+                        <ul className="list-disc list-outside ml-4 space-y-1 text-[11px] sm:text-xs text-slate-800 leading-relaxed">
+                          {edu.bullets.map((bullet, bIdx) => (
+                            <li key={bIdx}>{bullet}</li>
+                          ))}
+                        </ul>
                       )}
                     </div>
                   ))}
