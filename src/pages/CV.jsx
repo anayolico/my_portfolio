@@ -5,7 +5,7 @@ import { fetchFromApi } from '../services/api'
 
 const DEFAULT_CV = {
   fullName: "Caleb Anayolico",
-  title: "Full-Stack Web & Mobile Application Engineer | SaaS Builder",
+  title: "Full-Stack Web & Mobile Application Engineer | Cloud Infrastructure & DevOps | SaaS Products",
   location: "Nigeria",
   phone: "+234 916 558 7681",
   email: "acnwa1234@gmail.com",
