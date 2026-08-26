@@ -5,8 +5,8 @@ import { fetchFromApi } from '../services/api'
 
 const DEFAULT_CV = {
   fullName: "Caleb Anayolico",
-  title: "Full-Stack Web & Mobile Application Engineer | Cloud Infrastructure & DevOps | SaaS Products",
-  location: "Nigeria",
+  title: "Full-Stack & Backend Engineer | Mobile Application | Cloud Infrastructure & DevOps | SaaS Products",
+  location: "Remote / Nigeria",
   phone: "+234 916 558 7681",
   email: "acnwa1234@gmail.com",
   portfolio: "https://anayolico.name.ng",
@@ -325,7 +325,7 @@ export default function CV() {
                     </a>
                   )}
                   <span className="text-slate-400">|</span>
-                  <span className="text-slate-700 font-medium">Remote / {cv.location}</span>
+                  <span className="text-slate-700 font-medium">{cv.location && cv.location.startsWith('Remote') ? cv.location : `Remote / ${cv.location}`}</span>
                 </div>
 
                 {/* Social Profiles Row */}
