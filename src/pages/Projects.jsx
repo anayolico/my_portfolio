@@ -47,6 +47,7 @@ export default function Projects() {
             }
 
             const isWinner = title.toLowerCase().includes('securevote') || Boolean(attrs.is_hackathon)
+            const isFeatured = attrs.is_featured !== undefined ? Boolean(attrs.is_featured) : (attrs.isFeatured !== undefined ? Boolean(attrs.isFeatured) : false)
 
             mapped.push({
               id: attrs.id || title,
@@ -56,7 +57,8 @@ export default function Projects() {
               tech: techArray,
               demoLink: attrs.demoLink || attrs.demo_link || '#',
               codeLink: attrs.codeLink || attrs.code_link || '#',
-              isHackathonWinner: isWinner
+              isHackathonWinner: isWinner,
+              isFeatured
             })
           })
 
@@ -67,7 +69,13 @@ export default function Projects() {
             return 0
           })
 
-          setProjects(mapped)
+          // Only display projects toggled ON for the homepage (limit to 3)
+          const activeFeaturedProjects = mapped.filter(p => p.isFeatured)
+          const displayProjects = activeFeaturedProjects.length > 0 
+            ? activeFeaturedProjects.slice(0, 3) 
+            : mapped.slice(0, 3)
+
+          setProjects(displayProjects)
           setIsLive(true)
         } else {
           setProjects([])
