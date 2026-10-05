@@ -258,7 +258,7 @@ export default function About(){
               </div>
               <h4 className="text-xl font-bold text-text-main font-display">Frontend Engineering</h4>
               <p className="text-text-muted text-sm leading-relaxed">
-                Building lightning-fast single-page apps (SPAs) and SSR platforms using React.js, Next.js, and Vite.
+                Building high-performance user interfaces and responsive web applications using React.js, Next.js and Vite.
               </p>
             </div>
 
@@ -275,7 +275,7 @@ export default function About(){
               </div>
               <h4 className="text-xl font-bold text-text-main font-display">Backend Architectures</h4>
               <p className="text-text-muted text-sm leading-relaxed">
-                Formulating scalable RESTful APIs, secure OAuth authorization systems, and server pipelines with Node.js and FastAPI.
+               Architecting production-ready RESTful APIs, asynchronous task queues, and secure backends using Python, Node.js and FastAPI.
               </p>
             </div>
 
