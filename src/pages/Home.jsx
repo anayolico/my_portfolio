@@ -49,7 +49,7 @@ export default function Home() {
             >
               Hi, I’m{' '}
               <span className="bg-gradient-to-r from-accent-teal via-cyan-400 to-accent-purple bg-clip-text text-transparent drop-shadow-sm">
-                Caleb Anayolico
+                Caleb
               </span>
             </motion.h1>
 
@@ -78,7 +78,7 @@ export default function Home() {
               transition={{ delay: 0.4, duration: 0.6 }}
               className="text-text-muted text-base md:text-lg leading-relaxed max-w-xl font-sans mx-auto lg:mx-0"
             >
-              I engineer modern, high-performance web and mobile applications with polished user interfaces, seamless animations, and clean, scalable backend architectures.
+              Software Engineer specializing in scalable SaaS products, custom backend APIs, and AI automation. I also create hands-on courses teaching developers how to build and launch them independently.
             </motion.p>
 
             {/* CTA Buttons - One Line on Mobile */}

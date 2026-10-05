@@ -75,10 +75,10 @@ export default function About(){
             </div>
             <div className="space-y-4 text-text-muted text-base md:text-lg leading-relaxed font-sans transition-colors duration-300">
               <p>
-                I’m Caleb Anayolico — a Full-Stack Software Engineer and Mobile Developer passionate about building high-impact digital products. With expertise spanning client-side interfaces (React.js, Next.js, React Native) and robust backends (Node.js, Python FastAPI, Java), I transform complex ideas into elegant, secure, and performant solutions.
+                "If it's complex, tedious, or critical, that's my lane."
               </p>
               <p>
-                My engineering philosophy centers on clean maintainable code, optimized database structures (PostgreSQL, Prisma, MongoDB), and user-centric UI/UX design. Whether building secure payment integrations (Paystack, Flutterwave) or cloud deployments, I deliver scalable software built for real-world growth.
+                Software Engineer experienced in building real, production-grade systems—from multi-tenant SaaS platforms to AI automation and robust backend APIs. I specialize in turning complex ideas into scalable products using Python, Django, React, and DevOps, while teaching developers to ship their own through live courses and source code.
               </p>
             </div>
           </div>
@@ -241,9 +241,9 @@ export default function About(){
                   <circle cx="16.5" cy="11.5" r=".75" fill="currentColor"/>
                 </svg>
               </div>
-              <h4 className="text-xl font-bold text-text-main font-display">UI/UX & Web Design</h4>
+              <h4 className="text-xl font-bold text-text-main font-display">AI & Automation Tools</h4>
               <p className="text-text-muted text-sm leading-relaxed">
-                Designing immersive digital interfaces, wireframes, and fluid visual systems with micro-animations.
+                Building custom AI-powered workflows, automated bots, LLM integrations, and intelligent agent systems to streamline complex operations.
               </p>
             </div>
 
