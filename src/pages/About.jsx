@@ -306,7 +306,7 @@ export default function About(){
               </div>
               <h4 className="text-xl font-bold text-text-main font-display">Database & Payment Integrations</h4>
               <p className="text-text-muted text-sm leading-relaxed">
-                Architecting relational schemas with PostgreSQL & Prisma, and implementing Paystack and Flutterwave checkouts.
+                Designing relational database schemas with PostgreSQL & Supabase, integrated with escrow and payment systems like Paystack, stripe and Flutterwave.
               </p>
             </div>
 
@@ -322,7 +322,7 @@ export default function About(){
               </div>
               <h4 className="text-xl font-bold text-text-main font-display">Cloud & DevOps Deployment</h4>
               <p className="text-text-muted text-sm leading-relaxed">
-                Deploying, mapping custom domains, and monitoring live apps across Vercel, Render, AWS, and Supabase.
+                Deploying, configuring, and maintaining production applications on AWS (EC2), Render, Vercel, and Supabase with automated CI/CD pipelines.
               </p>
             </div>
           </div>
