@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { API_BASE_URL } from './services/api.js'
-import Splash from './components/Splash.jsx'
 import Layout from './Layout.jsx'
 import Home from './pages/Home.jsx'
 import About from './pages/About.jsx'
@@ -15,7 +14,6 @@ import SourceCode from './pages/SourceCode.jsx'
 
 /* App.jsx: top-level composition of the single-page portfolio & standalone /cv, /projects & /source-code routes. */
 export default function App(){
-  const [showSplash, setShowSplash] = useState(true)
   const [isServerWaking, setIsServerWaking] = useState(false)
   const [refreshKey, setRefreshKey] = useState(0)
   const [currentPath, setCurrentPath] = useState(
@@ -87,20 +85,16 @@ export default function App(){
         )}
       </AnimatePresence>
 
-      {showSplash && <Splash onComplete={() => setShowSplash(false)} duration={2600} transitionStyle="fade" />}
-
-      {!showSplash && (
-        <Layout key={refreshKey}>
-          <main className="w-full">
-            <Home />
-            <About />
-            <Projects />
-            <Skills />
-            <Contact />
-            <SupportBanner />
-          </main>
-        </Layout>
-      )}
+      <Layout key={refreshKey}>
+        <main className="w-full">
+          <Home />
+          <About />
+          <Projects />
+          <Skills />
+          <Contact />
+          <SupportBanner />
+        </main>
+      </Layout>
     </>
   )
 }
