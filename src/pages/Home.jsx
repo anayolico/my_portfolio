@@ -7,9 +7,9 @@ export default function Home() {
   return (
     <>
       <SEO
-        title="CaleByte Technologies | Full-Stack Engineer & SaaS Builder"
-        description="Official portfolio of Caleb Anayolico (CaleByte), Full-Stack Engineer & SaaS Builder specializing in React.js, Node.js, Python FastAPI, WebAuthn biometrics, and high-performance web & mobile architectures."
-        keywords="CaleByte, CaleByte Technologies, Caleb Anayolico, Caleb Anayo, Full-Stack Engineer, SaaS Builder, Web Developer, Mobile App Developer, Nigeria SecureVote"
+        title="CaleByte | Full-Stack & Backend Software Engineer | SaaS & Mobile Architect"
+        description="Official portfolio of CaleByte (CaleByte Technologies) — Full-Stack & Backend Software Engineer, Mobile Application Developer, and Cloud Infrastructure Architect specializing in scalable SaaS systems, React, Node.js, Python FastAPI, and PostgreSQL."
+        keywords="CaleByte, CaleByte Technologies, CaleByte Technology, Caleb Anayolico, Caleb Anayo, Full-Stack Engineer, Backend Engineer, Mobile Application Developer, Cloud Infrastructure Architect, SaaS Products, React, Node.js, Python FastAPI, PostgreSQL, Nigeria"
         url="/"
       />
       <section id="home" className="pt-28 pb-20 md:pt-40 md:pb-32 relative overflow-hidden">

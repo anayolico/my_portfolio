@@ -9,30 +9,30 @@ const SEO = ({ title, description, keywords, url, type = 'website' }) => {
   const personSchema = {
     '@context': 'https://schema.org',
     '@type': 'Person',
-    'name': 'Caleb Anayolico',
-    'alternateName': ['Anayolico', 'Caleb Anayo', 'Anayolico Full-Stack Engineer'],
+    'name': 'CaleByte',
+    'alternateName': ['CaleByte Technologies', 'CaleByte Technology', 'Caleb Anayolico', 'Caleb Anayo'],
     'url': siteUrl,
     'image': ogImage,
-    'jobTitle': 'Full-Stack & Backend Engineer / Mobile Application Developer',
+    'jobTitle': 'Full-Stack & Backend Software Engineer | Mobile Application Developer | Cloud Infrastructure Architect',
     'worksFor': {
       '@type': 'Organization',
-      'name': 'Full-Stack Software Engineer & SaaS Builder'
+      'name': 'CaleByte Technologies'
     },
     'sameAs': [
       'https://github.com/anayolico',
       'https://www.linkedin.com/in/caleb-anayolico-9861a8350'
     ],
     'knowsAbout': [
-      'React.js',
-      'Node.js',
-      'Express.js',
-      'Python',
-      'FastAPI',
-      'PostgreSQL',
-      'Prisma ORM',
-      'WebAuthn',
-      'PWA',
-      'SaaS Architecture'
+      'Full-Stack Web Development',
+      'Backend Architecture',
+      'React.js & Next.js',
+      'Node.js & Express.js',
+      'Python & FastAPI',
+      'PostgreSQL & Prisma ORM',
+      'React Native & Mobile App Development',
+      'Cloud Infrastructure & DevOps',
+      'WebAuthn & Biometric Security',
+      'SaaS Platforms'
     ]
   };
 

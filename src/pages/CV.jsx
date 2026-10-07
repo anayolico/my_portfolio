@@ -210,8 +210,8 @@ export default function CV() {
     <>
       <SEO
         title="Caleb Anayolico (CaleByte) — Executive CV / Resume | Full-Stack Engineer"
-        description="Official Executive Curriculum Vitae (CV) of Caleb Anayolico (CaleByte Technologies), Full-Stack Engineer & SaaS Builder. Comprehensive work history, software architecture projects, awards, and technical expertise."
-        keywords="CaleByte, CaleByte Technologies, Caleb Anayolico CV, Caleb Anayolico Resume, Caleb Anayolico, Full-Stack Engineer CV, Software Developer Resume"
+        description="Official Executive Curriculum Vitae (CV) of Caleb Anayolico (CaleByte Technologies), Full-Stack & Backend Engineer & SaaS Builder. Comprehensive work history, software architecture projects, awards, and technical expertise."
+        keywords="CaleByte, CaleByte Technologies, CaleByte Technology, Caleb Anayolico, Caleb Anayolico CV, Caleb Anayolico Resume, Caleb Anayo, Caleb Anayo CV, Full-Stack Engineer CV, Backend Developer Resume"
         url="/cv"
         type="profile"
       />
@@ -254,13 +254,6 @@ export default function CV() {
           }
         }
       `}</style>
-
-      <SEO
-        title="Caleb Anayolico — Executive CV / Resume | Full-Stack & Backend Engineer"
-        description="Official executive resume & technical CV of Caleb Anayolico — Full-Stack & Backend Engineer, Mobile Application Developer, and Cloud Infrastructure Engineer."
-        keywords="Caleb Anayolico CV, Anayolico Resume, Caleb Anayolico Resume, Full-Stack Engineer CV, Backend Developer Resume, Nigeria"
-        url="/cv"
-      />
 
       <div className="cv-page-bg min-h-screen bg-slate-950 py-8 px-4 md:px-8 selection:bg-blue-600 selection:text-white">
         <div className="max-w-4xl mx-auto space-y-6">

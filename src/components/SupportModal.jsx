@@ -138,45 +138,100 @@ export default function SupportModal({ isOpen, onClose, initialAmount = 2000 }) 
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.25, ease: 'easeOut' }}
-            className="relative w-full max-w-lg glass-card bg-bg-surface/95 dark:bg-[#0f1624]/95 border border-gray-200/80 dark:border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-black/40 overflow-hidden z-10"
+            className="relative w-full max-w-xl glass-card bg-bg-surface/95 dark:bg-[#0f1624]/95 border border-gray-200/80 dark:border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-black/40 overflow-hidden z-10"
           >
-            {/* Header: Title and Close Button */}
+            {/* Header: Title and Close Button (Hide top X button on success screen) */}
             <div className="flex items-center justify-between pb-4 border-b border-gray-200/50 dark:border-white/10">
               <h3 className="text-xl font-bold font-display text-text-main">
                 Support CaleByte
               </h3>
-              <button
-                onClick={onClose}
-                className="w-8 h-8 rounded-full bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-text-muted hover:text-text-main flex items-center justify-center transition-colors cursor-pointer"
-              >
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
+              {!successData && (
+                <button
+                  onClick={onClose}
+                  className="w-8 h-8 rounded-full bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-text-muted hover:text-text-main flex items-center justify-center transition-colors cursor-pointer"
+                >
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              )}
             </div>
 
             {successData ? (
-              /* Success Thank-You View */
-              <div className="py-8 text-center space-y-4">
-                <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 mx-auto flex items-center justify-center shadow-lg shadow-emerald-500/20">
-                  <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                <h4 className="text-2xl font-bold font-display text-text-main">Thank You So Much!</h4>
-                <p className="text-sm text-text-muted max-w-sm mx-auto leading-relaxed">
-                  Your generous support of <span className="font-bold text-accent-teal">₦{successData.amount.toLocaleString()}</span> keeps our projects, tools, and servers running.
-                </p>
-                <p className="text-[11px] text-text-muted font-mono pt-2">
-                  Reference: {successData.reference}
-                </p>
-                <button
-                  onClick={onClose}
-                  className="mt-4 px-6 py-2.5 rounded-xl bg-accent-teal text-white font-bold text-sm shadow-md hover:brightness-110 transition-all cursor-pointer"
+              /* Celebratory Thank-You View with Animated Rolling Hearts & Vibrant Ambient Gradients */
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                className="py-4 sm:py-6 text-center space-y-4 relative overflow-hidden"
+              >
+                {/* Ambient Mixing Gradients in the Background */}
+                <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-64 h-64 bg-gradient-to-tr from-pink-500/20 via-amber-400/15 to-teal-400/20 rounded-full blur-3xl pointer-events-none -z-10 animate-pulse" />
+                <div className="absolute -bottom-10 right-0 w-48 h-48 bg-accent-purple/15 rounded-full blur-2xl pointer-events-none -z-10" />
+
+                {/* Floating / Rolling Animated Hearts in the Background */}
+                <motion.div
+                  initial={{ y: 30, opacity: 0, rotate: -25, scale: 0.5 }}
+                  animate={{ y: [-10, -50], opacity: [0, 0.7, 0], rotate: [-25, 30], scale: [0.6, 1.2] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: 'easeOut', delay: 0.2 }}
+                  className="absolute top-8 left-6 text-pink-500/40 pointer-events-none"
                 >
-                  Close Window
-                </button>
-              </div>
+                  <svg className="w-8 h-8 fill-current" viewBox="0 0 24 24">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                  </svg>
+                </motion.div>
+
+                <motion.div
+                  initial={{ y: 40, opacity: 0, rotate: 25, scale: 0.5 }}
+                  animate={{ y: [-15, -65], opacity: [0, 0.8, 0], rotate: [20, -35], scale: [0.7, 1.4] }}
+                  transition={{ duration: 3.5, repeat: Infinity, ease: 'easeOut', delay: 0.8 }}
+                  className="absolute top-12 right-6 text-amber-400/40 pointer-events-none"
+                >
+                  <svg className="w-10 h-10 fill-current" viewBox="0 0 24 24">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                  </svg>
+                </motion.div>
+
+                {/* Central Celebratory Checkmark Badge */}
+                <div className="relative mx-auto w-16 h-16 flex items-center justify-center">
+                  <motion.div
+                    animate={{ scale: [1, 1.12, 1] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                    className="absolute inset-0 rounded-full bg-emerald-500/25 blur-md"
+                  />
+                  <div className="relative w-16 h-16 rounded-full bg-gradient-to-br from-slate-900 to-slate-950 border-2 border-emerald-400/60 shadow-xl flex items-center justify-center text-emerald-400">
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: [0, 1.25, 1] }}
+                      transition={{ duration: 0.5, ease: 'backOut' }}
+                    >
+                      <svg className="w-8 h-8 stroke-emerald-400" fill="none" viewBox="0 0 24 24" strokeWidth="2.5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    </motion.div>
+                  </div>
+                </div>
+
+                {/* Heading */}
+                <h4 className="text-2xl sm:text-3xl font-extrabold font-display bg-gradient-to-r from-amber-300 via-pink-400 to-teal-300 bg-clip-text text-transparent">
+                  Thank You So Much!
+                </h4>
+
+                {/* Appreciation Description */}
+                <p className="text-xs sm:text-sm text-text-muted max-w-md mx-auto leading-relaxed">
+                  Your generous support of <span className="font-bold text-base sm:text-lg text-accent-teal">₦{successData.amount.toLocaleString()}</span> directly fuels our independent engineering, open tools, and keeps the caffeine flowing!
+                </p>
+
+                {/* Close Button */}
+                <div className="pt-2">
+                  <button
+                    onClick={onClose}
+                    className="px-8 py-3 rounded-2xl bg-gradient-to-r from-accent-teal via-cyan-500 to-teal-400 text-white font-extrabold text-sm shadow-lg shadow-accent-teal/30 hover:brightness-110 active:scale-95 transition-all cursor-pointer"
+                  >
+                    Close
+                  </button>
+                </div>
+              </motion.div>
             ) : (
               /* Payment Form */
               <form onSubmit={handlePaystackSupport} className="pt-5 space-y-5">
