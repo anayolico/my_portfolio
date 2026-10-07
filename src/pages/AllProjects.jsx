@@ -103,9 +103,9 @@ export default function AllProjects() {
   return (
     <>
       <SEO
-        title="All Projects | Caleb Anayolico"
-        description="A complete collection of full-stack web applications, mobile apps, SaaS tools, and backend architectures built by Caleb Anayolico."
-        keywords="Caleb Anayolico, Projects, Portfolio, All Projects, React, Node.js, Python, SaaS"
+        title="All Projects | CaleByte Technologies"
+        description="A complete showcase of production full-stack web applications, mobile apps, SaaS products, and cloud architectures built by CaleByte Technologies."
+        keywords="CaleByte, CaleByte Technologies, Caleb Anayolico, Projects, Portfolio, All Projects, React, Node.js, Python, SaaS"
         url="/projects"
       />
 

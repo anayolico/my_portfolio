@@ -150,9 +150,9 @@ export default function Contact() {
   return (
     <>
       <SEO
-        title="Contact Caleb Anayolico | Full-Stack & Backend Engineer"
-        description="Have an exciting project idea, a role, or simply want to connect? Send a message."
-        keywords="Anayolico, Caleb Anayolico, Anayo, Contact, Hire, Freelance, Web Developer"
+        title="Contact CaleByte Technologies | Full-Stack & Backend Engineering"
+        description="Have an exciting project idea, a SaaS build, or want to collaborate with CaleByte Technologies? Get in touch today."
+        keywords="CaleByte, CaleByte Technologies, Caleb Anayolico, Contact, Hire, SaaS Builder, Web Developer"
         url="/contact"
       />
       <section id="contact" className="py-16 md:py-24 space-y-12 relative overflow-hidden">

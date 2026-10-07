@@ -121,3 +121,56 @@ h1, h2, h3, h4, h5, h6 {
   border-bottom-color: var(--color-accent-teal);
   box-shadow: 0 4px 12px -4px rgba(var(--color-accent-teal-rgb), 0.1);
 }
+
+/* Infinite Marquee Scrollers for Tech Stacks */
+@keyframes marqueeLeft {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes marqueeRight {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+.animate-marquee-left {
+  display: flex;
+  width: max-content;
+  animation: marqueeLeft 32s linear infinite;
+  will-change: transform;
+}
+
+.animate-marquee-right {
+  display: flex;
+  width: max-content;
+  animation: marqueeRight 32s linear infinite;
+  will-change: transform;
+}
+
+.animate-marquee-slow {
+  animation-duration: 40s;
+}
+
+.animate-marquee-fast {
+  animation-duration: 26s;
+}
+
+.marquee-wrapper:hover .animate-marquee-left,
+.marquee-wrapper:hover .animate-marquee-right {
+  animation-play-state: paused;
+}
+
+/* Edge Masking for smooth marquee fading */
+.marquee-mask {
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 7%, black 93%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0%, black 7%, black 93%, transparent 100%);
+}
+

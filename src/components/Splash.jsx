@@ -55,17 +55,17 @@ export default function Splash({duration = 2500, onComplete = () => {}, transiti
               className="rounded-full p-1 bg-gradient-to-br from-accent-teal to-accent-purple shadow-lg"
             >
               <div className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-bg-surface overflow-hidden flex items-center justify-center border border-gray-200 dark:border-gray-800 transition-colors duration-300">
-                <img src={image1} alt="Anayolico" className="w-full h-full object-cover" />
+                <img src={image1} alt="CaleByte" className="w-full h-full object-cover" />
               </div>
             </motion.div>
 
             {/* Name */}
             <motion.h1 initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.15, duration: 0.6 }} className="mt-6 text-3xl md:text-4xl lg:text-5xl font-bold text-text-main transition-colors duration-300">
-              Caleb Anayolico
+              CaleByte
             </motion.h1>
 
-            <motion.p initial={{ y: 8, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.28, duration: 0.6 }} className="mt-2 text-sm md:text-base text-text-muted transition-colors duration-300">
-              FULL-STACK WEB & MOBILE DEVELOPER
+            <motion.p initial={{ y: 8, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.28, duration: 0.6 }} className="mt-2 text-sm md:text-base text-text-muted transition-colors duration-300 tracking-wider uppercase font-semibold">
+              Better Code. Smarter Solutions.
             </motion.p>
 
             {/* Progress / loading */}

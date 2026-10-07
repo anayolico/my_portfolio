@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import SkillBadge from '../components/SkillBadge.jsx'
 import CmsStatus from '../components/CmsStatus.jsx'
 import { fetchFromApi } from '../services/api.js'
-
 import ServerOfflineBot from '../components/ServerOfflineBot.jsx'
 
 export default function Skills() {
@@ -22,7 +21,7 @@ export default function Skills() {
         data.forEach(item => {
           const attrs = item.attributes || item
           const name = attrs.name || ''
-          if (!name || seenNames.has(name.toLowerCase())) return;
+          if (!name || seenNames.has(name.toLowerCase())) return
           seenNames.add(name.toLowerCase())
           skillsList.push(attrs)
         })
@@ -47,26 +46,43 @@ export default function Skills() {
     getSkills()
   }, [])
 
+  // Helper to ensure seamless looping and uniform calm speed across all tracks
+  const getTrackConfig = (list, speedMultiplier = 5.8) => {
+    if (!list || list.length === 0) return { items: [], duration: 60 }
+    
+    // Expand to ensure full screen coverage on ultrawide monitors
+    let baseSet = [...list]
+    while (baseSet.length < 12) {
+      baseSet = [...baseSet, ...list]
+    }
+    
+    // Infinite loop translates -50% (exactly 1 baseSet width)
+    const items = [...baseSet, ...baseSet]
+    
+    // Slower duration = smoother, calmer, more relaxed scrolling
+    const duration = baseSet.length * speedMultiplier
+
+    return { items, duration }
+  }
+
   if (loading) {
     return (
       <section id="skills" className="py-20 space-y-10">
         <div className="text-center space-y-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-text-main tracking-tight font-display transition-colors duration-300">Skills & Proficiencies</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-text-main tracking-tight font-display transition-colors duration-300">
+            Skills & Proficiencies
+          </h2>
           <CmsStatus isLoading={true} />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="space-y-8 max-w-6xl mx-auto px-4">
           {[1, 2, 3].map(i => (
-            <div key={i} className="glass-card p-6 rounded-3xl border border-gray-200/50 dark:border-white/5 space-y-5 animate-pulse">
-              <div className="h-4 bg-gray-200 dark:bg-white/5 rounded-full w-1/2" />
-              {[1, 2, 3].map(j => (
-                <div key={j} className="space-y-2">
-                  <div className="flex justify-between">
-                    <div className="h-3 bg-gray-200 dark:bg-white/5 rounded-full w-1/3" />
-                    <div className="h-3 bg-gray-200 dark:bg-white/5 rounded-full w-8" />
-                  </div>
-                  <div className="h-2 bg-gray-200 dark:bg-white/5 rounded-full w-full" />
-                </div>
-              ))}
+            <div key={i} className="space-y-3">
+              <div className="h-5 bg-gray-200 dark:bg-white/5 rounded-full w-36 animate-pulse" />
+              <div className="flex gap-4 overflow-hidden py-2 animate-pulse">
+                {[1, 2, 3, 4, 5].map(j => (
+                  <div key={j} className="h-12 w-48 bg-gray-200 dark:bg-white/5 rounded-2xl flex-shrink-0" />
+                ))}
+              </div>
             </div>
           ))}
         </div>
@@ -74,61 +90,110 @@ export default function Skills() {
     )
   }
 
+  const hasSkills = frontend.length > 0 || backend.length > 0 || tools.length > 0
+
+  // Calibrated speeds: overall much calmer, and Developer Tools extra relaxed and smooth
+  const feTrack = getTrackConfig(frontend, 5.8)
+  const beTrack = getTrackConfig(backend, 6.0)
+  const tlTrack = getTrackConfig(tools, 6.8)
+
   return (
-    <>
-
-      <section id="skills" className="py-20 space-y-10">
-        <div className="text-center space-y-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-text-main tracking-tight font-display transition-colors duration-300">
-            Skills & Proficiencies
-          </h2>
-          <p className="text-text-muted text-base max-w-xl mx-auto transition-colors duration-300">
-            An overview of technical proficiencies across frontend frameworks, backend engines, and developer pipelines.
-          </p>
-          <div className="flex justify-center">
-            <CmsStatus isLive={isLive} isLoading={false} />
-          </div>
+    <section id="skills" className="py-20 space-y-12 overflow-hidden">
+      <div className="text-center space-y-4 px-4">
+        <h2 className="text-3xl md:text-4xl font-bold text-text-main tracking-tight font-display transition-colors duration-300">
+          Skills & Proficiencies
+        </h2>
+        <div className="flex justify-center">
+          <CmsStatus isLive={isLive} isLoading={false} />
         </div>
+      </div>
 
-        {(frontend.length > 0 || backend.length > 0 || tools.length > 0) ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Frontend Section */}
-            <div className="glass-card p-6 rounded-3xl border border-gray-200/50 dark:border-white/5 space-y-6 transition-colors duration-300">
-              <div className="border-b border-gray-200 dark:border-white/5 pb-3">
-                <h3 className="text-lg font-bold text-text-main font-display tracking-wide uppercase transition-colors duration-300">Frontend</h3>
+      {hasSkills ? (
+        <div className="space-y-10 max-w-7xl mx-auto">
+          {/* Line 1: Frontend */}
+          {frontend.length > 0 && (
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 px-6">
+                <span className="w-2.5 h-2.5 rounded-full bg-accent-teal animate-pulse" />
+                <h3 className="text-sm md:text-base font-bold text-text-main uppercase tracking-wider font-display">
+                  Frontend
+                </h3>
+                <span className="text-xs text-text-muted font-medium ml-1">
+                  ({frontend.length} skills)
+                </span>
               </div>
-              <div className="flex flex-col gap-5">
-                {frontend.map(s => <SkillBadge key={s.name} name={s.name} level={s.level} />)}
+
+              <div className="marquee-wrapper marquee-mask overflow-hidden py-2">
+                <div 
+                  className="animate-marquee-left flex gap-4 items-center"
+                  style={{ animationDuration: `${feTrack.duration}s` }}
+                >
+                  {feTrack.items.map((s, idx) => (
+                    <SkillBadge key={`fe-${s.id || s.name}-${idx}`} name={s.name} level={s.level} />
+                  ))}
+                </div>
               </div>
             </div>
+          )}
 
-            {/* Backend Section */}
-            <div className="glass-card p-6 rounded-3xl border border-gray-200/50 dark:border-white/5 space-y-6 transition-colors duration-300">
-              <div className="border-b border-gray-200 dark:border-white/5 pb-3">
-                <h3 className="text-lg font-bold text-text-main font-display tracking-wide uppercase transition-colors duration-300">Backend & logic</h3>
+          {/* Line 2: Backend & Logic */}
+          {backend.length > 0 && (
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 px-6">
+                <span className="w-2.5 h-2.5 rounded-full bg-accent-purple animate-pulse" />
+                <h3 className="text-sm md:text-base font-bold text-text-main uppercase tracking-wider font-display">
+                  Backend & Logic
+                </h3>
+                <span className="text-xs text-text-muted font-medium ml-1">
+                  ({backend.length} skills)
+                </span>
               </div>
-              <div className="flex flex-col gap-5">
-                {backend.map(s => <SkillBadge key={s.name} name={s.name} level={s.level} />)}
+
+              <div className="marquee-wrapper marquee-mask overflow-hidden py-2">
+                <div 
+                  className="animate-marquee-right flex gap-4 items-center"
+                  style={{ animationDuration: `${beTrack.duration}s` }}
+                >
+                  {beTrack.items.map((s, idx) => (
+                    <SkillBadge key={`be-${s.id || s.name}-${idx}`} name={s.name} level={s.level} />
+                  ))}
+                </div>
               </div>
             </div>
+          )}
 
-            {/* Tools Section */}
-            <div className="glass-card p-6 rounded-3xl border border-gray-200/50 dark:border-white/5 space-y-6 transition-colors duration-300">
-              <div className="border-b border-gray-200 dark:border-white/5 pb-3">
-                <h3 className="text-lg font-bold text-text-main font-display tracking-wide uppercase transition-colors duration-300">Developer Tools</h3>
+          {/* Line 3: Developer Tools */}
+          {tools.length > 0 && (
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 px-6">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+                <h3 className="text-sm md:text-base font-bold text-text-main uppercase tracking-wider font-display">
+                  Developer Tools
+                </h3>
+                <span className="text-xs text-text-muted font-medium ml-1">
+                  ({tools.length} skills)
+                </span>
               </div>
-              <div className="flex flex-col gap-5">
-                {tools.map(s => <SkillBadge key={s.name} name={s.name} level={s.level} />)}
+
+              <div className="marquee-wrapper marquee-mask overflow-hidden py-2">
+                <div 
+                  className="animate-marquee-left flex gap-4 items-center"
+                  style={{ animationDuration: `${tlTrack.duration}s` }}
+                >
+                  {tlTrack.items.map((s, idx) => (
+                    <SkillBadge key={`tl-${s.id || s.name}-${idx}`} name={s.name} level={s.level} />
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
-        ) : (
-          <ServerOfflineBot 
-            title="Server Offline" 
-            message="Could not connect to the database to load skills." 
-          />
-        )}
-      </section>
-    </>
+          )}
+        </div>
+      ) : (
+        <ServerOfflineBot 
+          title="Server Offline" 
+          message="Could not connect to the database to load skills." 
+        />
+      )}
+    </section>
   )
 }

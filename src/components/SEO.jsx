@@ -78,17 +78,17 @@ const SEO = ({ title, description, keywords, url, type = 'website' }) => {
       <title>{title}</title>
       <meta name="description" content={description} />
       {keywords && <meta name="keywords" content={keywords} />}
-      <meta name="author" content="Caleb Anayolico" />
+      <meta name="author" content="CaleByte Technologies" />
       <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
 
       {/* Open Graph / Facebook tags */}
       <meta property="og:type" content={type} />
       <meta property="og:url" content={fullUrl} />
-      <meta property="og:site_name" content="Caleb Anayolico Portfolio" />
+      <meta property="og:site_name" content="CaleByte Technologies" />
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
       <meta property="og:image" content={ogImage} />
-      <meta property="og:image:alt" content="Caleb Anayolico — Full-Stack Engineer" />
+      <meta property="og:image:alt" content="CaleByte Technologies — Better Code. Smarter Solutions." />
 
       {/* Twitter tags */}
       <meta name="twitter:card" content="summary_large_image" />

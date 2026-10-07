@@ -181,9 +181,9 @@ export default function SourceCode() {
   return (
     <>
       <SEO
-        title="Source Code Marketplace | Caleb Anayolico"
-        description="Download complete production project ZIP codebases built by Caleb Anayolico. Battle-tested backend engines, AI agents, SaaS architectures, and utility tools."
-        keywords="Source Code, Download Codebase, Mr Bayo AI Agent, Caleb Anayolico, React, Python FastAPI, ZIP Architecture"
+        title="Source Code Marketplace | CaleByte Technologies"
+        description="Download complete production project ZIP codebases built by CaleByte Technologies. Battle-tested backend engines, AI agents, SaaS architectures, and utility tools."
+        keywords="Source Code, Download Codebase, CaleByte, CaleByte Technologies, Caleb Anayolico, React, Python FastAPI, ZIP Architecture"
         url="/source-code"
       />
 

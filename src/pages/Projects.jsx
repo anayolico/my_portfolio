@@ -131,9 +131,6 @@ export default function Projects() {
           <h2 className="text-3xl md:text-4xl font-bold text-text-main tracking-tight font-display transition-colors duration-300">
             Featured Projects
           </h2>
-          <p className="text-text-muted text-base max-w-xl mx-auto transition-colors duration-300">
-            A showcase of recent client applications, backend architectures, and developer utilities.
-          </p>
           <div className="flex justify-center">
             <CmsStatus isLive={isLive} isLoading={false} />
           </div>

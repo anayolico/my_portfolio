@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTheme } from '../context/ThemeContext.jsx'
-import logo from "./ima-and/logo.png"
+import logo from './ima-and/calebytelogo.png'
 
 const NAV_LINKS = [
   { id: 'home', label: 'Home', href: '#home' },
@@ -36,14 +36,14 @@ export default function Header(){
       <div className="backdrop-blur-md bg-bg-surface/85 border border-gray-200/50 dark:border-white/10 shadow-lg px-6 py-2.5 rounded-full flex items-center justify-between transition-colors duration-300 relative">
         
         {/* Left: Brand Identity */}
-        <a href="#home" className="flex items-center gap-2" onClick={()=>setOpen(false)}>
+        <a href="#home" className="flex items-center gap-2.5 group" onClick={()=>setOpen(false)}>
           <img 
             src={logo} 
-            alt="CA Logo" 
-            className="h-8 w-auto object-contain dark:brightness-0 dark:invert transition-all duration-300"
+            alt="CaleByte Logo" 
+            className="h-8 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
           />
           <span className="text-lg font-extrabold tracking-wide font-display text-text-main transition-colors duration-300">
-            Anayolico
+            Cale<span className="text-accent-teal">Byte</span>
           </span>
         </a>
 
