@@ -229,10 +229,7 @@ export default function SourceCode() {
             <div className="space-y-16">
               {/* Premium Section */}
               <div className="space-y-6">
-                <div className="flex items-center gap-3">
-                  <h2 className="text-xl sm:text-2xl font-bold font-display text-white">Premium Codebases</h2>
-                  <span className="px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-[10px] font-mono font-bold uppercase">Paid</span>
-                </div>
+                <h2 className="text-xl sm:text-2xl font-bold font-display text-white">Premium Codebases</h2>
                 {filteredPremiumItems.length > 0 ? (
                   <motion.div layout className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <AnimatePresence mode="popLayout">
@@ -246,20 +243,14 @@ export default function SourceCode() {
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.95 }}
                             transition={{ duration: 0.3 }}
-                            className="glass-card p-6 sm:p-8 rounded-3xl border border-amber-500/20 dark:border-amber-400/15 flex flex-col justify-between space-y-6 hover:border-amber-400/40 transition-all duration-300 group shadow-xl bg-gradient-to-br from-amber-500/5 via-slate-900/40 to-slate-950/80"
+                            whileHover={{ y: -4 }}
+                            className="glass-card p-6 sm:p-8 rounded-3xl border border-amber-500/20 dark:border-amber-400/15 flex flex-col justify-between space-y-6 hover:border-amber-400/50 transition-all duration-500 group shadow-xl bg-gradient-to-br from-amber-500/5 via-slate-900/60 to-slate-950/90 relative overflow-hidden backdrop-blur-xl"
                           >
-                            <div className="space-y-4">
-                              <div className="flex items-center justify-between gap-3">
-                                <div className="inline-flex items-center gap-3 px-3.5 py-2 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs font-mono font-semibold">
-                                  <div className="w-7 h-7 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-sm">
-                                    📦
-                                  </div>
-                                  <div>
-                                    <p className="font-bold text-amber-200 leading-tight">Source Code Archive</p>
-                                    <p className="text-[10px] text-amber-400/80 font-mono">Ready to download</p>
-                                  </div>
-                                </div>
-                              </div>
+                            {/* Animated Ambient Glow inside card */}
+                            <div className="absolute -top-16 -right-16 w-44 h-44 bg-amber-400/10 rounded-full blur-3xl pointer-events-none group-hover:bg-amber-400/20 group-hover:scale-125 transition-all duration-700" />
+                            <div className="absolute -bottom-16 -left-16 w-44 h-44 bg-accent-teal/10 rounded-full blur-3xl pointer-events-none group-hover:bg-accent-teal/20 transition-all duration-700" />
+
+                            <div className="space-y-4 relative z-10">
                               <h3 className="text-xl sm:text-2xl font-extrabold text-text-main font-display leading-tight group-hover:text-amber-400 transition-colors">
                                 {item.title}
                               </h3>
@@ -274,7 +265,7 @@ export default function SourceCode() {
                                 ))}
                               </div>
                             </div>
-                            <div className="flex items-center justify-between pt-4 border-t border-white/10">
+                            <div className="flex items-center justify-between pt-4 border-t border-white/10 relative z-10">
                               <div>
                                 <span className="text-[10px] font-bold uppercase tracking-wider text-text-muted block">Price</span>
                                 <span className="text-2xl font-extrabold font-display text-text-main">₦{(item.price || 15000).toLocaleString()}</span>
@@ -311,10 +302,7 @@ export default function SourceCode() {
 
               {/* Free Section */}
               <div className="space-y-6">
-                <div className="flex items-center gap-3">
-                  <h2 className="text-xl sm:text-2xl font-bold font-display text-white">Free Codebases</h2>
-                  <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[10px] font-mono font-bold uppercase">Free Download</span>
-                </div>
+                <h2 className="text-xl sm:text-2xl font-bold font-display text-white">Free Codebases</h2>
                 {filteredFreeItems.length > 0 ? (
                   <motion.div layout className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <AnimatePresence mode="popLayout">
@@ -328,20 +316,14 @@ export default function SourceCode() {
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.95 }}
                             transition={{ duration: 0.3 }}
-                            className="glass-card p-6 sm:p-8 rounded-3xl border border-emerald-500/20 dark:border-emerald-400/15 flex flex-col justify-between space-y-6 hover:border-emerald-400/40 transition-all duration-300 group shadow-xl bg-gradient-to-br from-emerald-500/5 via-slate-900/40 to-slate-950/80"
+                            whileHover={{ y: -4 }}
+                            className="glass-card p-6 sm:p-8 rounded-3xl border border-emerald-500/20 dark:border-emerald-400/15 flex flex-col justify-between space-y-6 hover:border-emerald-400/50 transition-all duration-500 group shadow-xl bg-gradient-to-br from-emerald-500/5 via-slate-900/60 to-slate-950/90 relative overflow-hidden backdrop-blur-xl"
                           >
-                            <div className="space-y-4">
-                              <div className="flex items-center justify-between gap-3">
-                                <div className="inline-flex items-center gap-3 px-3.5 py-2 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs font-mono font-semibold">
-                                  <div className="w-7 h-7 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm">
-                                    📦
-                                  </div>
-                                  <div>
-                                    <p className="font-bold text-emerald-200 leading-tight">Free Archive</p>
-                                    <p className="text-[10px] text-emerald-400/80 font-mono">Direct download</p>
-                                  </div>
-                                </div>
-                              </div>
+                            {/* Animated Ambient Glow inside card */}
+                            <div className="absolute -top-16 -right-16 w-44 h-44 bg-emerald-400/10 rounded-full blur-3xl pointer-events-none group-hover:bg-emerald-400/20 group-hover:scale-125 transition-all duration-700" />
+                            <div className="absolute -bottom-16 -left-16 w-44 h-44 bg-cyan-400/10 rounded-full blur-3xl pointer-events-none group-hover:bg-cyan-400/20 transition-all duration-700" />
+
+                            <div className="space-y-4 relative z-10">
                               <h3 className="text-xl sm:text-2xl font-extrabold text-text-main font-display leading-tight group-hover:text-emerald-400 transition-colors">
                                 {item.title}
                               </h3>
@@ -356,7 +338,7 @@ export default function SourceCode() {
                                 ))}
                               </div>
                             </div>
-                            <div className="flex items-center justify-end pt-4 border-t border-white/10">
+                            <div className="flex items-center justify-end pt-4 border-t border-white/10 relative z-10">
                               <a
                                 href={item.downloadLink || item.download_link || '#'}
                                 target="_blank"
