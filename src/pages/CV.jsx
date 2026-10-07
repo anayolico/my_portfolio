@@ -4,7 +4,7 @@ import SEO from '../components/SEO'
 import { fetchFromApi } from '../services/api'
 
 const DEFAULT_CV = {
-  fullName: "Caleb Anayolico",
+  fullName: "Caleb Anayo",
   title: "Full-Stack & Backend Engineer | Mobile Application | Cloud Infrastructure & DevOps | SaaS Products",
   location: "Remote / Nigeria",
   phone: "+234 916 558 7681",

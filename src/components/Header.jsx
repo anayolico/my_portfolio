@@ -10,6 +10,7 @@ const NAV_LINKS = [
   { id: 'source-code', label: 'Source Code', href: '/source-code' },
   { id: 'skills', label: 'Skills', href: '#skills' },
   { id: 'contact', label: 'Contact', href: '#contact' },
+  { id: 'support', label: 'Support me', href: '#support' },
 ]
 
 export default function Header(){
@@ -48,27 +49,43 @@ export default function Header(){
         </a>
 
         {/* Desktop Links (Horizontal list) */}
-        <nav className="hidden md:flex items-center space-x-6">
-          {NAV_LINKS.map(l => (
-            <a 
-              key={l.id} 
-              href={l.href}
-              onClick={(e) => {
-                if (l.href.startsWith('/')) {
-                  e.preventDefault()
-                  window.history.pushState({}, '', l.href)
-                  window.dispatchEvent(new Event('popstate'))
-                }
-              }}
-              className={`text-xs uppercase tracking-widest font-extrabold transition-all duration-200 transform hover:-translate-y-0.5 ${
-                l.id === 'source-code' 
-                  ? 'text-amber-400 hover:text-amber-300 flex items-center gap-1 font-mono bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-full' 
-                  : 'text-text-muted hover:text-accent-teal'
-              }`}
-            >
-              <span>{l.label}</span>
-            </a>
-          ))}
+        <nav className="hidden md:flex items-center space-x-5">
+          {NAV_LINKS.filter(l => l.id !== 'support').map(l => {
+            const isSource = l.id === 'source-code'
+
+            return (
+              <a 
+                key={l.id} 
+                href={l.href}
+                onClick={(e) => {
+                  if (l.href.startsWith('/')) {
+                    e.preventDefault()
+                    window.history.pushState({}, '', l.href)
+                    window.dispatchEvent(new Event('popstate'))
+                  }
+                }}
+                className={`text-xs uppercase tracking-widest font-extrabold transition-all duration-200 transform hover:-translate-y-0.5 ${
+                  isSource 
+                    ? 'text-amber-400 hover:text-amber-300 font-mono bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-full' 
+                    : 'text-text-muted hover:text-accent-teal'
+                }`}
+              >
+                <span>{l.label}</span>
+              </a>
+            )
+          })}
+
+          {/* Support Me pushed to the right, no icon */}
+          <a
+            href="#support"
+            onClick={(e) => {
+              e.preventDefault()
+              window.dispatchEvent(new CustomEvent('open_support_modal', { detail: { amount: 2000 } }))
+            }}
+            className="text-xs uppercase tracking-widest font-extrabold transition-all duration-200 transform hover:-translate-y-0.5 text-text-muted hover:text-amber-400 cursor-pointer ml-3 pl-3 border-l border-gray-200 dark:border-white/10"
+          >
+            <span>Support me</span>
+          </a>
         </nav>
 
         {/* Actions Section */}
@@ -124,6 +141,11 @@ export default function Header(){
                     href={link.href}
                     onClick={(e) => {
                       setOpen(false)
+                      if (link.id === 'support') {
+                        e.preventDefault()
+                        window.dispatchEvent(new CustomEvent('open_support_modal', { detail: { amount: 2000 } }))
+                        return
+                      }
                       if (link.href.startsWith('/')) {
                         e.preventDefault()
                         window.history.pushState({}, '', link.href)
@@ -131,7 +153,11 @@ export default function Header(){
                       }
                     }}
                     className={`text-lg font-bold font-display transition-colors duration-200 ${
-                      link.id === 'source-code' ? 'text-amber-400 font-mono' : 'text-text-main hover:text-accent-teal'
+                      link.id === 'source-code' 
+                        ? 'text-amber-400 font-mono' 
+                        : link.id === 'support'
+                        ? 'text-amber-400'
+                        : 'text-text-main hover:text-accent-teal'
                     }`}
                   >
                     {link.label}

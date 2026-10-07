@@ -31,12 +31,8 @@ export default function Home() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1, duration: 0.5 }}
-              className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-accent-teal/10 border border-accent-teal/30 text-accent-teal text-xs md:text-sm font-semibold backdrop-blur-md"
+              className="inline-flex items-center px-4 py-1.5 rounded-full bg-accent-teal/10 border border-accent-teal/30 text-accent-teal text-xs md:text-sm font-semibold backdrop-blur-md"
             >
-              <span className="relative flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
-              </span>
               Available for full-time roles
             </motion.div>
 
@@ -49,7 +45,7 @@ export default function Home() {
             >
               Hi, I’m{' '}
               <span className="bg-gradient-to-r from-accent-teal via-cyan-400 to-accent-purple bg-clip-text text-transparent drop-shadow-sm">
-                Caleb
+                CaleByte
               </span>
             </motion.h1>
 
@@ -81,31 +77,31 @@ export default function Home() {
               Software Engineer specializing in scalable SaaS products, custom backend APIs, and AI automation. I also create hands-on courses teaching developers how to build and launch them independently.
             </motion.p>
 
-            {/* CTA Buttons - One Line on Mobile */}
+            {/* CTA Buttons - Professional & Neatly Grouped Together */}
             <motion.div
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5, duration: 0.6 }}
-              className="flex flex-row justify-center lg:justify-start items-center gap-3 pt-2 w-full max-w-md mx-auto lg:mx-0"
+              className="flex items-center justify-center lg:justify-start gap-3 pt-2"
             >
-              <a href="/cv" className="flex-1">
+              <a href="/cv">
                 <motion.button
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
-                  className="w-full px-4 sm:px-8 py-3.5 rounded-2xl bg-gradient-to-r from-accent-teal to-cyan-500 text-white text-xs sm:text-base font-semibold shadow-lg shadow-accent-teal/25 hover:shadow-accent-teal/40 hover:brightness-110 transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap"
+                  className="px-6 sm:px-8 py-3.5 rounded-2xl bg-gradient-to-r from-accent-teal to-cyan-500 text-white text-sm sm:text-base font-semibold shadow-lg shadow-accent-teal/25 hover:shadow-accent-teal/40 hover:brightness-110 transition-all flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap"
                 >
-                  <span>View Executive CV</span>
-                  <svg className="w-4 h-4 hidden sm:inline" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  <span>Download CV</span>
+                  <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                   </svg>
                 </motion.button>
               </a>
 
-              <a href="#contact" className="flex-1">
+              <a href="#contact">
                 <motion.button
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
-                  className="w-full px-4 sm:px-8 py-3.5 rounded-2xl border border-accent-teal/40 text-text-main hover:bg-accent-teal/10 hover:border-accent-teal transition-all text-xs sm:text-base font-semibold justify-center text-center cursor-pointer whitespace-nowrap"
+                  className="px-6 sm:px-8 py-3.5 rounded-2xl border border-accent-teal/40 text-text-main hover:bg-accent-teal/10 hover:border-accent-teal transition-all text-sm sm:text-base font-semibold flex items-center justify-center cursor-pointer whitespace-nowrap"
                 >
                   Let’s Talk
                 </motion.button>
@@ -176,7 +172,7 @@ export default function Home() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
                 </div>
 
-                {/* Floating "Hello, I'm Caleb." Pill Badge (Exact Reference Recreation) */}
+                {/* Floating "Hello, I'm CaleByte." Pill Badge (Exact Reference Recreation) */}
                 <motion.div
                   initial={{ y: 15, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
@@ -189,7 +185,7 @@ export default function Home() {
                     <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
                   </span>
                   <span className="text-sm sm:text-base font-semibold font-display tracking-tight text-slate-800 dark:text-white group-hover:text-accent-teal transition-colors">
-                    Hello, I'm <span className="bg-gradient-to-r from-accent-teal via-cyan-400 to-accent-purple bg-clip-text text-transparent">Caleb</span>.
+                    Hello, I'm <span className="bg-gradient-to-r from-accent-teal via-cyan-400 to-accent-purple bg-clip-text text-transparent">CaleByte</span>.
                   </span>
                 </motion.div>
               </motion.div>

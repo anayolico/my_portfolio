@@ -74,21 +74,21 @@ export default function BackgroundAudio() {
           whileTap={{ scale: 0.95 }}
           animate={{
             background: isHovering
-              ? 'linear-gradient(135deg, #6a5acd, #0b2046)'
-              : 'linear-gradient(135deg, #17a2b8, #6a5acd)',
+              ? 'linear-gradient(135deg, #f59e0b 0%, #ec4899 50%, #8b5cf6 100%)'
+              : 'linear-gradient(135deg, #06b6d4 0%, #6366f1 50%, #ec4899 100%)',
             boxShadow: isHovering
-              ? '0 0 30px rgba(106, 90, 205, 0.6), 0 0 60px rgba(23, 162, 184, 0.3)'
-              : '0 10px 40px rgba(23, 162, 184, 0.2)',
+              ? '0 0 35px rgba(245, 158, 11, 0.6), 0 0 50px rgba(236, 72, 153, 0.4)'
+              : '0 8px 30px rgba(99, 102, 241, 0.4), 0 0 20px rgba(6, 182, 212, 0.3)',
           }}
-          transition={{ duration: 0.3 }}
-          className="w-14 h-14 rounded-full text-white flex items-center justify-center shadow-lg relative"
+          transition={{ duration: 0.4 }}
+          className="w-14 h-14 rounded-full text-white flex items-center justify-center shadow-xl relative cursor-pointer border border-white/20"
           aria-pressed={playing}
           aria-label={playing ? 'Pause background music' : 'Play background music'}
         >
           {/* Spinning ring background when playing */}
           {playing && (
             <motion.div
-              className="absolute inset-0 rounded-full border-2 border-transparent border-t-white border-r-white"
+              className="absolute -inset-1 rounded-full border-2 border-transparent border-t-amber-400 border-r-pink-400"
               animate={{ rotate: 360 }}
               transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
             />

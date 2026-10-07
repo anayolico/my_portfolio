@@ -38,10 +38,10 @@ export default function SourceCode() {
         setSourceCodes([
           {
             id: '1',
-            title: 'MR Bayo AI Agent Source Code',
-            filename: 'mr-bayo.zip',
+            title: 'CaleByte AI Agent Source Code',
+            filename: 'calebyte-ai.zip',
             filesize: '10.1 MB',
-            description: 'Includes the complete Mr. Bayo AI Agent source code, project structure, setup requirements, and everything you need to run and understand the system.',
+            description: 'Includes the complete CaleByte AI Agent source code, project structure, setup requirements, and everything you need to run and understand the system.',
             tech: ['Python', 'FastAPI', 'AI Agents', 'React'],
             price: 15000,
             download_link: '#'
@@ -198,16 +198,10 @@ export default function SourceCode() {
           >
             <button
               onClick={goBackToHome}
-              className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-text-muted hover:text-accent-teal transition-colors duration-200 cursor-pointer group"
+              className="text-xs sm:text-sm font-semibold text-text-muted hover:text-accent-teal transition-colors duration-200 cursor-pointer"
             >
-              <svg className="w-4 h-4 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-              </svg>
               <span>Back to Portfolio</span>
             </button>
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-accent-teal/10 border border-accent-teal/30 text-accent-teal text-xs font-bold uppercase tracking-wider shadow-sm">
-              <span>SOURCE CODE MARKETPLACE</span>
-            </div>
           </motion.div>
 
           {/* Hero Header */}
@@ -216,9 +210,6 @@ export default function SourceCode() {
             animate={{ opacity: 1, y: 0 }}
             className="space-y-4 text-center max-w-3xl mx-auto border-b border-gray-200 dark:border-gray-800 pb-10"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-mono font-extrabold uppercase tracking-widest">
-              Open Source & Production Codebases
-            </div>
             <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-text-main font-display leading-tight">
               Source Code
             </h1>

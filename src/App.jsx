@@ -8,6 +8,7 @@ import About from './pages/About.jsx'
 import Projects from './pages/Projects.jsx'
 import Skills from './pages/Skills.jsx'
 import Contact from './pages/Contact.jsx'
+import SupportBanner from './components/SupportBanner.jsx'
 import CV from './pages/CV.jsx'
 import AllProjects from './pages/AllProjects.jsx'
 import SourceCode from './pages/SourceCode.jsx'
@@ -96,6 +97,7 @@ export default function App(){
             <Projects />
             <Skills />
             <Contact />
+            <SupportBanner />
           </main>
         </Layout>
       )}

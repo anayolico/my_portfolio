@@ -162,15 +162,7 @@ export default function Contact() {
 
         {/* Section Header */}
         <div className="text-center space-y-4 max-w-2xl mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-accent-teal/10 border border-accent-teal/20 text-accent-teal text-xs font-bold tracking-wide uppercase"
-          >
-            <span className="w-2 h-2 rounded-full bg-accent-teal animate-ping" />
-            Let's Build Something Together
-          </motion.div>
+         
 
           <motion.h2
             initial={{ opacity: 0, y: 10 }}
@@ -189,32 +181,32 @@ export default function Contact() {
             transition={{ delay: 0.2 }}
             className="text-text-muted text-base md:text-lg leading-relaxed"
           >
-            Have an exciting project idea, a collaboration proposal, or simply want to say hello? Drop a message below and I'll get back to you promptly.
+            Have a project idea or collaboration in mind? Send me a message, and let’s connect.
           </motion.p>
         </div>
 
-        {/* Centered Contact Form Container */}
-        <div className="max-w-5xl mx-auto px-4 w-full">
-          {/* Left Column: Form */}
+        {/* Centered Contact Form Container - Full Responsive Width */}
+        <div className="max-w-6xl mx-auto px-0 sm:px-4 w-full">
+          {/* Form Card */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="w-full glass-card p-6 md:p-8 rounded-3xl border border-gray-200/60 dark:border-white/10 shadow-xl relative backdrop-blur-xl"
+            className="w-full glass-card p-4 sm:p-8 md:p-10 lg:p-12 rounded-2xl sm:rounded-3xl border border-gray-200/60 dark:border-white/10 shadow-xl relative backdrop-blur-xl"
           >
-            {/* Quick Topic Chips (One Single Line on Mobile & Desktop) */}
-            <div className="mb-6 space-y-2 text-center sm:text-left">
+            {/* Quick Topic Chips */}
+            <div className="mb-6 md:mb-8 space-y-2 text-center sm:text-left">
               <label className="text-xs uppercase tracking-widest font-extrabold text-text-muted block">
                 What can I help you with?
               </label>
-              <div className="flex flex-row items-center justify-between gap-1.5 sm:gap-2.5 w-full">
+              <div className="flex flex-row items-center justify-between gap-1.5 sm:gap-3 md:gap-4 w-full">
                 {QUICK_TOPICS.map((topic) => (
                   <button
                     key={topic.label}
                     type="button"
                     onClick={() => handleTopicClick(topic)}
-                    className={`flex-1 py-2 px-1 sm:px-3 rounded-xl text-[10px] sm:text-xs font-bold transition-all duration-200 border cursor-pointer text-center flex items-center justify-center whitespace-nowrap ${
+                    className={`flex-1 py-2 sm:py-2.5 md:py-3 px-2 sm:px-4 rounded-xl text-[10px] sm:text-xs md:text-sm font-bold transition-all duration-200 border cursor-pointer text-center flex items-center justify-center whitespace-nowrap ${
                       activeTopic === topic.label
                         ? 'bg-accent-teal text-white border-accent-teal shadow-md shadow-accent-teal/20 scale-[1.02]'
                         : 'bg-white/50 dark:bg-white/5 text-text-main border-gray-200 dark:border-white/10 hover:border-accent-teal/40 hover:bg-black/5 dark:hover:bg-white/10'
@@ -226,70 +218,73 @@ export default function Contact() {
               </div>
             </div>
 
-            <form onSubmit={onSubmit} className="space-y-5" noValidate>
-              {/* Name Field */}
-              <div className="space-y-1.5">
-                <label htmlFor="fullName" className="flex items-center justify-between text-xs uppercase tracking-widest font-bold text-text-muted">
-                  <span>Full Name</span>
-                  {errors.fullName && (
-                    <span className="text-rose-500 text-xs lowercase font-normal">{errors.fullName}</span>
-                  )}
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-text-muted">
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
+            <form onSubmit={onSubmit} className="space-y-5 md:space-y-6" noValidate>
+              {/* Name and Email: 2 Columns on Desktop / Laptop, 1 Column on Mobile */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
+                {/* Name Field */}
+                <div className="space-y-1.5">
+                  <label htmlFor="fullName" className="flex items-center justify-between text-xs uppercase tracking-widest font-bold text-text-muted">
+                    <span>Full Name</span>
+                    {errors.fullName && (
+                      <span className="text-rose-500 text-xs lowercase font-normal">{errors.fullName}</span>
+                    )}
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-text-muted">
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                    </div>
+                    <input
+                      id="fullName"
+                      name="fullName"
+                      type="text"
+                      value={fullName}
+                      onChange={(e) => {
+                        setFullName(e.target.value)
+                        setTouched((prev) => ({ ...prev, fullName: true }))
+                      }}
+                      className={`w-full pl-10 pr-4 py-3 sm:py-3.5 rounded-2xl bg-white/60 dark:bg-black/20 border transition-all text-text-main text-sm outline-none placeholder:text-text-muted/50 ${
+                        errors.fullName
+                          ? 'border-rose-500 focus:ring-2 focus:ring-rose-500/20'
+                          : 'border-gray-200 dark:border-white/10 focus:border-accent-teal focus:ring-2 focus:ring-accent-teal/20'
+                      }`}
+                      placeholder="e.g. John Doe"
+                    />
                   </div>
-                  <input
-                    id="fullName"
-                    name="fullName"
-                    type="text"
-                    value={fullName}
-                    onChange={(e) => {
-                      setFullName(e.target.value)
-                      setTouched((prev) => ({ ...prev, fullName: true }))
-                    }}
-                    className={`w-full pl-10 pr-4 py-3 rounded-2xl bg-white/60 dark:bg-black/20 border transition-all text-text-main text-sm outline-none placeholder:text-text-muted/50 ${
-                      errors.fullName
-                        ? 'border-rose-500 focus:ring-2 focus:ring-rose-500/20'
-                        : 'border-gray-200 dark:border-white/10 focus:border-accent-teal focus:ring-2 focus:ring-accent-teal/20'
-                    }`}
-                    placeholder="e.g. John Doe"
-                  />
                 </div>
-              </div>
 
-              {/* Email Field */}
-              <div className="space-y-1.5">
-                <label htmlFor="email" className="flex items-center justify-between text-xs uppercase tracking-widest font-bold text-text-muted">
-                  <span>Email Address</span>
-                  {errors.email && (
-                    <span className="text-rose-500 text-xs lowercase font-normal">{errors.email}</span>
-                  )}
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-text-muted">
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
+                {/* Email Field */}
+                <div className="space-y-1.5">
+                  <label htmlFor="email" className="flex items-center justify-between text-xs uppercase tracking-widest font-bold text-text-muted">
+                    <span>Email Address</span>
+                    {errors.email && (
+                      <span className="text-rose-500 text-xs lowercase font-normal">{errors.email}</span>
+                    )}
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-text-muted">
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <input
+                      id="email"
+                      name="email"
+                      type="email"
+                      value={email}
+                      onChange={(e) => {
+                        setEmail(e.target.value)
+                        setTouched((prev) => ({ ...prev, email: true }))
+                      }}
+                      className={`w-full pl-10 pr-4 py-3 sm:py-3.5 rounded-2xl bg-white/60 dark:bg-black/20 border transition-all text-text-main text-sm outline-none placeholder:text-text-muted/50 ${
+                        errors.email
+                          ? 'border-rose-500 focus:ring-2 focus:ring-rose-500/20'
+                          : 'border-gray-200 dark:border-white/10 focus:border-accent-teal focus:ring-2 focus:ring-accent-teal/20'
+                      }`}
+                      placeholder="you@example.com"
+                    />
                   </div>
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => {
-                      setEmail(e.target.value)
-                      setTouched((prev) => ({ ...prev, email: true }))
-                    }}
-                    className={`w-full pl-10 pr-4 py-3 rounded-2xl bg-white/60 dark:bg-black/20 border transition-all text-text-main text-sm outline-none placeholder:text-text-muted/50 ${
-                      errors.email
-                        ? 'border-rose-500 focus:ring-2 focus:ring-rose-500/20'
-                        : 'border-gray-200 dark:border-white/10 focus:border-accent-teal focus:ring-2 focus:ring-accent-teal/20'
-                    }`}
-                    placeholder="you@example.com"
-                  />
                 </div>
               </div>
 
@@ -349,12 +344,7 @@ export default function Contact() {
                       Message Sent!
                     </>
                   ) : (
-                    <>
-                      <span>Send Message</span>
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                      </svg>
-                    </>
+                    <span>Send Message</span>
                   )}
                 </motion.button>
 
@@ -371,11 +361,11 @@ export default function Contact() {
             </form>
 
             {/* Status & Availability Text (Inside Form, Centered) */}
-            <div className="pt-6 border-t border-gray-250/20 dark:border-white/5 mt-6 space-y-4 text-center">
-              <p className="text-text-main font-semibold text-sm w-full leading-relaxed">
-                full-stack engineer open for high-impact project collaborations, technical consulting, and innovative joint ventures.
+            <div className="pt-6 border-t border-gray-200/40 dark:border-white/5 mt-6 space-y-3 text-center">
+              <p className="text-text-main font-medium text-xs sm:text-sm w-full leading-relaxed px-1">
+                Full-stack engineer open for high-impact project collaborations.
               </p>
-              <div className="flex items-center justify-end text-xs text-text-muted w-full pt-3 border-t border-gray-250/20 dark:border-white/5">
+              <div className="flex items-center justify-end text-[11px] sm:text-xs text-text-muted w-full pt-2 border-t border-gray-200/40 dark:border-white/5">
                 <span>Response 24h</span>
               </div>
             </div>

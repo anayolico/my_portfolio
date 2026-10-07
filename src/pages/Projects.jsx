@@ -240,8 +240,8 @@ export default function Projects() {
               </AnimatePresence>
             </motion.div>
 
-            {/* Buttons Row (View More Projects & Source Code Store) */}
-            <div className="flex flex-wrap justify-center gap-4 pt-4">
+            {/* Buttons Row (More Projects & Source Code - in one line on mobile & desktop) */}
+            <div className="flex flex-row items-center justify-center gap-2.5 sm:gap-4 pt-4 w-full max-w-md mx-auto">
               <a
                 href="/projects"
                 onClick={(e) => {
@@ -249,22 +249,14 @@ export default function Projects() {
                   window.history.pushState({}, '', '/projects')
                   window.dispatchEvent(new Event('popstate'))
                 }}
+                className="flex-1 sm:flex-initial"
               >
                 <motion.button
                   whileHover={{ scale: 1.04, y: -2 }}
                   whileTap={{ scale: 0.97 }}
-                  className="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-accent-teal to-cyan-500 hover:from-teal-400 hover:to-cyan-400 text-white font-extrabold text-sm sm:text-base shadow-xl shadow-accent-teal/25 hover:shadow-accent-teal/40 transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer group tracking-wide border border-cyan-400/30"
+                  className="w-full sm:w-auto px-4 sm:px-8 py-3 sm:py-3.5 rounded-2xl bg-gradient-to-r from-accent-teal to-cyan-500 hover:from-teal-400 hover:to-cyan-400 text-white font-extrabold text-xs sm:text-base shadow-xl shadow-accent-teal/25 hover:shadow-accent-teal/40 transition-all duration-300 flex items-center justify-center cursor-pointer tracking-wide border border-cyan-400/30 whitespace-nowrap"
                 >
-                  <span>View More Projects</span>
-                  <svg
-                    className="w-4 h-4 group-hover:translate-x-1.5 transition-transform duration-300"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                  </svg>
+                  <span>More Projects</span>
                 </motion.button>
               </a>
 
@@ -275,22 +267,14 @@ export default function Projects() {
                   window.history.pushState({}, '', '/source-code')
                   window.dispatchEvent(new Event('popstate'))
                 }}
+                className="flex-1 sm:flex-initial"
               >
                 <motion.button
                   whileHover={{ scale: 1.04, y: -2 }}
                   whileTap={{ scale: 0.97 }}
-                  className="px-8 py-3.5 rounded-2xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/40 text-amber-300 font-extrabold text-sm sm:text-base shadow-xl transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer group tracking-wide"
+                  className="w-full sm:w-auto px-4 sm:px-8 py-3 sm:py-3.5 rounded-2xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/40 text-amber-300 font-extrabold text-xs sm:text-base shadow-xl transition-all duration-300 flex items-center justify-center cursor-pointer tracking-wide whitespace-nowrap"
                 >
-                  <span>Source Code Store</span>
-                  <svg
-                    className="w-4 h-4 group-hover:translate-x-1.5 transition-transform duration-300"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                  </svg>
+                  <span>Source Code</span>
                 </motion.button>
               </a>
             </div>

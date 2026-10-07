@@ -206,12 +206,9 @@ export default function About(){
                 >
                   {strengths.length > 0 ? (
                     strengths.map((s, idx) => (
-                      <div key={idx} className="glass-card p-6 rounded-2xl flex gap-4 items-start">
-                        <div className={`w-3 h-3 rounded-full ${s.dot || 'bg-accent-teal'} mt-1.5 flex-shrink-0`} />
-                        <div className="space-y-1">
-                          <h4 className="font-bold text-text-main font-display text-lg">{s.title}</h4>
-                          <p className="text-sm text-text-muted leading-relaxed">{s.desc}</p>
-                        </div>
+                      <div key={idx} className="glass-card p-6 rounded-2xl space-y-1.5 group hover:border-accent-teal/30 transition-all duration-300">
+                        <h4 className="font-bold text-text-main font-display text-lg group-hover:text-accent-teal transition-colors duration-300">{s.title}</h4>
+                        <p className="text-sm text-text-muted leading-relaxed">{s.desc}</p>
                       </div>
                     ))
                   ) : (
@@ -228,99 +225,63 @@ export default function About(){
 
         {/* What I Do Cards Section */}
         <div className="space-y-8">
-          <h3 className="text-2xl font-bold text-text-main font-display text-center">Services & Capabilities</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Card 1: UI/UX & Web Design */}
-            <div className="glass-card p-6 rounded-2xl space-y-4 group">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-accent-teal to-accent-cyan flex items-center justify-center text-white transition-all duration-300 shadow-[0_8px_20px_rgba(var(--color-accent-teal-rgb),0.25)] dark:shadow-[0_8px_24px_rgba(var(--color-accent-teal-rgb),0.2)] group-hover:scale-105 group-hover:shadow-[0_8px_25px_rgba(var(--color-accent-teal-rgb),0.35)]">
-                {/* Palette Icon */}
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.92 0 1.7-.72 1.7-1.61 0-.43-.17-.83-.44-1.12-.27-.29-.44-.69-.44-1.12 0-.89.72-1.61 1.61-1.61H16c3.31 0 6-2.69 6-6 0-4.96-4.49-9-10-9z"/>
-                  <circle cx="7.5" cy="11.5" r=".75" fill="currentColor"/>
-                  <circle cx="12" cy="7.5" r=".75" fill="currentColor"/>
-                  <circle cx="16.5" cy="11.5" r=".75" fill="currentColor"/>
-                </svg>
-              </div>
-              <h4 className="text-xl font-bold text-text-main font-display">AI & Automation Tools</h4>
+          <h3 className="text-2xl md:text-3xl font-bold text-text-main font-display text-center">Services & Capabilities</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Card 1: AI & Automation Tools */}
+            <div className="glass-card p-6 md:p-7 rounded-2xl space-y-3 group hover:border-accent-teal/40 transition-all duration-300">
+              <h4 className="text-lg md:text-xl font-bold text-text-main font-display group-hover:text-accent-teal transition-colors duration-300">
+                AI & Automation Tools
+              </h4>
               <p className="text-text-muted text-sm leading-relaxed">
                 Building custom AI-powered workflows, automated bots, LLM integrations, and intelligent agent systems to streamline complex operations.
               </p>
             </div>
 
             {/* Card 2: Frontend Engineering */}
-            <div className="glass-card p-6 rounded-2xl space-y-4 group">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-accent-purple to-accent-cyan flex items-center justify-center text-white transition-all duration-300 shadow-[0_8px_20px_rgba(var(--color-accent-purple-rgb),0.25)] dark:shadow-[0_8px_24px_rgba(var(--color-accent-purple-rgb),0.2)] group-hover:scale-105 group-hover:shadow-[0_8px_25px_rgba(var(--color-accent-purple-rgb),0.35)]">
-                {/* Code Brackets Icon */}
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="16 18 22 12 16 6"/>
-                  <polyline points="8 6 2 12 8 18"/>
-                </svg>
-              </div>
-              <h4 className="text-xl font-bold text-text-main font-display">Frontend Engineering</h4>
+            <div className="glass-card p-6 md:p-7 rounded-2xl space-y-3 group hover:border-accent-purple/40 transition-all duration-300">
+              <h4 className="text-lg md:text-xl font-bold text-text-main font-display group-hover:text-accent-purple transition-colors duration-300">
+                Frontend Engineering
+              </h4>
               <p className="text-text-muted text-sm leading-relaxed">
                 Building high-performance user interfaces and responsive web applications using React.js, Next.js and Vite.
               </p>
             </div>
 
             {/* Card 3: Backend Architectures */}
-            <div className="glass-card p-6 rounded-2xl space-y-4 group">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-accent-teal to-accent-purple flex items-center justify-center text-white transition-all duration-300 shadow-[0_8px_20px_rgba(var(--color-accent-teal-rgb),0.18)] dark:shadow-[0_8px_24px_rgba(var(--color-accent-purple-rgb),0.18)] group-hover:scale-105 group-hover:shadow-[0_8px_25px_rgba(var(--color-accent-teal-rgb),0.25)]">
-                {/* Server Stack Icon */}
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="2" y="2" width="20" height="8" rx="2" ry="2"/>
-                  <rect x="2" y="14" width="20" height="8" rx="2" ry="2"/>
-                  <line x1="6" y1="6" x2="6.01" y2="6"/>
-                  <line x1="6" y1="18" x2="6.01" y2="18"/>
-                </svg>
-              </div>
-              <h4 className="text-xl font-bold text-text-main font-display">Backend Architectures</h4>
+            <div className="glass-card p-6 md:p-7 rounded-2xl space-y-3 group hover:border-accent-teal/40 transition-all duration-300">
+              <h4 className="text-lg md:text-xl font-bold text-text-main font-display group-hover:text-accent-teal transition-colors duration-300">
+                Backend Architectures
+              </h4>
               <p className="text-text-muted text-sm leading-relaxed">
-               Architecting production-ready RESTful APIs, asynchronous task queues, and secure backends using Python, Node.js and FastAPI.
+                Architecting production-ready RESTful APIs, asynchronous task queues, and secure backends using Python, Node.js and FastAPI.
               </p>
             </div>
 
             {/* Card 4: Mobile Development */}
-            <div className="glass-card p-6 rounded-2xl space-y-4 group">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-accent-purple to-rose-500 flex items-center justify-center text-white transition-all duration-300 shadow-[0_8px_20px_rgba(var(--color-accent-purple-rgb),0.25)] dark:shadow-[0_8px_24px_rgba(var(--color-accent-purple-rgb),0.2)] group-hover:scale-105 group-hover:shadow-[0_8px_25px_rgba(var(--color-accent-purple-rgb),0.35)]">
-                {/* Smartphone Icon */}
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="5" y="2" width="14" height="20" rx="2.5" ry="2.5"/>
-                  <line x1="12" y1="18" x2="12.01" y2="18"/>
-                </svg>
-              </div>
-              <h4 className="text-xl font-bold text-text-main font-display">Mobile Development</h4>
+            <div className="glass-card p-6 md:p-7 rounded-2xl space-y-3 group hover:border-rose-400/40 transition-all duration-300">
+              <h4 className="text-lg md:text-xl font-bold text-text-main font-display group-hover:text-rose-400 transition-colors duration-300">
+                Mobile Development
+              </h4>
               <p className="text-text-muted text-sm leading-relaxed">
                 Building cross-platform mobile experiences with React Native and Java tailored for iOS and Android.
               </p>
             </div>
 
             {/* Card 5: Database & Payment Integrations */}
-            <div className="glass-card p-6 rounded-2xl space-y-4 group">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-accent-teal flex items-center justify-center text-white transition-all duration-300 shadow-[0_8px_20px_rgba(16,185,129,0.25)] dark:shadow-[0_8px_24px_rgba(16,185,129,0.2)] group-hover:scale-105 group-hover:shadow-[0_8px_25px_rgba(16,185,129,0.35)]">
-                {/* Database & Card Icon */}
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <ellipse cx="12" cy="5" rx="9" ry="3"/>
-                  <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
-                  <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
-                </svg>
-              </div>
-              <h4 className="text-xl font-bold text-text-main font-display">Database & Payment Integrations</h4>
+            <div className="glass-card p-6 md:p-7 rounded-2xl space-y-3 group hover:border-emerald-400/40 transition-all duration-300">
+              <h4 className="text-lg md:text-xl font-bold text-text-main font-display group-hover:text-emerald-400 transition-colors duration-300">
+                Database & Payment Integrations
+              </h4>
               <p className="text-text-muted text-sm leading-relaxed">
                 Designing relational database schemas with PostgreSQL & Supabase, integrated with escrow and payment systems like Paystack, stripe and Flutterwave.
               </p>
             </div>
 
             {/* Card 6: Cloud & DevOps Deployment */}
-            <div className="glass-card p-6 rounded-2xl space-y-4 group">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-accent-cyan to-accent-teal flex items-center justify-center text-white transition-all duration-300 shadow-[0_8px_20px_rgba(6,182,212,0.25)] dark:shadow-[0_8px_24px_rgba(6,182,212,0.2)] group-hover:scale-105 group-hover:shadow-[0_8px_25px_rgba(6,182,212,0.35)]">
-                {/* Cloud Upload Icon */}
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/>
-                  <polyline points="16 16 12 12 8 16"/>
-                  <line x1="12" y1="12" x2="12" y2="21"/>
-                </svg>
-              </div>
-              <h4 className="text-xl font-bold text-text-main font-display">Cloud & DevOps Deployment</h4>
+            <div className="glass-card p-6 md:p-7 rounded-2xl space-y-3 group hover:border-cyan-400/40 transition-all duration-300">
+              <h4 className="text-lg md:text-xl font-bold text-text-main font-display group-hover:text-cyan-400 transition-colors duration-300">
+                Cloud & DevOps Deployment
+              </h4>
               <p className="text-text-muted text-sm leading-relaxed">
                 Deploying, configuring, and maintaining production applications on AWS (EC2), Render, Vercel, and Supabase with automated CI/CD pipelines.
               </p>

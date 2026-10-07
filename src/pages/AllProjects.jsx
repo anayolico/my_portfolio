@@ -121,16 +121,10 @@ export default function AllProjects() {
           >
             <button
               onClick={goBackToHome}
-              className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-text-muted hover:text-accent-teal transition-colors duration-200 cursor-pointer group"
+              className="text-xs sm:text-sm font-semibold text-text-muted hover:text-accent-teal transition-colors duration-200 cursor-pointer"
             >
-              <svg className="w-4 h-4 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-              </svg>
               <span>Back to Portfolio</span>
             </button>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent-teal/10 border border-accent-teal/30 text-accent-teal text-xs font-bold uppercase tracking-wider">
-              <span>FULL PORTFOLIO</span>
-            </div>
           </motion.div>
 
           {/* Hero Header (Matching Image 2 Reference) */}

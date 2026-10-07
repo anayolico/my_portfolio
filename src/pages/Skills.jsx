@@ -114,7 +114,6 @@ export default function Skills() {
           {frontend.length > 0 && (
             <div className="space-y-3">
               <div className="flex items-center gap-2 px-6">
-                <span className="w-2.5 h-2.5 rounded-full bg-accent-teal animate-pulse" />
                 <h3 className="text-sm md:text-base font-bold text-text-main uppercase tracking-wider font-display">
                   Frontend
                 </h3>
@@ -140,7 +139,6 @@ export default function Skills() {
           {backend.length > 0 && (
             <div className="space-y-3">
               <div className="flex items-center gap-2 px-6">
-                <span className="w-2.5 h-2.5 rounded-full bg-accent-purple animate-pulse" />
                 <h3 className="text-sm md:text-base font-bold text-text-main uppercase tracking-wider font-display">
                   Backend & Logic
                 </h3>
@@ -166,7 +164,6 @@ export default function Skills() {
           {tools.length > 0 && (
             <div className="space-y-3">
               <div className="flex items-center gap-2 px-6">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
                 <h3 className="text-sm md:text-base font-bold text-text-main uppercase tracking-wider font-display">
                   Developer Tools
                 </h3>
