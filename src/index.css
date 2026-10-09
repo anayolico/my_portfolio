@@ -14,11 +14,11 @@
   --color-accent-purple: #6A5ACD;
   --color-accent-purple-rgb: 106, 90, 205;
   
-  /* Light Theme Specifics */
-  --bg-body: #F6F5F2;
-  --bg-surface: #FFFFFF;
-  --text-main: var(--color-brand-navy);
-  --text-muted: #4A5568;
+  /* Dark Theme is the permanent default (no white flash!) */
+  --bg-body: #0c0f17;
+  --bg-surface: #151923;
+  --text-main: #F6F5F2;
+  --text-muted: #A0AEC0;
   
   /* UI Element Defaults */
   --btn-primary-bg: var(--color-accent-teal);
@@ -27,8 +27,8 @@
 }
 
 [data-theme="dark"] {
-  --bg-body: #121212;
-  --bg-surface: #1E1E1E;
+  --bg-body: #0c0f17;
+  --bg-surface: #151923;
   --text-main: #F6F5F2;
   --text-muted: #A0AEC0;
 }
@@ -39,6 +39,7 @@ html, body, #root {
   width: 100%;
   max-width: 100vw;
   overflow-x: hidden;
+  background-color: #0c0f17;
 }
 
 section {
@@ -49,7 +50,6 @@ body {
   background-color: var(--bg-body);
   color: var(--text-main);
   font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
-  transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), color 0.4s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   @apply antialiased;
 }
 
@@ -61,17 +61,17 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Premium Glassmorphic Card Styling */
 .glass-card {
-  background-color: rgba(255, 255, 255, 0.45);
+  background-color: rgba(21, 25, 35, 0.7);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(11, 32, 70, 0.05);
-  box-shadow: 0 8px 32px 0 rgba(11, 32, 70, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 [data-theme="dark"] .glass-card {
-  background-color: rgba(30, 30, 30, 0.45);
-  border: 1px solid rgba(255, 255, 255, 0.03);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15);
+  background-color: rgba(21, 25, 35, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35);
 }
 
 .glass-card:hover {

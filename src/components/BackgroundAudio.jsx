@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Play, Pause, Music, Volume2 } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { Play, Pause } from 'lucide-react'
 import audio1 from "./ima-and/audio1.mp3"
 
 /**
@@ -13,7 +13,6 @@ export default function BackgroundAudio() {
   const audioRef = useRef(null)
   const [playing, setPlaying] = useState(false)
   const [error, setError] = useState(null)
-  const [isHovered, setIsHovered] = useState(false)
 
   // Restore previous preference
   useEffect(() => {
@@ -66,21 +65,6 @@ export default function BackgroundAudio() {
         transition={{ delay: 0.5, duration: 0.5 }}
         className="fixed bottom-6 right-6 z-50 flex items-center gap-3"
       >
-        {/* Tooltip on hover */}
-        <AnimatePresence>
-          {isHovered && (
-            <motion.div
-              initial={{ opacity: 0, x: 10, scale: 0.95 }}
-              animate={{ opacity: 1, x: 0, scale: 1 }}
-              exit={{ opacity: 0, x: 10, scale: 0.95 }}
-              className="px-3 py-1.5 rounded-xl bg-slate-900/90 text-white text-xs font-medium shadow-lg backdrop-blur-md border border-white/10 flex items-center gap-2 pointer-events-none"
-            >
-              <Music className={`w-3.5 h-3.5 ${playing ? 'text-cyan-400 animate-pulse' : 'text-slate-400'}`} />
-              <span>{playing ? 'Pause Soundtrack' : 'Play Soundtrack'}</span>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
         {/* Outer pulsating sound waves and orbit ring when "singing" */}
         <div className="relative flex items-center justify-center">
           {playing && (
@@ -123,8 +107,6 @@ export default function BackgroundAudio() {
           {/* 21st.dev Shiny Button Component Styled for Audio (Enlarged) */}
           <motion.button
             onClick={() => setPlaying((prev) => !prev)}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
             whileHover={{ scale: 1.08 }}
             whileTap={{ scale: 0.94 }}
             data-playing={playing ? "true" : "false"}
