@@ -144,6 +144,11 @@ export default function SourceCode() {
         currency: 'NGN',
         ref: 'SC_' + Math.floor((Math.random() * 1000000000) + 1),
         metadata: {
+          type: 'source_code',
+          projectId: purchasingItem.id,
+          projectTitle: purchasingItem.title,
+          filename: purchasingItem.filename || 'source-code.zip',
+          buyerEmail: buyerEmail,
           custom_fields: [
             {
               display_name: "Product Title",
@@ -157,11 +162,36 @@ export default function SourceCode() {
             }
           ]
         },
-        callback: function (response) {
-          setPaymentSuccessData({
-            item: purchasingItem,
-            ref: response.reference
-          })
+        callback: async function (response) {
+          try {
+            // Verify payment on backend to generate cryptographically signed download URL
+            const verifyRes = await fetchFromApi(`/api/paystack/verify/${response.reference}`)
+            const verifiedUrl = verifyRes?.downloadUrl || verifyRes?.data?.downloadUrl
+
+            setPaymentSuccessData({
+              item: purchasingItem,
+              ref: response.reference,
+              downloadUrl: verifiedUrl,
+              buyerEmail: buyerEmail
+            })
+
+            // Automatically trigger download on user's device
+            if (verifiedUrl) {
+              const link = document.createElement('a')
+              link.href = verifiedUrl
+              link.setAttribute('download', purchasingItem.filename || 'source-code.zip')
+              document.body.appendChild(link)
+              link.click()
+              document.body.removeChild(link)
+            }
+          } catch (err) {
+            console.error('Error verifying payment:', err)
+            setPaymentSuccessData({
+              item: purchasingItem,
+              ref: response.reference,
+              buyerEmail: buyerEmail
+            })
+          }
         },
         onClose: function () {
           console.log('Checkout closed by customer')
@@ -173,7 +203,8 @@ export default function SourceCode() {
       alert(`Paystack Checkout Initialized for ${purchasingItem.title}. Reference: ${buyerEmail}`)
       setPaymentSuccessData({
         item: purchasingItem,
-        ref: 'REF_' + Date.now()
+        ref: 'REF_' + Date.now(),
+        buyerEmail: buyerEmail
       })
     }
   }
@@ -555,7 +586,7 @@ export default function SourceCode() {
               {/* Actions */}
               <div className="space-y-3 pt-2 relative z-10">
                 <a
-                  href={paymentSuccessData.item.download_link || paymentSuccessData.item.downloadLink || '#'}
+                  href={paymentSuccessData.downloadUrl || paymentSuccessData.item.download_link || '#'}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-gradient-to-r from-emerald-400 via-teal-400 to-accent-teal hover:from-emerald-300 hover:to-teal-300 text-slate-950 font-extrabold text-xs sm:text-sm shadow-xl shadow-emerald-500/25 hover:shadow-emerald-500/45 transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer active:scale-95 group/btn mx-auto"
@@ -565,6 +596,13 @@ export default function SourceCode() {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                   </svg>
                 </a>
+
+                {paymentSuccessData.buyerEmail && (
+                  <p className="text-[12px] text-slate-300/80 leading-relaxed max-w-sm mx-auto">
+                    We have also emailed a backup download link directly to{' '}
+                    <span className="text-teal-300 font-semibold">{paymentSuccessData.buyerEmail}</span>.
+                  </p>
+                )}
 
                 <button
                   type="button"

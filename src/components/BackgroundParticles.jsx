@@ -32,10 +32,10 @@ export default function BackgroundParticles(){
     canvas.style.height = height + 'px'
     ctx.scale(DPR, DPR)
 
-    // Settings
-    const baseCount = Math.round((width * height) / 90000) // ~1 per 300x300 area
-    const PARTICLE_COUNT = Math.max(30, Math.min(160, baseCount))
-    const MAX_DISTANCE = 120 // px to draw connecting line
+    // Settings - tuned for rich, visible constellation glow
+    const baseCount = Math.round((width * height) / 32000)
+    const PARTICLE_COUNT = Math.max(45, Math.min(125, baseCount))
+    const MAX_DISTANCE = 135 // px to draw connecting line
 
     // Colors: brand cyan-teal and purple gradient mix
     const colors = [ 'rgba(23,162,184,0.95)', 'rgba(106,90,205,0.95)' ]
@@ -46,9 +46,9 @@ export default function BackgroundParticles(){
       particles.push({
         x: Math.random()*width,
         y: Math.random()*height,
-        r: 0.8 + Math.random()*1.6, // radius
-        vx: (Math.random()-0.5) * 0.3, // slow horizontal drift
-        vy: (Math.random()-0.5) * 0.3, // slow vertical drift
+        r: 1.0 + Math.random()*1.8, // radius
+        vx: (Math.random()-0.5) * 0.35, // slow horizontal drift
+        vy: (Math.random()-0.5) * 0.35, // slow vertical drift
         hue: Math.random(),
       })
     }
@@ -64,8 +64,8 @@ export default function BackgroundParticles(){
       if(delta < FRAME_INTERVAL) return // skip frame
       lastTime = now
 
-      const isDark = document.documentElement.getAttribute('data-theme') === 'dark'
-      const opacityMultiplier = isDark ? 0.65 : 0.22
+      // Luminous visibility on dark theme
+      const opacityMultiplier = 0.75
 
       // clear
       ctx.clearRect(0,0,width,height)
@@ -145,9 +145,9 @@ export default function BackgroundParticles(){
         canvas.style.width = width + 'px'
         canvas.style.height = height + 'px'
         ctx.setTransform(DPR,0,0,DPR,0,0)
-        // reinitialize particles count to suit new size (simple approach)
-        const newCount = Math.max(30, Math.min(160, Math.round((width * height) / 90000)))
-        while(particles.length < newCount) particles.push({x:Math.random()*width,y:Math.random()*height,r:0.8+Math.random()*1.6,vx:(Math.random()-0.5)*0.3,vy:(Math.random()-0.5)*0.3,hue:Math.random()})
+        // reinitialize particles count to suit new size
+        const newCount = Math.max(45, Math.min(125, Math.round((width * height) / 32000)))
+        while(particles.length < newCount) particles.push({x:Math.random()*width,y:Math.random()*height,r:1.0+Math.random()*1.8,vx:(Math.random()-0.5)*0.35,vy:(Math.random()-0.5)*0.35,hue:Math.random()})
         while(particles.length > newCount) particles.pop()
       }, 150)
     }

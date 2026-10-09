@@ -104,7 +104,17 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap"
     rel="stylesheet">
-  <script src="https://js.paystack.co/v1/inline.js"></script>
+  <!-- Preconnect & DNS-Prefetch for Paystack to warm up connections ahead of time -->
+  <link rel="preconnect" href="https://checkout.paystack.com" crossorigin>
+  <link rel="preconnect" href="https://js.paystack.co" crossorigin>
+  <link rel="preconnect" href="https://api.paystack.co" crossorigin>
+  <link rel="dns-prefetch" href="https://checkout.paystack.com">
+  <link rel="dns-prefetch" href="https://js.paystack.co">
+  <link rel="dns-prefetch" href="https://api.paystack.co">
+
+  <!-- Preload & Load Paystack Inline script early with ID -->
+  <link rel="preload" href="https://js.paystack.co/v1/inline.js" as="script">
+  <script id="paystack-script" src="https://js.paystack.co/v1/inline.js"></script>
 </head>
 
 <body class="dark bg-[#0c0f17] text-[#f6f5f2]" style="background-color: #0c0f17; color: #f6f5f2; margin: 0;">
