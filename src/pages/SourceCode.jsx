@@ -34,30 +34,8 @@ export default function SourceCode() {
         const premiumList = Array.isArray(premiumRes) ? premiumRes : (premiumRes?.data || [])
         setSourceCodes(premiumList)
       } catch (err) {
-        console.error('Error fetching premium source codes:', err)
-        // Fallback default premium items
-        setSourceCodes([
-          {
-            id: '1',
-            title: 'CaleByte AI Agent Source Code',
-            filename: 'calebyte-ai.zip',
-            filesize: '10.1 MB',
-            description: 'Includes the complete CaleByte AI Agent source code, project structure, setup requirements, and everything you need to run and understand the system.',
-            tech: ['Python', 'FastAPI', 'AI Agents', 'React'],
-            price: 15000,
-            download_link: '#'
-          },
-          {
-            id: '2',
-            title: 'Browser Cookie & Key Decryption Engine',
-            filename: 'Browser Decryption.zip',
-            filesize: '60 KB',
-            description: 'This contains the complete source code for decrypting V20 browser cookies and session keys, including cookies stored in Google Chrome & Chromium browsers.',
-            tech: ['Python', 'Cryptography', 'Chrome API'],
-            price: 15000,
-            download_link: '#'
-          }
-        ])
+        console.error('Error fetching premium source codes from database:', err)
+        setSourceCodes([])
       }
 
       try {
@@ -65,19 +43,8 @@ export default function SourceCode() {
         const freeList = Array.isArray(freeRes) ? freeRes : (freeRes?.data || [])
         setFreeSourceCodes(freeList)
       } catch (err) {
-        console.error('Error fetching free source codes:', err)
-        // Fallback default free items
-        setFreeSourceCodes([
-          {
-            id: 'f1',
-            title: 'Vite Tailwind Dashboard Boilerplate',
-            filename: 'vite-tailwind-dashboard.zip',
-            filesize: '4.2 MB',
-            description: 'A premium, fully configured React + Vite + Tailwind CSS admin dashboard template. Includes dark mode toggling, custom chart components, and auth layouts.',
-            tech: ['React', 'Vite', 'Tailwind CSS'],
-            download_link: 'https://github.com/anayolico/onetime'
-          }
-        ])
+        console.error('Error fetching free source codes from database:', err)
+        setFreeSourceCodes([])
       }
 
       setLoading(false)
@@ -162,6 +129,7 @@ export default function SourceCode() {
             projectId: String(purchasingItem.id || 'custom'),
             projectTitle: purchasingItem.title || 'Source Code Package',
             filename: purchasingItem.filename || 'source-code.zip',
+            download_link: purchasingItem.download_link || purchasingItem.downloadLink || '',
             buyerEmail: buyerEmail.trim(),
             custom_fields: [
               {
@@ -177,42 +145,20 @@ export default function SourceCode() {
             ]
           },
           callback: function (response) {
-            (async () => {
-              try {
-                // Verify payment on backend to generate cryptographically signed download URL
-                const verifyRes = await fetchFromApi(`/api/paystack/verify/${response.reference}`)
-                const verifiedUrl = verifyRes?.downloadUrl || verifyRes?.data?.downloadUrl
+            const driveUrl = purchasingItem.download_link || purchasingItem.downloadLink || ''
 
-                setIsSubmitting(false)
-                setEmailModalOpen(false)
+            setIsSubmitting(false)
+            setEmailModalOpen(false)
 
-                setPaymentSuccessData({
-                  item: purchasingItem,
-                  ref: response.reference,
-                  downloadUrl: verifiedUrl,
-                  buyerEmail: buyerEmail.trim()
-                })
+            setPaymentSuccessData({
+              item: purchasingItem,
+              ref: response.reference,
+              downloadUrl: driveUrl,
+              buyerEmail: buyerEmail.trim()
+            })
 
-                // Automatically trigger download on user's device
-                if (verifiedUrl) {
-                  const link = document.createElement('a')
-                  link.href = verifiedUrl
-                  link.setAttribute('download', purchasingItem.filename || 'source-code.zip')
-                  document.body.appendChild(link)
-                  link.click()
-                  document.body.removeChild(link)
-                }
-              } catch (err) {
-                console.error('Error verifying payment:', err)
-                setIsSubmitting(false)
-                setEmailModalOpen(false)
-                setPaymentSuccessData({
-                  item: purchasingItem,
-                  ref: response.reference,
-                  buyerEmail: buyerEmail.trim()
-                })
-              }
-            })()
+            // Background verification without blocking or altering the Google Drive link
+            fetchFromApi(`/api/paystack/verify/${response.reference}`).catch(() => {})
           },
           onClose: function () {
             console.log('Checkout closed by customer')
@@ -528,7 +474,7 @@ export default function SourceCode() {
                     />
                   </div>
                   <p className="text-[11px] text-slate-400 flex items-center gap-1.5 pt-0.5">
-                    <span>🔒</span> Your codebase ZIP download link will be delivered directly to this email upon payment.
+                    <span>🔒</span> Complete payment via Paystack for instant access to your codebase download.
                   </p>
                 </div>
 
@@ -630,23 +576,16 @@ export default function SourceCode() {
               {/* Actions */}
               <div className="space-y-3 pt-2 relative z-10">
                 <a
-                  href={paymentSuccessData.downloadUrl || paymentSuccessData.item.download_link || '#'}
+                  href={paymentSuccessData.item?.download_link || paymentSuccessData.item?.downloadLink || paymentSuccessData.downloadUrl || '#'}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-gradient-to-r from-emerald-400 via-teal-400 to-accent-teal hover:from-emerald-300 hover:to-teal-300 text-slate-950 font-extrabold text-xs sm:text-sm shadow-xl shadow-emerald-500/25 hover:shadow-emerald-500/45 transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer active:scale-95 group/btn mx-auto"
                 >
                   <span>Download Codebase ZIP</span>
                   <svg className="w-5 h-5 transition-transform group-hover/btn:translate-y-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                   </svg>
                 </a>
-
-                {paymentSuccessData.buyerEmail && (
-                  <p className="text-[12px] text-slate-300/80 leading-relaxed max-w-sm mx-auto">
-                    We have also emailed a backup download link directly to{' '}
-                    <span className="text-teal-300 font-semibold">{paymentSuccessData.buyerEmail}</span>.
-                  </p>
-                )}
 
                 <button
                   type="button"
