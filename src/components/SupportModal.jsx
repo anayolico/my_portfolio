@@ -139,14 +139,14 @@ export default function SupportModal({ isOpen, onClose, initialAmount = 2000 }) 
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.25, ease: 'easeOut' }}
-            className="relative w-full max-w-xl rounded-3xl p-6 sm:p-8 shadow-2xl shadow-black/85 overflow-hidden z-10 border border-white/15 text-white"
+            className="relative w-full max-w-2xl rounded-2xl sm:rounded-3xl p-6 sm:p-10 shadow-2xl shadow-black/85 overflow-hidden z-10 border border-white/15 text-white"
             style={{
               background: 'radial-gradient(ellipse 95% 70% at 50% 0%, #303746 0%, #151924 45%, #080a11 100%)',
               boxShadow: '0 25px 70px -15px rgba(0, 0, 0, 0.85), inset 0 1px 1px rgba(255, 255, 255, 0.18)'
             }}
           >
             {/* Top Spotlight Radial Ambient Glow */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-44 bg-gradient-to-b from-white/10 to-transparent blur-2xl pointer-events-none -z-10" />
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-48 bg-gradient-to-b from-white/10 to-transparent blur-2xl pointer-events-none -z-10" />
 
             {/* Header: Title and Close Button (Hide top X button on success screen) */}
             <div className="flex items-center justify-between pb-4 border-b border-white/10">
@@ -164,75 +164,79 @@ export default function SupportModal({ isOpen, onClose, initialAmount = 2000 }) 
             </div>
 
             {successData ? (
-              /* Celebratory Thank-You View with Animated Rolling Hearts & Vibrant Ambient Gradients */
+              /* Executive Thank-You View */
               <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
+                initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                className="py-4 sm:py-6 text-center space-y-4 relative overflow-hidden"
+                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                className="py-6 sm:py-8 text-center space-y-6 relative overflow-hidden"
               >
-                {/* Ambient Mixing Gradients in the Background */}
-                <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-64 h-64 bg-gradient-to-tr from-pink-500/20 via-amber-400/15 to-teal-400/20 rounded-full blur-3xl pointer-events-none -z-10 animate-pulse" />
-                <div className="absolute -bottom-10 right-0 w-48 h-48 bg-accent-purple/15 rounded-full blur-2xl pointer-events-none -z-10" />
+                {/* Subtle Ambient High-Tech Glow */}
+                <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-72 h-44 bg-accent-teal/10 rounded-full blur-3xl pointer-events-none -z-10" />
 
-                {/* Floating / Rolling Animated Hearts in the Background */}
-                <motion.div
-                  initial={{ y: 30, opacity: 0, rotate: -25, scale: 0.5 }}
-                  animate={{ y: [-10, -50], opacity: [0, 0.7, 0], rotate: [-25, 30], scale: [0.6, 1.2] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: 'easeOut', delay: 0.2 }}
-                  className="absolute top-8 left-6 text-pink-500/40 pointer-events-none"
-                >
-                  <svg className="w-8 h-8 fill-current" viewBox="0 0 24 24">
-                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                  </svg>
-                </motion.div>
-
-                <motion.div
-                  initial={{ y: 40, opacity: 0, rotate: 25, scale: 0.5 }}
-                  animate={{ y: [-15, -65], opacity: [0, 0.8, 0], rotate: [20, -35], scale: [0.7, 1.4] }}
-                  transition={{ duration: 3.5, repeat: Infinity, ease: 'easeOut', delay: 0.8 }}
-                  className="absolute top-12 right-6 text-amber-400/40 pointer-events-none"
-                >
-                  <svg className="w-10 h-10 fill-current" viewBox="0 0 24 24">
-                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                  </svg>
-                </motion.div>
-
-                {/* Central Celebratory Checkmark Badge */}
-                <div className="relative mx-auto w-16 h-16 flex items-center justify-center">
-                  <motion.div
-                    animate={{ scale: [1, 1.12, 1] }}
-                    transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-                    className="absolute inset-0 rounded-full bg-emerald-500/25 blur-md"
-                  />
-                  <div className="relative w-16 h-16 rounded-full bg-gradient-to-br from-slate-900 to-slate-950 border-2 border-emerald-400/60 shadow-xl flex items-center justify-center text-emerald-400">
-                    <motion.div
-                      initial={{ scale: 0 }}
-                      animate={{ scale: [0, 1.25, 1] }}
-                      transition={{ duration: 0.5, ease: 'backOut' }}
-                    >
-                      <Check className="w-8 h-8 text-emerald-400 stroke-[2.5]" />
-                    </motion.div>
+                {/* Central Executive Verification Seal */}
+                <div className="relative mx-auto w-20 h-20 flex items-center justify-center">
+                  <div className="absolute inset-0 rounded-full bg-emerald-500/20 blur-xl animate-pulse" />
+                  <div className="relative w-16 h-16 rounded-2xl bg-gradient-to-b from-white/10 to-white/[0.02] border border-white/20 shadow-2xl flex items-center justify-center backdrop-blur-md">
+                    <div className="w-11 h-11 rounded-xl bg-accent-teal/15 border border-accent-teal/40 flex items-center justify-center">
+                      <Check className="w-6 h-6 text-accent-teal stroke-[2.5]" />
+                    </div>
                   </div>
                 </div>
 
-                {/* Heading */}
-                <h4 className="text-2xl sm:text-3xl font-extrabold font-display bg-gradient-to-r from-amber-300 via-pink-400 to-teal-300 bg-clip-text text-transparent">
-                  Thank You So Much!
-                </h4>
+                {/* Executive Heading & Description (No Pink) */}
+                <div className="space-y-2 relative z-10">
+                  <h4 className="text-2xl sm:text-3xl md:text-4xl font-extrabold font-display bg-gradient-to-r from-white via-slate-100 to-teal-300 bg-clip-text text-transparent tracking-tight">
+                    Thank You So Much!
+                  </h4>
+                  <p className="text-xs sm:text-sm text-slate-300 max-w-lg mx-auto leading-relaxed">
+                    Your generous support of{' '}
+                    <span className="font-extrabold text-base sm:text-lg text-accent-teal">
+                      ₦{successData.amount.toLocaleString()}
+                    </span>{' '}
+                    directly fuels our independent engineering, open tools, and continuous innovation.
+                  </p>
+                </div>
 
-                {/* Appreciation Description */}
-                <p className="text-xs sm:text-sm text-slate-300 max-w-md mx-auto leading-relaxed">
-                  Your generous support of <span className="font-bold text-base sm:text-lg text-accent-teal">₦{successData.amount.toLocaleString()}</span> directly fuels our independent engineering, open tools, and keeps the caffeine flowing!
-                </p>
+                {/* Executive Receipt Breakdown Card */}
+                <div className="p-4 sm:p-5 rounded-2xl bg-black/45 border border-white/10 text-left space-y-3 relative z-10 max-w-lg mx-auto shadow-inner">
+                  <div className="flex items-center justify-between gap-4">
+                    <div>
+                      <span className="text-[10px] uppercase tracking-widest font-extrabold text-slate-400 block">
+                        Contribution Purpose
+                      </span>
+                      <span className="text-sm sm:text-base font-bold text-white">
+                        Engineering & Work Support
+                      </span>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-[10px] uppercase tracking-widest font-extrabold text-slate-400 block">
+                        Amount Paid
+                      </span>
+                      <span className="text-base sm:text-lg font-extrabold font-display text-accent-teal">
+                        ₦{successData.amount.toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+
+                  {successData.reference && (
+                    <div className="pt-2.5 border-t border-white/10 flex items-center justify-between text-xs">
+                      <span className="text-slate-400">Payment Reference</span>
+                      <code className="text-teal-300 font-mono bg-white/5 px-2.5 py-0.5 rounded border border-white/10 text-[11px]">
+                        {successData.reference}
+                      </code>
+                    </div>
+                  )}
+                </div>
 
                 {/* Close Button */}
-                <div className="pt-2">
+                <div className="pt-2 relative z-10">
                   <button
+                    type="button"
                     onClick={onClose}
-                    className="px-8 py-3 rounded-2xl bg-gradient-to-r from-accent-teal via-cyan-500 to-teal-400 text-white font-extrabold text-sm shadow-lg shadow-accent-teal/30 hover:brightness-110 active:scale-95 transition-all cursor-pointer"
+                    className="px-10 py-3.5 rounded-xl bg-accent-teal hover:bg-teal-400 text-slate-950 font-extrabold text-sm shadow-xl shadow-accent-teal/25 hover:shadow-accent-teal/40 transition-all duration-200 cursor-pointer active:scale-95"
                   >
-                    Close
+                    Done / Close
                   </button>
                 </div>
               </motion.div>
