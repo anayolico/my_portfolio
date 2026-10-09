@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import CmsStatus from '../components/CmsStatus.jsx'
 import { fetchFromApi } from '../services/api.js'
 import ServerOfflineBot from '../components/ServerOfflineBot.jsx'
 
@@ -70,9 +69,6 @@ export default function About(){
             <h2 className="text-3xl md:text-5xl font-bold text-text-main tracking-tight font-display transition-colors duration-300">
               About Me
             </h2>
-            <div className="flex items-center gap-3 flex-wrap">
-              <CmsStatus isLive={isLive} isLoading={false} />
-            </div>
             <div className="space-y-4 text-text-muted text-base md:text-lg leading-relaxed font-sans transition-colors duration-300">
               <p>
                 "If it's complex, tedious, or critical, that's my lane."
@@ -86,11 +82,11 @@ export default function About(){
           {/* Right Column: Animated Floating "5+ Years Experience" Card */}
           <div className="lg:col-span-5 flex justify-center lg:justify-end">
             <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              initial={{ opacity: 0, scale: 0.95 }}
               animate={{
                 opacity: 1,
                 scale: 1,
-                y: [0, -10, 0],
+                y: [0, -8, 0],
               }}
               transition={{
                 opacity: { duration: 0.6 },
@@ -101,43 +97,51 @@ export default function About(){
                   ease: 'easeInOut',
                 },
               }}
-              whileHover={{ y: -14, scale: 1.04 }}
-              className="w-full max-w-sm glass-card p-8 rounded-3xl border border-accent-teal/30 dark:border-accent-teal/20 flex flex-col items-center justify-center text-center space-y-4 relative overflow-hidden group shadow-[0_20px_50px_rgba(23,162,184,0.2)] hover:shadow-[0_25px_60px_rgba(23,162,184,0.35)] transition-all duration-500 cursor-pointer"
+              className="w-full max-w-sm"
             >
-              {/* Pulsing Ambient Backdrop Glow */}
-              <div className="absolute -inset-10 bg-gradient-to-tr from-accent-teal/30 via-cyan-400/20 to-amber-400/30 rounded-full blur-2xl -z-10 animate-pulse" />
-              <div className="absolute -inset-2 bg-gradient-to-r from-accent-teal/10 to-amber-400/10 rounded-3xl blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-              {/* Pulsing Circular Icon Badge */}
               <motion.div
-                animate={{ scale: [1, 1.08, 1] }}
-                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-                className="w-16 h-16 rounded-full bg-accent-teal/15 border border-accent-teal/40 flex items-center justify-center text-accent-teal group-hover:bg-accent-teal group-hover:text-white transition-all duration-500 shadow-lg shadow-accent-teal/20"
+                whileHover={{ y: -8, scale: 1.04 }}
+                transition={{ duration: 0.25, ease: 'easeOut' }}
+                className="w-full p-8 rounded-3xl border border-white/15 flex flex-col items-center justify-center text-center space-y-4 relative overflow-hidden group shadow-2xl shadow-black/85 transition-all duration-300 cursor-pointer hover:border-accent-teal/60 hover:shadow-[0_25px_60px_rgba(0,0,0,0.9),0_0_35px_rgba(23,162,184,0.3)] text-white"
+                style={{
+                  background: 'radial-gradient(ellipse 95% 70% at 50% 0%, #303746 0%, #151924 45%, #080a11 100%)',
+                  boxShadow: '0 25px 70px -15px rgba(0, 0, 0, 0.85), inset 0 1px 1px rgba(255, 255, 255, 0.18)'
+                }}
               >
-                {/* Briefcase Icon */}
-                <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
+                {/* Top Spotlight Radial Ambient Glow */}
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-36 bg-gradient-to-b from-white/10 to-transparent blur-xl pointer-events-none -z-10" />
+
+                {/* Subtle Hover Aura Glow */}
+                <div className="absolute inset-0 bg-accent-teal/5 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none -z-10" />
+
+                {/* Circular Icon Badge */}
+                <motion.div
+                  animate={{ scale: [1, 1.08, 1] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                  className="w-16 h-16 rounded-full bg-accent-teal/15 border border-accent-teal/40 flex items-center justify-center text-accent-teal group-hover:bg-accent-teal group-hover:text-white group-hover:border-accent-teal transition-all duration-300 shadow-lg shadow-accent-teal/20"
+                >
+                  {/* Briefcase Icon */}
+                  <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                </motion.div>
+
+                {/* Stat Counter with Brand Accent Teal */}
+                <div className="text-5xl sm:text-6xl font-extrabold font-display text-accent-teal drop-shadow-[0_2px_15px_rgba(23,162,184,0.5)] tracking-tight group-hover:scale-105 transition-transform duration-300">
+                  5+
+                </div>
+
+                {/* Label */}
+                <p className="text-base sm:text-lg font-bold text-white tracking-wide font-sans group-hover:text-accent-teal transition-colors duration-300">
+                  Years Experience
+                </p>
+
+                {/* Animated Accent Underline */}
+                <div className="w-16 h-1 bg-accent-teal rounded-full opacity-80 group-hover:w-28 group-hover:opacity-100 transition-all duration-300 shadow-[0_0_10px_rgba(23,162,184,0.6)]" />
               </motion.div>
-
-              {/* Bold Animated Stat Counter */}
-              <motion.div
-                whileHover={{ scale: 1.1 }}
-                transition={{ type: 'spring', stiffness: 400 }}
-                className="text-5xl sm:text-6xl font-extrabold font-display bg-gradient-to-r from-accent-teal via-cyan-400 to-amber-400 bg-clip-text text-transparent drop-shadow-md tracking-tight"
-              >
-                5+
-              </motion.div>
-
-              {/* Label */}
-              <p className="text-base sm:text-lg font-bold text-text-main tracking-wide font-sans group-hover:text-accent-teal transition-colors duration-300">
-                Years Experience
-              </p>
-
-              {/* Animated Accent Underline */}
-              <div className="w-16 h-1 bg-gradient-to-r from-accent-teal via-cyan-400 to-amber-400 rounded-full opacity-70 group-hover:w-28 group-hover:opacity-100 transition-all duration-500 shadow-sm" />
             </motion.div>
           </div>
+
         </div>
 
         {/* Tabs System: Work Experience vs Core Strengths */}

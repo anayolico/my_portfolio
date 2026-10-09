@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import ProjectCard from '../components/ProjectCard.jsx'
-import CmsStatus from '../components/CmsStatus.jsx'
 import { fetchFromApi } from '../services/api.js'
 import SEO from '../components/SEO'
 import Footer from '../components/Footer.jsx'
-import Header from '../components/Header.jsx'
 import ServerOfflineBot from '../components/ServerOfflineBot.jsx'
 import BackgroundParticles from '../components/BackgroundParticles.jsx'
 
@@ -140,9 +138,6 @@ export default function AllProjects() {
               A complete collection of my work — full-stack apps, tools, and everything in between.{' '}
               <span className="text-accent-teal font-extrabold font-mono">({projects.length})</span>
             </p>
-            <div className="pt-2">
-              <CmsStatus isLive={isLive} isLoading={loading} />
-            </div>
           </motion.div>
 
           {/* Projects Count Header */}

@@ -187,17 +187,24 @@ export default function Contact() {
 
         {/* Centered Contact Form Container - Full Responsive Width */}
         <div className="max-w-6xl mx-auto px-0 sm:px-4 w-full">
-          {/* Form Card */}
+          {/* Form Card with Luxury Dark Spotlight Gradient (Matching SupportModal) */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="w-full glass-card p-4 sm:p-8 md:p-10 lg:p-12 rounded-2xl sm:rounded-3xl border border-gray-200/60 dark:border-white/10 shadow-xl relative backdrop-blur-xl"
+            className="w-full p-4 sm:p-8 md:p-10 lg:p-12 rounded-2xl sm:rounded-3xl border border-white/15 shadow-2xl shadow-black/85 relative overflow-hidden backdrop-blur-xl text-white"
+            style={{
+              background: 'radial-gradient(ellipse 95% 70% at 50% 0%, #303746 0%, #151924 45%, #080a11 100%)',
+              boxShadow: '0 25px 70px -15px rgba(0, 0, 0, 0.85), inset 0 1px 1px rgba(255, 255, 255, 0.18)'
+            }}
           >
+            {/* Top Spotlight Radial Ambient Glow */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-48 bg-gradient-to-b from-white/10 to-transparent blur-2xl pointer-events-none -z-10" />
+
             {/* Quick Topic Chips */}
             <div className="mb-6 md:mb-8 space-y-2 text-center sm:text-left">
-              <label className="text-xs uppercase tracking-widest font-extrabold text-text-muted block">
+              <label className="text-xs uppercase tracking-widest font-extrabold text-slate-400 block">
                 What can I help you with?
               </label>
               <div className="flex flex-row items-center justify-between gap-1.5 sm:gap-3 md:gap-4 w-full">
@@ -209,7 +216,7 @@ export default function Contact() {
                     className={`flex-1 py-2 sm:py-2.5 md:py-3 px-2 sm:px-4 rounded-xl text-[10px] sm:text-xs md:text-sm font-bold transition-all duration-200 border cursor-pointer text-center flex items-center justify-center whitespace-nowrap ${
                       activeTopic === topic.label
                         ? 'bg-accent-teal text-white border-accent-teal shadow-md shadow-accent-teal/20 scale-[1.02]'
-                        : 'bg-white/50 dark:bg-white/5 text-text-main border-gray-200 dark:border-white/10 hover:border-accent-teal/40 hover:bg-black/5 dark:hover:bg-white/10'
+                        : 'bg-white/[0.04] text-slate-300 border-white/10 hover:border-white/25 hover:bg-white/[0.08]'
                     }`}
                   >
                     {topic.label}
@@ -217,6 +224,7 @@ export default function Contact() {
                 ))}
               </div>
             </div>
+
 
             <form onSubmit={onSubmit} className="space-y-5 md:space-y-6" noValidate>
               {/* Name and Email: 2 Columns on Desktop / Laptop, 1 Column on Mobile */}
@@ -230,7 +238,7 @@ export default function Contact() {
                     )}
                   </label>
                   <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-text-muted">
+                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                       </svg>
@@ -244,10 +252,10 @@ export default function Contact() {
                         setFullName(e.target.value)
                         setTouched((prev) => ({ ...prev, fullName: true }))
                       }}
-                      className={`w-full pl-10 pr-4 py-3 sm:py-3.5 rounded-2xl bg-white/60 dark:bg-black/20 border transition-all text-text-main text-sm outline-none placeholder:text-text-muted/50 ${
+                      className={`w-full pl-10 pr-4 py-3 sm:py-3.5 rounded-2xl bg-black/45 border transition-all text-white text-sm outline-none placeholder:text-slate-500 shadow-inner ${
                         errors.fullName
                           ? 'border-rose-500 focus:ring-2 focus:ring-rose-500/20'
-                          : 'border-gray-200 dark:border-white/10 focus:border-accent-teal focus:ring-2 focus:ring-accent-teal/20'
+                          : 'border-white/10 focus:border-accent-teal focus:ring-2 focus:ring-accent-teal/20'
                       }`}
                       placeholder="e.g. John Doe"
                     />
@@ -256,14 +264,14 @@ export default function Contact() {
 
                 {/* Email Field */}
                 <div className="space-y-1.5">
-                  <label htmlFor="email" className="flex items-center justify-between text-xs uppercase tracking-widest font-bold text-text-muted">
+                  <label htmlFor="email" className="flex items-center justify-between text-xs uppercase tracking-widest font-bold text-slate-300">
                     <span>Email Address</span>
                     {errors.email && (
-                      <span className="text-rose-500 text-xs lowercase font-normal">{errors.email}</span>
+                      <span className="text-rose-400 text-xs lowercase font-normal">{errors.email}</span>
                     )}
                   </label>
                   <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-text-muted">
+                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                       </svg>
@@ -277,10 +285,10 @@ export default function Contact() {
                         setEmail(e.target.value)
                         setTouched((prev) => ({ ...prev, email: true }))
                       }}
-                      className={`w-full pl-10 pr-4 py-3 sm:py-3.5 rounded-2xl bg-white/60 dark:bg-black/20 border transition-all text-text-main text-sm outline-none placeholder:text-text-muted/50 ${
+                      className={`w-full pl-10 pr-4 py-3 sm:py-3.5 rounded-2xl bg-black/45 border transition-all text-white text-sm outline-none placeholder:text-slate-500 shadow-inner ${
                         errors.email
                           ? 'border-rose-500 focus:ring-2 focus:ring-rose-500/20'
-                          : 'border-gray-200 dark:border-white/10 focus:border-accent-teal focus:ring-2 focus:ring-accent-teal/20'
+                          : 'border-white/10 focus:border-accent-teal focus:ring-2 focus:ring-accent-teal/20'
                       }`}
                       placeholder="you@example.com"
                     />
@@ -290,9 +298,9 @@ export default function Contact() {
 
               {/* Message Details Field */}
               <div className="space-y-1.5">
-                <div className="flex items-center justify-between text-xs uppercase tracking-widest font-bold text-text-muted">
+                <div className="flex items-center justify-between text-xs uppercase tracking-widest font-bold text-slate-300">
                   <label htmlFor="description">Message Details</label>
-                  <span className="text-[11px] font-normal lowercase text-text-muted/70">
+                  <span className="text-[11px] font-normal lowercase text-slate-400">
                     {description.length} chars
                   </span>
                 </div>
@@ -306,16 +314,16 @@ export default function Contact() {
                       setTouched((prev) => ({ ...prev, description: true }))
                     }}
                     rows={5}
-                    className={`w-full p-4 rounded-2xl bg-white/60 dark:bg-black/20 border transition-all text-text-main text-sm outline-none resize-none placeholder:text-text-muted/50 ${
+                    className={`w-full p-4 rounded-2xl bg-black/45 border transition-all text-white text-sm outline-none resize-none placeholder:text-slate-500 shadow-inner ${
                       errors.description
                         ? 'border-rose-500 focus:ring-2 focus:ring-rose-500/20'
-                        : 'border-gray-200 dark:border-white/10 focus:border-accent-teal focus:ring-2 focus:ring-accent-teal/20'
+                        : 'border-white/10 focus:border-accent-teal focus:ring-2 focus:ring-accent-teal/20'
                     }`}
                     placeholder="Tell me about your project, timeline, scope or inquiry..."
                   />
                 </div>
                 {errors.description && (
-                  <p className="text-xs text-rose-500 font-semibold mt-1">{errors.description}</p>
+                  <p className="text-xs text-rose-400 font-semibold mt-1">{errors.description}</p>
                 )}
               </div>
 
@@ -326,7 +334,7 @@ export default function Contact() {
                   whileTap={{ scale: 0.98 }}
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-gradient-to-r from-accent-teal to-accent-purple text-white font-semibold text-sm shadow-lg shadow-accent-teal/20 hover:shadow-accent-teal/30 hover:brightness-110 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all cursor-pointer"
+                  className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-gradient-to-r from-accent-teal to-accent-purple text-white font-semibold text-sm sm:text-base shadow-lg shadow-accent-teal/25 hover:shadow-accent-teal/40 hover:brightness-110 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all cursor-pointer"
                 >
                   {isSubmitting ? (
                     <>
@@ -353,7 +361,7 @@ export default function Contact() {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={onClear}
-                  className="w-full sm:w-auto px-6 py-3.5 rounded-2xl border border-gray-200 dark:border-white/10 text-text-main hover:bg-black/5 dark:hover:bg-white/5 transition-all text-sm font-semibold text-center cursor-pointer"
+                  className="w-full sm:w-auto px-6 py-3.5 rounded-full border border-white/15 text-slate-300 hover:text-white hover:bg-white/5 transition-all text-sm font-semibold text-center cursor-pointer"
                 >
                   Clear Form
                 </motion.button>
@@ -361,14 +369,15 @@ export default function Contact() {
             </form>
 
             {/* Status & Availability Text (Inside Form, Centered) */}
-            <div className="pt-6 border-t border-gray-200/40 dark:border-white/5 mt-6 space-y-3 text-center">
-              <p className="text-text-main font-medium text-xs sm:text-sm w-full leading-relaxed px-1">
+            <div className="pt-6 border-t border-white/10 mt-6 space-y-3 text-center">
+              <p className="text-slate-300 font-medium text-xs sm:text-sm w-full leading-relaxed px-1">
                 Full-stack engineer open for high-impact project collaborations.
               </p>
-              <div className="flex items-center justify-end text-[11px] sm:text-xs text-text-muted w-full pt-2 border-t border-gray-200/40 dark:border-white/5">
+              <div className="flex items-center justify-end text-[11px] sm:text-xs text-slate-400 w-full pt-2 border-t border-white/10">
                 <span>Response 24h</span>
               </div>
             </div>
+
           </motion.div>
         </div>
         {/* ── Social Media Section ─────────────────────────────── */}

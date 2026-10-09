@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import SkillBadge from '../components/SkillBadge.jsx'
-import CmsStatus from '../components/CmsStatus.jsx'
 import { fetchFromApi } from '../services/api.js'
 import ServerOfflineBot from '../components/ServerOfflineBot.jsx'
 
@@ -72,7 +71,6 @@ export default function Skills() {
           <h2 className="text-3xl md:text-4xl font-bold text-text-main tracking-tight font-display transition-colors duration-300">
             Skills & Proficiencies
           </h2>
-          <CmsStatus isLoading={true} />
         </div>
         <div className="space-y-8 max-w-6xl mx-auto px-4">
           {[1, 2, 3].map(i => (
@@ -104,7 +102,6 @@ export default function Skills() {
           Skills & Proficiencies
         </h2>
         <div className="flex justify-center">
-          <CmsStatus isLive={isLive} isLoading={false} />
         </div>
       </div>
 

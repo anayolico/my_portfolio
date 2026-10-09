@@ -1,18 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { motion } from 'framer-motion'
-import audio1 from "./ima-and/audio1.mp3";
+import { motion, AnimatePresence } from 'framer-motion'
+import { Play, Pause, Music, Volume2 } from 'lucide-react'
+import audio1 from "./ima-and/audio1.mp3"
 
 /**
  * BackgroundAudio.jsx
- * - Background music control with spinning, color-changing button
- * - Uses direct MP3 URL (no CORS issues)
+ * - Background music control with 21st.dev Shiny Button styling
+ * - Full rotating conic gradient, shimmer, and breathing aura animation when playing ("singing")
  * - Remembers user preference in localStorage
  */
 export default function BackgroundAudio() {
   const audioRef = useRef(null)
   const [playing, setPlaying] = useState(false)
   const [error, setError] = useState(null)
-  const [isHovering, setIsHovering] = useState(false)
+  const [isHovered, setIsHovered] = useState(false)
 
   // Restore previous preference
   useEffect(() => {
@@ -31,11 +32,10 @@ export default function BackgroundAudio() {
       const p = audio.play()
       if (p && typeof p.then === 'function') {
         p.then(() => {
-          // console.log('Music playing')
           setError(null)
         }).catch((err) => {
-          // console.error('Playback error:', err)
-          setError('Unable to play')
+          console.warn('Playback error / Autoplay blocked:', err)
+          setError('Click to play audio')
           setPlaying(false)
         })
       }
@@ -51,7 +51,7 @@ export default function BackgroundAudio() {
 
   return (
     <>
-      {/* Direct MP3 URL - works without CORS issues */}
+      {/* Audio Element */}
       <audio
         ref={audioRef}
         src={audio1}
@@ -59,67 +59,121 @@ export default function BackgroundAudio() {
         preload="auto"
       />
 
-      {/* Floating music control button */}
+      {/* Floating Shiny Music Control Button */}
       <motion.div
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.6 }}
-        className="fixed bottom-6 right-6 z-50"
+        initial={{ opacity: 0, scale: 0.8, y: 10 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ delay: 0.5, duration: 0.5 }}
+        className="fixed bottom-6 right-6 z-50 flex items-center gap-3"
       >
-        <motion.button
-          onClick={() => setPlaying((p) => !p)}
-          onMouseEnter={() => setIsHovering(true)}
-          onMouseLeave={() => setIsHovering(false)}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.95 }}
-          animate={{
-            background: isHovering
-              ? 'linear-gradient(135deg, #f59e0b 0%, #ec4899 50%, #8b5cf6 100%)'
-              : 'linear-gradient(135deg, #06b6d4 0%, #6366f1 50%, #ec4899 100%)',
-            boxShadow: isHovering
-              ? '0 0 35px rgba(245, 158, 11, 0.6), 0 0 50px rgba(236, 72, 153, 0.4)'
-              : '0 8px 30px rgba(99, 102, 241, 0.4), 0 0 20px rgba(6, 182, 212, 0.3)',
-          }}
-          transition={{ duration: 0.4 }}
-          className="w-14 h-14 rounded-full text-white flex items-center justify-center shadow-xl relative cursor-pointer border border-white/20"
-          aria-pressed={playing}
-          aria-label={playing ? 'Pause background music' : 'Play background music'}
-        >
-          {/* Spinning ring background when playing */}
-          {playing && (
+        {/* Tooltip on hover */}
+        <AnimatePresence>
+          {isHovered && (
             <motion.div
-              className="absolute -inset-1 rounded-full border-2 border-transparent border-t-amber-400 border-r-pink-400"
-              animate={{ rotate: 360 }}
-              transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
-            />
+              initial={{ opacity: 0, x: 10, scale: 0.95 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: 10, scale: 0.95 }}
+              className="px-3 py-1.5 rounded-xl bg-slate-900/90 text-white text-xs font-medium shadow-lg backdrop-blur-md border border-white/10 flex items-center gap-2 pointer-events-none"
+            >
+              <Music className={`w-3.5 h-3.5 ${playing ? 'text-cyan-400 animate-pulse' : 'text-slate-400'}`} />
+              <span>{playing ? 'Pause Soundtrack' : 'Play Soundtrack'}</span>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Outer pulsating sound waves and orbit ring when "singing" */}
+        <div className="relative flex items-center justify-center">
+          {playing && (
+            <>
+              {/* Expanding audio pulse rings */}
+              <motion.div
+                className="absolute -inset-3.5 sm:-inset-4 rounded-full bg-cyan-500/20 pointer-events-none"
+                animate={{
+                  scale: [1, 1.45, 1.8],
+                  opacity: [0.6, 0.25, 0],
+                }}
+                transition={{
+                  duration: 2.2,
+                  repeat: Infinity,
+                  ease: "easeOut",
+                }}
+              />
+              <motion.div
+                className="absolute -inset-3.5 sm:-inset-4 rounded-full bg-purple-500/20 pointer-events-none"
+                animate={{
+                  scale: [1, 1.3, 1.55],
+                  opacity: [0.5, 0.2, 0],
+                }}
+                transition={{
+                  duration: 2.2,
+                  delay: 0.7,
+                  repeat: Infinity,
+                  ease: "easeOut",
+                }}
+              />
+              {/* Rotating outer orbital sound ring around the button */}
+              <motion.div
+                className="absolute -inset-2 sm:-inset-2.5 rounded-full border-2 border-cyan-400/40 border-dashed pointer-events-none"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+              />
+            </>
           )}
 
-          {/* Icon */}
-          <motion.span
-            animate={{ rotate: playing ? 360 : 0 }}
-            transition={{ duration: playing ? 3 : 0.5, repeat: playing ? Infinity : 0 }}
+          {/* 21st.dev Shiny Button Component Styled for Audio (Enlarged) */}
+          <motion.button
+            onClick={() => setPlaying((prev) => !prev)}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.94 }}
+            data-playing={playing ? "true" : "false"}
+            className={`shiny-cta shiny-cta-circle w-16 h-16 sm:w-20 sm:h-20 relative group shadow-2xl transition-all duration-300 ${
+              playing ? 'is-playing shadow-cyan-500/40 ring-1 ring-cyan-400/50' : 'hover:shadow-cyan-500/30'
+            }`}
+            aria-pressed={playing}
+            aria-label={playing ? 'Pause background music' : 'Play background music'}
           >
-            {playing ? (
-              // Pause icon
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                <rect x="6" y="5" width="4" height="14" fill="currentColor" />
-                <rect x="14" y="5" width="4" height="14" fill="currentColor" />
-              </svg>
-            ) : (
-              // Play icon
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                <path d="M5 3v18l15-9L5 3z" fill="currentColor" />
-              </svg>
-            )}
-          </motion.span>
-        </motion.button>
+            {/* Center Content with Animated Icons */}
+            <span className="shiny-content flex items-center justify-center relative z-10 w-full h-full text-white">
+              {playing ? (
+                <div className="flex items-center justify-center gap-2">
+                  {/* Equalizer animated bars (Larger and bolder) */}
+                  <div className="flex items-end gap-1 h-6 sm:h-7">
+                    <motion.span
+                      className="w-1 sm:w-1.5 bg-cyan-400 rounded-full"
+                      animate={{ height: ['6px', '22px', '10px', '26px', '6px'] }}
+                      transition={{ duration: 1.1, repeat: Infinity, ease: 'easeInOut' }}
+                    />
+                    <motion.span
+                      className="w-1 sm:w-1.5 bg-pink-400 rounded-full"
+                      animate={{ height: ['18px', '8px', '24px', '12px', '18px'] }}
+                      transition={{ duration: 0.9, repeat: Infinity, ease: 'easeInOut', delay: 0.15 }}
+                    />
+                    <motion.span
+                      className="w-1 sm:w-1.5 bg-purple-400 rounded-full"
+                      animate={{ height: ['10px', '26px', '6px', '20px', '10px'] }}
+                      transition={{ duration: 1.3, repeat: Infinity, ease: 'easeInOut', delay: 0.35 }}
+                    />
+                  </div>
+                  <Pause className="w-6 h-6 sm:w-7 sm:h-7 text-white drop-shadow-md" />
+                </div>
+              ) : (
+                <div className="flex items-center justify-center pl-1">
+                  <Play className="w-7 h-7 sm:w-8 sm:h-8 text-white drop-shadow-md group-hover:scale-110 transition-transform" />
+                </div>
+              )}
+            </span>
+          </motion.button>
+        </div>
 
-        {/* Error message */}
+
+        {/* Error notification badge */}
         {error && (
           <motion.div
             initial={{ opacity: 0, y: 4 }}
             animate={{ opacity: 1, y: 0 }}
-            className="absolute bottom-full right-0 mb-2 px-2 py-1 bg-rose-600 text-white text-xs rounded whitespace-nowrap"
+            className="absolute bottom-full right-0 mb-2 px-2.5 py-1 bg-rose-600/90 text-white text-xs rounded-lg shadow-lg whitespace-nowrap backdrop-blur"
           >
             {error}
           </motion.div>
@@ -128,4 +182,3 @@ export default function BackgroundAudio() {
     </>
   )
 }
-

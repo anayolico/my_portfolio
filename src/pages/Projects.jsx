@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import ProjectCard from '../components/ProjectCard.jsx'
-import CmsStatus from '../components/CmsStatus.jsx'
 import { fetchFromApi } from '../services/api.js'
 
 import ServerOfflineBot from '../components/ServerOfflineBot.jsx'
@@ -101,7 +100,6 @@ export default function Projects() {
       <section id="projects" className="py-20 space-y-10">
         <div className="text-center space-y-4">
           <h2 className="text-3xl md:text-4xl font-bold text-text-main tracking-tight font-display transition-colors duration-300">Featured Projects</h2>
-          <CmsStatus isLoading={true} />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {[1, 2, 3].map(i => (
@@ -131,9 +129,6 @@ export default function Projects() {
           <h2 className="text-3xl md:text-4xl font-bold text-text-main tracking-tight font-display transition-colors duration-300">
             Featured Projects
           </h2>
-          <div className="flex justify-center">
-            <CmsStatus isLive={isLive} isLoading={false} />
-          </div>
         </div>
 
         {/* Filter Tabs */}

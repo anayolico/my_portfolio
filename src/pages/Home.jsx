@@ -2,6 +2,7 @@ import React from 'react'
 import { motion } from 'framer-motion'
 import SEO from '../components/SEO'
 import Typewriter from '../components/Typewriter'
+import { LiquidButton, GlassFilter } from '../components/ui/liquid-glass-button'
 
 export default function Home() {
   return (
@@ -12,7 +13,7 @@ export default function Home() {
         keywords="CaleByte, CaleByte Technologies, CaleByte Technology, Caleb Anayolico, Caleb Anayo, Full-Stack Engineer, Backend Engineer, Mobile Application Developer, Cloud Infrastructure Architect, SaaS Products, React, Node.js, Python FastAPI, PostgreSQL, Nigeria"
         url="/"
       />
-      <section id="home" className="pt-28 pb-20 md:pt-40 md:pb-32 relative overflow-hidden">
+      <section id="home" className="pt-36 sm:pt-40 md:pt-44 pb-20 md:pb-32 relative overflow-hidden">
         {/* Ambient glowing background blur spots */}
         <div className="absolute left-[-10%] top-10 -z-10 w-[450px] h-[450px] bg-accent-teal/15 rounded-full blur-[120px] pointer-events-none" />
         <div className="absolute right-[-10%] bottom-10 -z-10 w-[450px] h-[450px] bg-accent-purple/15 rounded-full blur-[120px] pointer-events-none" />
@@ -26,15 +27,6 @@ export default function Home() {
             transition={{ duration: 0.6 }}
             className="lg:col-span-7 space-y-6 text-center lg:text-left flex flex-col items-center lg:items-start"
           >
-            {/* Status Pill Badge */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1, duration: 0.5 }}
-              className="inline-flex items-center px-4 py-1.5 rounded-full bg-accent-teal/10 border border-accent-teal/30 text-accent-teal text-xs md:text-sm font-semibold backdrop-blur-md"
-            >
-              Available for full-time roles
-            </motion.div>
 
             {/* Main Title Heading */}
             <motion.h1
@@ -44,8 +36,8 @@ export default function Home() {
               className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-text-main font-display leading-[1.1]"
             >
               Hi, I’m{' '}
-              <span className="bg-gradient-to-r from-accent-teal via-cyan-400 to-accent-purple bg-clip-text text-transparent drop-shadow-sm">
-                CaleByte
+              <span>
+                Cale<span className="text-accent-teal">Byte</span>
               </span>
             </motion.h1>
 
@@ -88,7 +80,7 @@ export default function Home() {
                 <motion.button
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
-                  className="px-6 sm:px-8 py-3.5 rounded-2xl bg-gradient-to-r from-accent-teal to-cyan-500 text-white text-sm sm:text-base font-semibold shadow-lg shadow-accent-teal/25 hover:shadow-accent-teal/40 hover:brightness-110 transition-all flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap"
+                  className="px-6 sm:px-8 py-3.5 rounded-full bg-gradient-to-r from-accent-teal to-cyan-500 text-white text-sm sm:text-base font-semibold shadow-lg shadow-accent-teal/25 hover:shadow-accent-teal/40 hover:brightness-110 transition-all flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap"
                 >
                   <span>Download CV</span>
                   <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
@@ -97,15 +89,15 @@ export default function Home() {
                 </motion.button>
               </a>
 
-              <a href="#contact">
-                <motion.button
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                  className="px-6 sm:px-8 py-3.5 rounded-2xl border border-accent-teal/40 text-text-main hover:bg-accent-teal/10 hover:border-accent-teal transition-all text-sm sm:text-base font-semibold flex items-center justify-center cursor-pointer whitespace-nowrap"
+              <a href="#contact" className="inline-block">
+                <LiquidButton
+                  className="px-6 sm:px-8 py-3.5 h-auto rounded-full border border-white/10 dark:border-white/15 text-text-main dark:text-white hover:border-accent-teal text-sm sm:text-base font-semibold flex items-center justify-center cursor-pointer whitespace-nowrap bg-black/20 dark:bg-black/40 backdrop-blur-md transition-all"
                 >
                   Let’s Talk
-                </motion.button>
+                </LiquidButton>
               </a>
+
+
             </motion.div>
           </motion.div>
 
@@ -172,22 +164,35 @@ export default function Home() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
                 </div>
 
-                {/* Floating "Hello, I'm CaleByte." Pill Badge (Exact Reference Recreation) */}
+                {/* Floating "Hello, I'm CaleByte." Liquid Glass Pill Badge (21st.dev Exact Recreation) */}
                 <motion.div
                   initial={{ y: 15, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.5, duration: 0.5 }}
                   whileHover={{ y: -3, scale: 1.05 }}
-                  className="absolute -bottom-4 left-1/2 -translate-x-1/2 z-20 px-6 py-2.5 rounded-full bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-accent-teal/40 shadow-[0_10px_30px_rgba(0,0,0,0.15)] flex items-center gap-2 whitespace-nowrap cursor-default group"
+                  className="absolute -bottom-4 sm:-bottom-5 left-1/2 -translate-x-1/2 z-30 px-6 py-2.5 rounded-full flex items-center gap-2.5 whitespace-nowrap cursor-default group overflow-hidden select-none bg-black/60 dark:bg-black/75 backdrop-blur-xl border border-white/20 shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
                 >
-                  <span className="relative flex h-2.5 w-2.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
-                  </span>
-                  <span className="text-sm sm:text-base font-semibold font-display tracking-tight text-slate-800 dark:text-white group-hover:text-accent-teal transition-colors">
-                    Hello, I'm <span className="bg-gradient-to-r from-accent-teal via-cyan-400 to-accent-purple bg-clip-text text-transparent">CaleByte</span>.
-                  </span>
+                  {/* Liquid Glass Highlight & Inset Shadow Layers */}
+                  <div className="absolute inset-0 z-0 rounded-full shadow-[0_0_8px_rgba(0,0,0,0.03),0_2px_6px_rgba(0,0,0,0.08),inset_3px_3px_0.5px_-3.5px_rgba(255,255,255,0.12),inset_-3px_-3px_0.5px_-3.5px_rgba(255,255,255,0.85),inset_1px_1px_1px_-0.5px_rgba(255,255,255,0.6),inset_-1px_-1px_1px_-0.5px_rgba(255,255,255,0.6),inset_0_0_6px_6px_rgba(255,255,255,0.12),inset_0_0_2px_2px_rgba(255,255,255,0.06),0_0_12px_rgba(255,255,255,0.15)] transition-all pointer-events-none" />
+                  
+                  {/* Liquid Glass Distortion Filter Layer */}
+                  <div
+                    className="absolute inset-0 isolate -z-10 overflow-hidden rounded-full pointer-events-none"
+                    style={{ backdropFilter: 'url("#container-glass")' }}
+                  />
+
+                  {/* Badge Content without green dot */}
+                  <div className="relative z-10 flex items-center justify-center">
+                    <span className="text-sm sm:text-base font-semibold font-display tracking-tight text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
+                      Hello, I'm Cale<span className="text-accent-teal font-bold">Byte</span>.
+                    </span>
+                  </div>
+
+
+                  <GlassFilter />
                 </motion.div>
+
+
               </motion.div>
             </div>
           </motion.div>
