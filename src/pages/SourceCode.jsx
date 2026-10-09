@@ -409,15 +409,12 @@ export default function SourceCode() {
 
               {/* Header: Title and Close Button */}
               <div className="flex items-start justify-between pb-4 border-b border-white/10 relative z-10">
-                <div className="space-y-1.5">
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent-teal/10 border border-accent-teal/30 text-accent-teal text-[11px] font-semibold tracking-wide">
-                    <span>⚡</span> Instant Access
-                  </div>
+                <div className="space-y-1">
                   <h3 className="text-xl sm:text-2xl font-extrabold font-display text-white tracking-tight">
                     Get Source Code
                   </h3>
                   <p className="text-xs text-slate-400">
-                    Complete production project ZIP, architecture & setup guide
+                    Complete production project files & setup guide
                   </p>
                 </div>
                 <button
@@ -432,17 +429,12 @@ export default function SourceCode() {
 
               {/* Selected Codebase Details Card */}
               <div className="p-4 sm:p-5 rounded-2xl bg-black/40 border border-white/10 space-y-2 relative z-10">
-                <div className="flex items-start justify-between gap-4">
+                <div className="flex items-center justify-between gap-4">
                   <div className="space-y-1">
                     <span className="text-[10px] uppercase tracking-widest font-bold text-slate-400 block">Selected Codebase</span>
-                    <h4 className="text-sm sm:text-base font-extrabold text-white leading-snug">
+                    <h4 className="text-base sm:text-lg font-bold text-white leading-snug">
                       {purchasingItem.title}
                     </h4>
-                    {purchasingItem.filename && (
-                      <span className="inline-block text-[11px] text-slate-400 font-mono">
-                        📦 {purchasingItem.filename} {purchasingItem.filesize ? `• ${purchasingItem.filesize}` : ''}
-                      </span>
-                    )}
                   </div>
                   <div className="text-right shrink-0">
                     <span className="text-[10px] uppercase tracking-widest font-bold text-slate-400 block">Price</span>
@@ -490,12 +482,9 @@ export default function SourceCode() {
                   </button>
                   <button
                     type="submit"
-                    className="w-full sm:w-auto px-7 py-3 rounded-2xl bg-gradient-to-r from-accent-teal via-teal-400 to-cyan-400 hover:from-teal-300 hover:to-cyan-300 text-slate-950 font-extrabold text-xs sm:text-sm shadow-xl shadow-accent-teal/30 hover:shadow-accent-teal/50 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer active:scale-95"
+                    className="w-full sm:w-auto px-7 py-3 rounded-2xl bg-gradient-to-r from-accent-teal via-teal-400 to-cyan-400 hover:from-teal-300 hover:to-cyan-300 text-slate-950 font-extrabold text-xs sm:text-sm shadow-xl shadow-accent-teal/30 hover:shadow-accent-teal/50 transition-all duration-300 flex items-center justify-center cursor-pointer active:scale-95"
                   >
                     <span>Proceed to Paystack</span>
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                    </svg>
                   </button>
                 </div>
               </form>
