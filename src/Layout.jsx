@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Header from './components/Header.jsx'
 import Footer from './components/Footer.jsx'
-import BackgroundParticles from './components/BackgroundParticles.jsx'
 import BackgroundAudio from './components/BackgroundAudio.jsx'
 import SupportModal from './components/SupportModal.jsx'
 
@@ -27,8 +26,7 @@ export default function Layout({children}){
 
   return (
     <div className="min-h-screen flex flex-col w-full max-w-full overflow-x-hidden">
-      {/* Background canvas - fixed and behind content */}
-      <BackgroundParticles />
+      
       {/* Background music control (floating button) - using free Pixabay music */}
       <BackgroundAudio />
       <Header />

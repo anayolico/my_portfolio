@@ -5,7 +5,7 @@ import { fetchFromApi } from '../services/api.js'
 import SEO from '../components/SEO'
 import Footer from '../components/Footer.jsx'
 import ServerOfflineBot from '../components/ServerOfflineBot.jsx'
-import BackgroundParticles from '../components/BackgroundParticles.jsx'
+
 
 export default function AllProjects() {
   const [activeFilter, setActiveFilter] = useState('All')
@@ -108,7 +108,7 @@ export default function AllProjects() {
       />
 
       <div className="min-h-screen text-text-main flex flex-col justify-between selection:bg-accent-teal selection:text-white">
-        <BackgroundParticles />
+        
 
         <main className="max-w-7xl mx-auto px-4 sm:px-6 pt-32 pb-24 w-full flex-grow space-y-12">
           {/* Top Bar: Back Button */}

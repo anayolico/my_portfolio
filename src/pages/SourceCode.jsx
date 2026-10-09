@@ -4,7 +4,6 @@ import { fetchFromApi } from '../services/api.js'
 import SEO from '../components/SEO'
 import Footer from '../components/Footer.jsx'
 import ServerOfflineBot from '../components/ServerOfflineBot.jsx'
-import BackgroundParticles from '../components/BackgroundParticles.jsx'
 
 export default function SourceCode() {
   const [activeFilter, setActiveFilter] = useState('All')
@@ -16,6 +15,8 @@ export default function SourceCode() {
   const [buyerEmail, setBuyerEmail] = useState('')
   const [emailModalOpen, setEmailModalOpen] = useState(false)
   const [paymentSuccessData, setPaymentSuccessData] = useState(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [checkoutError, setCheckoutError] = useState('')
 
   useEffect(() => {
     // Load Paystack Inline JS library dynamically
@@ -123,88 +124,116 @@ export default function SourceCode() {
   const handleOpenCheckout = (item) => {
     setPurchasingItem(item)
     setEmailModalOpen(true)
+    setCheckoutError('')
+    setIsSubmitting(false)
   }
 
   const triggerPaystackCheckout = (e) => {
     e.preventDefault()
+    setCheckoutError('')
+
     if (!buyerEmail || !buyerEmail.includes('@')) {
-      alert('Please enter a valid email address to receive your purchase download link.')
+      setCheckoutError('Please enter a valid email address to receive your purchase download link.')
       return
     }
-    setEmailModalOpen(false)
+
+    if (!purchasingItem) {
+      setCheckoutError('No codebase selected.')
+      return
+    }
+
+    setIsSubmitting(true)
 
     const paystackKey = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || 'pk_test_d3a016629910d635c02b28c8dbbb7190f84501a3'
-    const amountInKobo = (purchasingItem.price || 15000) * 100
+    const rawPrice = purchasingItem.price ? Number(String(purchasingItem.price).replace(/[^0-9.]/g, '')) : 15000
+    const finalPrice = isNaN(rawPrice) || rawPrice <= 0 ? 15000 : rawPrice
+    const amountInKobo = Math.round(finalPrice * 100)
 
     if (window.PaystackPop) {
-      const handler = window.PaystackPop.setup({
-        key: paystackKey,
-        email: buyerEmail,
-        amount: amountInKobo,
-        currency: 'NGN',
-        ref: 'SC_' + Math.floor((Math.random() * 1000000000) + 1),
-        metadata: {
-          type: 'source_code',
-          projectId: purchasingItem.id,
-          projectTitle: purchasingItem.title,
-          filename: purchasingItem.filename || 'source-code.zip',
-          buyerEmail: buyerEmail,
-          custom_fields: [
-            {
-              display_name: "Product Title",
-              variable_name: "product_title",
-              value: purchasingItem.title
-            },
-            {
-              display_name: "ZIP Filename",
-              variable_name: "zip_filename",
-              value: purchasingItem.filename || 'source-code.zip'
-            }
-          ]
-        },
-        callback: async function (response) {
-          try {
-            // Verify payment on backend to generate cryptographically signed download URL
-            const verifyRes = await fetchFromApi(`/api/paystack/verify/${response.reference}`)
-            const verifiedUrl = verifyRes?.downloadUrl || verifyRes?.data?.downloadUrl
+      try {
+        const handler = window.PaystackPop.setup({
+          key: paystackKey,
+          email: buyerEmail.trim(),
+          amount: amountInKobo,
+          currency: 'NGN',
+          ref: 'SC_' + Math.floor((Math.random() * 1000000000) + 1),
+          metadata: {
+            type: 'source_code',
+            projectId: String(purchasingItem.id || 'custom'),
+            projectTitle: purchasingItem.title || 'Source Code Package',
+            filename: purchasingItem.filename || 'source-code.zip',
+            buyerEmail: buyerEmail.trim(),
+            custom_fields: [
+              {
+                display_name: "Product Title",
+                variable_name: "product_title",
+                value: purchasingItem.title || 'Source Code Package'
+              },
+              {
+                display_name: "ZIP Filename",
+                variable_name: "zip_filename",
+                value: purchasingItem.filename || 'source-code.zip'
+              }
+            ]
+          },
+          callback: function (response) {
+            (async () => {
+              try {
+                // Verify payment on backend to generate cryptographically signed download URL
+                const verifyRes = await fetchFromApi(`/api/paystack/verify/${response.reference}`)
+                const verifiedUrl = verifyRes?.downloadUrl || verifyRes?.data?.downloadUrl
 
-            setPaymentSuccessData({
-              item: purchasingItem,
-              ref: response.reference,
-              downloadUrl: verifiedUrl,
-              buyerEmail: buyerEmail
-            })
+                setIsSubmitting(false)
+                setEmailModalOpen(false)
 
-            // Automatically trigger download on user's device
-            if (verifiedUrl) {
-              const link = document.createElement('a')
-              link.href = verifiedUrl
-              link.setAttribute('download', purchasingItem.filename || 'source-code.zip')
-              document.body.appendChild(link)
-              link.click()
-              document.body.removeChild(link)
-            }
-          } catch (err) {
-            console.error('Error verifying payment:', err)
-            setPaymentSuccessData({
-              item: purchasingItem,
-              ref: response.reference,
-              buyerEmail: buyerEmail
-            })
+                setPaymentSuccessData({
+                  item: purchasingItem,
+                  ref: response.reference,
+                  downloadUrl: verifiedUrl,
+                  buyerEmail: buyerEmail.trim()
+                })
+
+                // Automatically trigger download on user's device
+                if (verifiedUrl) {
+                  const link = document.createElement('a')
+                  link.href = verifiedUrl
+                  link.setAttribute('download', purchasingItem.filename || 'source-code.zip')
+                  document.body.appendChild(link)
+                  link.click()
+                  document.body.removeChild(link)
+                }
+              } catch (err) {
+                console.error('Error verifying payment:', err)
+                setIsSubmitting(false)
+                setEmailModalOpen(false)
+                setPaymentSuccessData({
+                  item: purchasingItem,
+                  ref: response.reference,
+                  buyerEmail: buyerEmail.trim()
+                })
+              }
+            })()
+          },
+          onClose: function () {
+            console.log('Checkout closed by customer')
+            setIsSubmitting(false)
           }
-        },
-        onClose: function () {
-          console.log('Checkout closed by customer')
-        }
-      })
-      handler.openIframe()
+        })
+        handler.openIframe()
+      } catch (err) {
+        console.error('Paystack setup error:', err)
+        setIsSubmitting(false)
+        setCheckoutError('Could not open payment window. Please check your connection and try again.')
+      }
     } else {
+      setIsSubmitting(false)
       // Fallback direct checkout if popup script blocked
       alert(`Paystack Checkout Initialized for ${purchasingItem.title}. Reference: ${buyerEmail}`)
+      setEmailModalOpen(false)
       setPaymentSuccessData({
         item: purchasingItem,
         ref: 'REF_' + Date.now(),
-        buyerEmail: buyerEmail
+        buyerEmail: buyerEmail.trim()
       })
     }
   }
@@ -219,7 +248,7 @@ export default function SourceCode() {
       />
 
       <div className="min-h-screen text-text-main flex flex-col justify-between selection:bg-accent-teal selection:text-white">
-        <BackgroundParticles />
+
         <main className="max-w-7xl mx-auto px-4 sm:px-6 pt-32 pb-24 w-full flex-grow space-y-12">
           {/* Top Bar: Back Button */}
           <motion.div
@@ -503,19 +532,34 @@ export default function SourceCode() {
                   </p>
                 </div>
 
+                {checkoutError && (
+                  <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-medium text-center">
+                    {checkoutError}
+                  </div>
+                )}
+
                 <div className="flex flex-col-reverse sm:flex-row items-center justify-end gap-3 pt-2">
                   <button
                     type="button"
+                    disabled={isSubmitting}
                     onClick={() => setEmailModalOpen(false)}
-                    className="w-full sm:w-auto px-5 py-3 rounded-2xl border border-white/10 hover:border-white/20 hover:bg-white/5 text-slate-300 hover:text-white text-xs sm:text-sm font-semibold transition-all cursor-pointer"
+                    className="w-full sm:w-auto px-5 py-3 rounded-2xl border border-white/10 hover:border-white/20 hover:bg-white/5 text-slate-300 hover:text-white text-xs sm:text-sm font-semibold transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="w-full sm:w-auto px-7 py-3 rounded-2xl bg-gradient-to-r from-accent-teal via-teal-400 to-cyan-400 hover:from-teal-300 hover:to-cyan-300 text-slate-950 font-extrabold text-xs sm:text-sm shadow-xl shadow-accent-teal/30 hover:shadow-accent-teal/50 transition-all duration-300 flex items-center justify-center cursor-pointer active:scale-95"
+                    disabled={isSubmitting}
+                    className="w-full sm:w-auto px-7 py-3 rounded-2xl bg-gradient-to-r from-accent-teal via-teal-400 to-cyan-400 hover:from-teal-300 hover:to-cyan-300 text-slate-950 font-extrabold text-xs sm:text-sm shadow-xl shadow-accent-teal/30 hover:shadow-accent-teal/50 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer active:scale-95 disabled:opacity-75 disabled:cursor-not-allowed"
                   >
-                    <span>Proceed to Paystack</span>
+                    {isSubmitting ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-slate-950/30 border-t-slate-950 rounded-full animate-spin" />
+                        <span>Connecting to Paystack...</span>
+                      </>
+                    ) : (
+                      <span>Proceed to Paystack</span>
+                    )}
                   </button>
                 </div>
               </form>
