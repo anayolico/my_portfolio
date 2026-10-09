@@ -47,11 +47,11 @@ export default function Typewriter({
 
   return (
     <span className={`inline-flex items-center min-h-[1.4em] ${className}`}>
-      <span className="bg-gradient-to-r from-amber-400 via-accent-teal to-cyan-300 bg-clip-text text-transparent drop-shadow-sm font-semibold">
+      <span className="bg-gradient-to-r from-teal-300 via-accent-teal to-cyan-300 bg-clip-text text-transparent drop-shadow-[0_2px_12px_rgba(23,162,184,0.3)] font-semibold">
         {currentText}
       </span>
       {/* Blinking Typing Cursor */}
-      <span className="inline-block w-[3px] h-[1em] bg-amber-400 ml-1.5 animate-[ping_1s_infinite] rounded-full" />
+      <span className="inline-block w-[2.5px] h-[1.1em] bg-accent-teal ml-1.5 animate-pulse rounded-full shadow-[0_0_8px_rgba(23,162,184,0.7)]" />
     </span>
   )
 }

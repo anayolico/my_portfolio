@@ -334,7 +334,7 @@ export default function Contact() {
                   whileTap={{ scale: 0.98 }}
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-gradient-to-r from-accent-teal to-accent-purple text-white font-semibold text-sm sm:text-base shadow-lg shadow-accent-teal/25 hover:shadow-accent-teal/40 hover:brightness-110 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all cursor-pointer"
+                  className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-accent-teal hover:bg-teal-400 text-white font-bold text-sm sm:text-base shadow-lg shadow-accent-teal/30 hover:shadow-accent-teal/50 hover:brightness-110 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all cursor-pointer"
                 >
                   {isSubmitting ? (
                     <>
