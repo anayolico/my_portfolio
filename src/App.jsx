@@ -11,6 +11,7 @@ import SupportBanner from './components/SupportBanner.jsx'
 import CV from './pages/CV.jsx'
 import AllProjects from './pages/AllProjects.jsx'
 import SourceCode from './pages/SourceCode.jsx'
+import SourceCodePreview from './components/SourceCodePreview.jsx'
 
 /* App.jsx: top-level composition of the single-page portfolio & standalone /cv, /projects & /source-code routes. */
 export default function App(){
@@ -90,6 +91,7 @@ export default function App(){
           <Home />
           <About />
           <Projects />
+          <SourceCodePreview />
           <Skills />
           <Contact />
           <SupportBanner />
