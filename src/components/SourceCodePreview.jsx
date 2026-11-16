@@ -24,8 +24,11 @@ export default function SourceCodePreview() {
       const freeList = Array.isArray(freeRes) ? freeRes : (freeRes?.data || [])
       const premiumList = Array.isArray(premiumRes) ? premiumRes : (premiumRes?.data || [])
 
-      setFreeCodebases(freeList.slice(0, 2))
-      setPremiumCodebases(premiumList.slice(0, 2))
+      const activeFree = freeList.filter(item => Boolean(item.is_featured || item.isFeatured))
+      const activePremium = premiumList.filter(item => Boolean(item.is_featured || item.isFeatured))
+
+      setFreeCodebases((activeFree.length > 0 ? activeFree : freeList).slice(0, 2))
+      setPremiumCodebases((activePremium.length > 0 ? activePremium : premiumList).slice(0, 2))
       setLoading(false)
     }
 
