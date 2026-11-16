@@ -166,23 +166,12 @@ export function PremiumCodebaseCard({ item, onCheckout }) {
         <Card
           className="relative h-full rounded-[inherit] border-0 ring-0 bg-transparent p-0 gap-0 shadow-none"
           style={{
-            background: 'radial-gradient(ellipse 90% 70% at 50% 50%, rgba(217, 119, 6, 0.45) 0%, rgba(180, 83, 9, 0.30) 30%, rgba(45, 20, 10, 0.85) 65%, #080607 100%)',
-            boxShadow: '0 25px 70px -15px rgba(0, 0, 0, 0.9), inset 0 1px 1px rgba(251, 191, 36, 0.25)'
+            background: 'radial-gradient(ellipse 80% 65% at 100% 0%, rgba(255, 183, 65, 0.36) 0%, rgba(255, 183, 65, 0.12) 38%, #232228 75%)',
+            boxShadow: '0 25px 70px -15px rgba(0, 0, 0, 0.85), inset 0 1px 1px rgba(255, 183, 65, 0.18)'
           }}
         >
-          {/* Grainy Noise Texture Effect */}
-          <div
-            className="absolute inset-0 pointer-events-none opacity-[0.16] mix-blend-overlay -z-10"
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`
-            }}
-          />
-
-          {/* Luminous Center Amber/Orange Glow */}
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_50%,rgba(245,158,11,0.22),transparent_70%)] pointer-events-none -z-10 group-hover:scale-110 transition-transform duration-700" />
-
-          {/* Top Amber Ambient Highlight */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-36 bg-gradient-to-b from-amber-400/15 via-orange-500/5 to-transparent blur-2xl pointer-events-none -z-10" />
+          {/* Subtle top-right amber glow accent */}
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_75%_60%_at_100%_0%,rgba(255,183,65,0.16),transparent_65%)] pointer-events-none -z-10 group-hover:scale-105 transition-transform duration-700" />
 
           <CardContent className="p-6 sm:p-8 flex flex-col justify-between space-y-6 h-full relative z-10">
             <div className="space-y-4">
@@ -250,15 +239,12 @@ export function FreeCodebaseCard({ item }) {
         <Card
           className="relative h-full rounded-[inherit] border-0 ring-0 bg-transparent p-0 gap-0 shadow-none"
           style={{
-            background: 'radial-gradient(ellipse 95% 70% at 50% 0%, #303746 0%, #151924 45%, #080a11 100%)',
-            boxShadow: '0 25px 70px -15px rgba(0, 0, 0, 0.85), inset 0 1px 1px rgba(255, 255, 255, 0.18)'
+            background: 'radial-gradient(ellipse 80% 65% at 100% 0%, rgba(1, 195, 168, 0.36) 0%, rgba(1, 195, 168, 0.12) 38%, #232228 75%)',
+            boxShadow: '0 25px 70px -15px rgba(0, 0, 0, 0.85), inset 0 1px 1px rgba(1, 195, 168, 0.18)'
           }}
         >
-          {/* Top Spotlight Radial Ambient Glow */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-44 bg-gradient-to-b from-white/10 to-transparent blur-2xl pointer-events-none -z-10" />
-
-          {/* Subtle Ambient Corner Accent */}
-          <div className="absolute -bottom-16 -right-16 w-48 h-48 bg-accent-teal/10 rounded-full blur-3xl pointer-events-none group-hover:bg-accent-teal/20 transition-all duration-500" />
+          {/* Subtle top-right teal glow accent */}
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_75%_60%_at_100%_0%,rgba(1,195,168,0.16),transparent_65%)] pointer-events-none -z-10 group-hover:scale-105 transition-transform duration-700" />
 
           <CardContent className="p-6 sm:p-8 flex flex-col justify-between space-y-6 h-full relative z-10">
             <div className="space-y-4">
