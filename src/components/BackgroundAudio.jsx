@@ -2,17 +2,61 @@ import React, { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Play, Pause } from 'lucide-react'
 import audio1 from "./ima-and/audio1.mp3"
+import { API_BASE_URL, fetchFromApi } from '../services/api.js'
+
+function pickRandomIndex(length, excludeIndex = -1) {
+  if (length <= 1) return 0
+  let next = Math.floor(Math.random() * length)
+  if (next === excludeIndex) {
+    next = (next + 1 + Math.floor(Math.random() * (length - 1))) % length
+  }
+  return next
+}
+
+function resolveAudioUrl(url) {
+  if (!url) return audio1
+  if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:') || url.startsWith('blob:')) {
+    return url
+  }
+  if (url.startsWith('/')) {
+    return `${API_BASE_URL}${url}`
+  }
+  return url
+}
 
 /**
  * BackgroundAudio.jsx
- * - Background music control with 21st.dev Shiny Button styling
- * - Full rotating conic gradient, shimmer, and breathing aura animation when playing ("singing")
+ * - Fetches playlist tracks from backend database (/api/music), falling back to bundled audio1
+ * - Picks a random track when played, and automatically plays another random track when the current one ends
  * - Remembers user preference in localStorage
  */
 export default function BackgroundAudio() {
   const audioRef = useRef(null)
+  const [tracks, setTracks] = useState([{ id: 'default', title: 'Default Track', url: audio1 }])
+  const [currentIndex, setCurrentIndex] = useState(0)
   const [playing, setPlaying] = useState(false)
   const [error, setError] = useState(null)
+
+  // Fetch playlist from database
+  useEffect(() => {
+    async function loadMusic() {
+      const data = await fetchFromApi('/api/music')
+      if (Array.isArray(data) && data.length > 0) {
+        const mapped = data
+          .filter(t => t && t.url)
+          .map(t => ({
+            id: t.id,
+            title: t.title || 'Portfolio Track',
+            url: resolveAudioUrl(t.url),
+          }))
+        if (mapped.length > 0) {
+          setTracks(mapped)
+          setCurrentIndex(pickRandomIndex(mapped.length))
+        }
+      }
+    }
+    loadMusic()
+  }, [])
 
   // Restore previous preference
   useEffect(() => {
@@ -22,7 +66,7 @@ export default function BackgroundAudio() {
     } catch (e) {}
   }, [])
 
-  // Control audio playback
+  // Control audio playback whenever playing state or current track changes
   useEffect(() => {
     const audio = audioRef.current
     if (!audio) return
@@ -40,21 +84,40 @@ export default function BackgroundAudio() {
       }
     } else {
       audio.pause()
-      audio.currentTime = 0
     }
 
     try {
       localStorage.setItem('bg_music_playing', playing ? 'true' : 'false')
     } catch (e) {}
-  }, [playing])
+  }, [playing, currentIndex, tracks])
+
+  const handleTogglePlay = () => {
+    if (!playing && tracks.length > 1) {
+      // Pick a random track when starting playback from paused/stopped state
+      const audio = audioRef.current
+      if (!audio || audio.currentTime === 0 || audio.ended) {
+        setCurrentIndex(prev => pickRandomIndex(tracks.length, prev))
+      }
+    }
+    setPlaying((prev) => !prev)
+  }
+
+  const handleTrackEnded = () => {
+    if (tracks.length > 1) {
+      setCurrentIndex(prev => pickRandomIndex(tracks.length, prev))
+    }
+  }
+
+  const currentSrc = tracks[currentIndex]?.url || audio1
 
   return (
     <>
       {/* Audio Element */}
       <audio
         ref={audioRef}
-        src={audio1}
-        loop
+        src={currentSrc}
+        loop={tracks.length <= 1}
+        onEnded={handleTrackEnded}
         preload="auto"
       />
 
@@ -106,7 +169,7 @@ export default function BackgroundAudio() {
 
           {/* 21st.dev Shiny Button Component Styled for Audio (Enlarged) */}
           <motion.button
-            onClick={() => setPlaying((prev) => !prev)}
+            onClick={handleTogglePlay}
             whileHover={{ scale: 1.08 }}
             whileTap={{ scale: 0.94 }}
             data-playing={playing ? "true" : "false"}
@@ -148,7 +211,6 @@ export default function BackgroundAudio() {
             </span>
           </motion.button>
         </div>
-
 
         {/* Error notification badge */}
         {error && (
