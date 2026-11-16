@@ -226,7 +226,7 @@ export function PremiumCodebaseCard({ item, onCheckout }) {
 }
 
 /**
- * Free codebase card with direct download button.
+ * Free codebase card with FocusFrameBorder pulsing corner brackets and direct download button.
  */
 export function FreeCodebaseCard({ item }) {
   const techArr = parseTechArray(item.tech)
@@ -239,49 +239,61 @@ export function FreeCodebaseCard({ item }) {
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.3 }}
       whileHover={{ y: -6, scale: 1.01 }}
-      className="p-6 sm:p-8 rounded-3xl border border-white/15 hover:border-white/30 flex flex-col justify-between space-y-6 group shadow-2xl relative overflow-hidden backdrop-blur-xl transition-all duration-300"
-      style={{
-        background: 'radial-gradient(ellipse 95% 70% at 50% 0%, #303746 0%, #151924 45%, #080a11 100%)',
-        boxShadow: '0 25px 70px -15px rgba(0, 0, 0, 0.85), inset 0 1px 1px rgba(255, 255, 255, 0.18)'
-      }}
+      className="h-full group"
     >
-      {/* Top Spotlight Radial Ambient Glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-44 bg-gradient-to-b from-white/10 to-transparent blur-2xl pointer-events-none -z-10" />
-
-      {/* Subtle Ambient Corner Accent */}
-      <div className="absolute -bottom-16 -right-16 w-48 h-48 bg-accent-teal/10 rounded-full blur-3xl pointer-events-none group-hover:bg-accent-teal/20 transition-all duration-500" />
-
-      <div className="space-y-4 relative z-10">
-        <h3 className="text-xl sm:text-2xl font-extrabold text-white font-display leading-tight group-hover:text-accent-teal transition-colors duration-300">
-          {item.title}
-        </h3>
-        <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-sans">
-          {item.description}
-        </p>
-        <div className="flex flex-wrap gap-2 pt-2">
-          {techArr.map(t => (
-            <span
-              key={t}
-              className="px-3 py-1 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] text-xs font-medium text-slate-200 border border-white/10 hover:border-accent-teal/40 hover:text-white transition-all duration-200 shadow-sm"
-            >
-              {t.trim()}
-            </span>
-          ))}
-        </div>
-      </div>
-      <div className="flex items-center justify-end pt-4 border-t border-white/10 relative z-10">
-        <a
-          href={item.downloadLink || item.download_link || '#'}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="px-6 py-3 rounded-2xl bg-accent-teal hover:bg-teal-300 text-slate-950 font-extrabold text-xs sm:text-sm shadow-lg shadow-accent-teal/25 hover:shadow-accent-teal/40 transition-all duration-300 flex items-center gap-2 cursor-pointer active:scale-95 group/btn"
+      <ShineBorder06
+        duration={2.4}
+        color="#2dd4bf"
+        className="h-full"
+        contentClassName="border-white/15 hover:border-white/30 shadow-2xl backdrop-blur-xl transition-all duration-300"
+      >
+        <Card
+          className="relative h-full rounded-[inherit] border-0 ring-0 bg-transparent p-0 gap-0 shadow-none"
+          style={{
+            background: 'radial-gradient(ellipse 95% 70% at 50% 0%, #303746 0%, #151924 45%, #080a11 100%)',
+            boxShadow: '0 25px 70px -15px rgba(0, 0, 0, 0.85), inset 0 1px 1px rgba(255, 255, 255, 0.18)'
+          }}
         >
-          <span>Download Now</span>
-          <svg className="w-4 h-4 transition-transform group-hover/btn:translate-y-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-          </svg>
-        </a>
-      </div>
+          {/* Top Spotlight Radial Ambient Glow */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-44 bg-gradient-to-b from-white/10 to-transparent blur-2xl pointer-events-none -z-10" />
+
+          {/* Subtle Ambient Corner Accent */}
+          <div className="absolute -bottom-16 -right-16 w-48 h-48 bg-accent-teal/10 rounded-full blur-3xl pointer-events-none group-hover:bg-accent-teal/20 transition-all duration-500" />
+
+          <CardContent className="p-6 sm:p-8 flex flex-col justify-between space-y-6 h-full relative z-10">
+            <div className="space-y-4">
+              <h3 className="text-xl sm:text-2xl font-extrabold text-white font-display leading-tight group-hover:text-accent-teal transition-colors duration-300">
+                {item.title}
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-sans">
+                {item.description}
+              </p>
+              <div className="flex flex-wrap gap-2 pt-2">
+                {techArr.map(t => (
+                  <Badge
+                    key={t}
+                    variant="secondary"
+                    className="px-3 py-1 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] text-xs font-medium text-slate-200 border border-white/10 hover:border-accent-teal/40 hover:text-white transition-all duration-200 shadow-sm"
+                  >
+                    {t.trim()}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+            <div className="flex items-center justify-end pt-4 border-t border-white/10">
+              <a
+                href={item.downloadLink || item.download_link || '#'}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-6 py-3 rounded-2xl bg-accent-teal hover:bg-teal-300 text-slate-950 font-extrabold text-xs sm:text-sm shadow-lg shadow-accent-teal/25 hover:shadow-accent-teal/40 transition-all duration-300 flex items-center gap-2 cursor-pointer active:scale-95 group/btn"
+              >
+                <span>Download Now</span>
+                <Download className="w-4 h-4 transition-transform group-hover/btn:translate-y-0.5" />
+              </a>
+            </div>
+          </CardContent>
+        </Card>
+      </ShineBorder06>
     </motion.div>
   )
 }
