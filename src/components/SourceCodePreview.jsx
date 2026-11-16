@@ -37,9 +37,19 @@ export default function SourceCodePreview() {
   }
 
   return (
-    <section id="source-code-preview" className="py-12 space-y-14">
+    <section id="source-code-preview" className="py-12 space-y-10">
+      {/* Single unified header covering both free/testing and paid/production codebases */}
+      <div className="space-y-2">
+        <h3 className="text-2xl sm:text-3xl font-extrabold font-display text-text-main tracking-tight">
+          Codebases &amp; Source Code
+        </h3>
+        <p className="text-sm sm:text-base text-text-muted font-sans max-w-2xl">
+          Download free starter codebases to test and experiment with, or unlock complete production-ready systems built for real-world deployment.
+        </p>
+      </div>
+
       {loading ? (
-        <div className="space-y-12">
+        <div className="space-y-10">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {[1, 2].map(i => (
               <div key={i} className="glass-card rounded-3xl p-8 h-64 border border-white/5 animate-pulse bg-slate-900/40" />
@@ -52,37 +62,19 @@ export default function SourceCodePreview() {
           </div>
         </div>
       ) : (
-        <>
+        <div className="space-y-10">
           {/* Free Codebases Preview (max 2 cards, no button underneath) */}
           {freeCodebases.length > 0 && (
-            <div className="space-y-6">
-              <div className="space-y-1">
-                <h3 className="text-2xl sm:text-3xl font-extrabold font-display text-text-main tracking-tight">
-                  Open-Source Starter Kits
-                </h3>
-                <p className="text-sm text-text-muted font-sans">
-                  Ready-to-use templates and utilities you can clone and build on immediately.
-                </p>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {freeCodebases.map(item => (
-                  <FreeCodebaseCard key={item.id || item.title} item={item} />
-                ))}
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {freeCodebases.map(item => (
+                <FreeCodebaseCard key={item.id || item.title} item={item} />
+              ))}
             </div>
           )}
 
-          {/* Premium Codebases Preview (max 2 cards, Source Code button underneath) */}
+          {/* Premium Codebases Preview (max 2 cards, no section heading above, Source Code button pushed right) */}
           {premiumCodebases.length > 0 && (
-            <div className="space-y-8">
-              <div className="space-y-1">
-                <h3 className="text-2xl sm:text-3xl font-extrabold font-display text-text-main tracking-tight">
-                  Production Blueprints
-                </h3>
-                <p className="text-sm text-text-muted font-sans">
-                  Complete, battle-tested full-stack architectures ready for deployment.
-                </p>
-              </div>
+            <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {premiumCodebases.map(item => (
                   <PremiumCodebaseCard
@@ -93,7 +85,7 @@ export default function SourceCodePreview() {
                 ))}
               </div>
 
-              <div className="flex justify-center pt-2">
+              <div className="flex justify-end pt-2 w-full">
                 <a
                   href="/source-code"
                   onClick={(e) => {
@@ -113,7 +105,7 @@ export default function SourceCodePreview() {
               </div>
             </div>
           )}
-        </>
+        </div>
       )}
 
       <SourceCodeCheckoutModals {...checkout} />
