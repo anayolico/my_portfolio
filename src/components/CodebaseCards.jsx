@@ -142,7 +142,7 @@ export function useSourceCodeCheckout() {
 }
 
 /**
- * Paid / Premium codebase card with amber styling and Paystack checkout trigger.
+ * Paid / Premium codebase card with FocusFrameBorder pulsing corner brackets and Paystack checkout trigger.
  */
 export function PremiumCodebaseCard({ item, onCheckout }) {
   const techArr = parseTechArray(item.tech)
@@ -155,59 +155,72 @@ export function PremiumCodebaseCard({ item, onCheckout }) {
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.3 }}
       whileHover={{ y: -6, scale: 1.01 }}
-      className="p-6 sm:p-8 rounded-3xl border border-amber-500/30 hover:border-amber-400/60 flex flex-col justify-between space-y-6 group shadow-2xl relative overflow-hidden backdrop-blur-xl transition-all duration-300"
-      style={{
-        background: 'radial-gradient(ellipse 90% 70% at 50% 50%, rgba(217, 119, 6, 0.45) 0%, rgba(180, 83, 9, 0.30) 30%, rgba(45, 20, 10, 0.85) 65%, #080607 100%)',
-        boxShadow: '0 25px 70px -15px rgba(0, 0, 0, 0.9), inset 0 1px 1px rgba(251, 191, 36, 0.25)'
-      }}
+      className="h-full group"
     >
-      {/* Grainy Noise Texture Effect */}
-      <div
-        className="absolute inset-0 pointer-events-none opacity-[0.16] mix-blend-overlay -z-10"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`
-        }}
-      />
-
-      {/* Luminous Center Amber/Orange Glow */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_50%,rgba(245,158,11,0.22),transparent_70%)] pointer-events-none -z-10 group-hover:scale-110 transition-transform duration-700" />
-
-      {/* Top Amber Ambient Highlight */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-36 bg-gradient-to-b from-amber-400/15 via-orange-500/5 to-transparent blur-2xl pointer-events-none -z-10" />
-
-      <div className="space-y-4 relative z-10">
-        <h3 className="text-xl sm:text-2xl font-extrabold text-white font-display leading-tight group-hover:text-amber-300 transition-colors duration-300">
-          {item.title}
-        </h3>
-        <p className="text-xs sm:text-sm text-amber-100/75 leading-relaxed font-sans">
-          {item.description}
-        </p>
-        <div className="flex flex-wrap gap-2 pt-2">
-          {techArr.map(t => (
-            <span
-              key={t}
-              className="px-3 py-1 rounded-xl bg-amber-950/40 hover:bg-amber-900/50 text-xs font-semibold text-amber-200 border border-amber-500/30 hover:border-amber-400 hover:text-white transition-all duration-200 shadow-sm backdrop-blur-sm"
-            >
-              {t.trim()}
-            </span>
-          ))}
-        </div>
-      </div>
-      <div className="flex items-center justify-between pt-4 border-t border-amber-500/20 relative z-10">
-        <div>
-          <span className="text-[10px] font-bold uppercase tracking-wider text-amber-200/60 block">Price</span>
-          <span className="text-2xl font-extrabold font-display text-white">₦{(item.price || 15000).toLocaleString()}</span>
-        </div>
-        <button
-          onClick={() => onCheckout(item)}
-          className="px-6 py-3 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 hover:from-amber-300 hover:via-amber-400 hover:to-amber-500 text-slate-950 font-extrabold text-xs sm:text-sm shadow-lg shadow-amber-500/25 hover:shadow-amber-500/45 transition-all duration-300 flex items-center gap-2 cursor-pointer active:scale-95 group/btn"
+      <ShineBorder06
+        duration={2.4}
+        color="#f59e0b"
+        className="h-full"
+        contentClassName="shadow-2xl backdrop-blur-xl transition-all duration-300"
+      >
+        <Card
+          className="relative h-full rounded-[inherit] border-0 ring-0 bg-transparent p-0 gap-0 shadow-none"
+          style={{
+            background: 'radial-gradient(ellipse 90% 70% at 50% 50%, rgba(217, 119, 6, 0.45) 0%, rgba(180, 83, 9, 0.30) 30%, rgba(45, 20, 10, 0.85) 65%, #080607 100%)',
+            boxShadow: '0 25px 70px -15px rgba(0, 0, 0, 0.9), inset 0 1px 1px rgba(251, 191, 36, 0.25)'
+          }}
         >
-          <span>Download Now</span>
-          <svg className="w-4 h-4 transition-transform group-hover/btn:translate-y-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-          </svg>
-        </button>
-      </div>
+          {/* Grainy Noise Texture Effect */}
+          <div
+            className="absolute inset-0 pointer-events-none opacity-[0.16] mix-blend-overlay -z-10"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`
+            }}
+          />
+
+          {/* Luminous Center Amber/Orange Glow */}
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_50%,rgba(245,158,11,0.22),transparent_70%)] pointer-events-none -z-10 group-hover:scale-110 transition-transform duration-700" />
+
+          {/* Top Amber Ambient Highlight */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-36 bg-gradient-to-b from-amber-400/15 via-orange-500/5 to-transparent blur-2xl pointer-events-none -z-10" />
+
+          <CardContent className="p-6 sm:p-8 flex flex-col justify-between space-y-6 h-full relative z-10">
+            <div className="space-y-4">
+              <h3 className="text-xl sm:text-2xl font-extrabold text-white font-display leading-tight group-hover:text-amber-300 transition-colors duration-300">
+                {item.title}
+              </h3>
+              <p className="text-xs sm:text-sm text-amber-100/75 leading-relaxed font-sans">
+                {item.description}
+              </p>
+              <div className="flex flex-wrap gap-2 pt-2">
+                {techArr.map(t => (
+                  <Badge
+                    key={t}
+                    variant="secondary"
+                    className="px-3 py-1 rounded-xl bg-amber-950/40 hover:bg-amber-900/50 text-xs font-semibold text-amber-200 border border-amber-500/30 hover:border-amber-400 hover:text-white transition-all duration-200 shadow-sm backdrop-blur-sm"
+                  >
+                    {t.trim()}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between pt-4 border-t border-amber-500/20">
+              <div>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-amber-200/60 block">Price</span>
+                <span className="text-2xl font-extrabold font-display text-white">₦{(item.price || 15000).toLocaleString()}</span>
+              </div>
+              <button
+                onClick={() => onCheckout(item)}
+                className="px-6 py-3 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 hover:from-amber-300 hover:via-amber-400 hover:to-amber-500 text-slate-950 font-extrabold text-xs sm:text-sm shadow-lg shadow-amber-500/25 hover:shadow-amber-500/45 transition-all duration-300 flex items-center gap-2 cursor-pointer active:scale-95 group/btn"
+              >
+                <span>Download Now</span>
+                <Download className="w-4 h-4 transition-transform group-hover/btn:translate-y-0.5" />
+              </button>
+            </div>
+          </CardContent>
+        </Card>
+      </ShineBorder06>
     </motion.div>
   )
 }
