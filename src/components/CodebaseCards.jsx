@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import { Download } from 'lucide-react'
 import { fetchFromApi } from '../services/api.js'
+import ShineBorder06 from '@/components/ui/shine-border-06'
+import { Card, CardContent } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 
 function parseTechArray(tech) {
   return Array.isArray(tech) ? tech : (typeof tech === 'string' ? tech.split(',') : [])
