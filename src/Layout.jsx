@@ -48,6 +48,19 @@ export default function Layout({children}){
           reference: data.reference || reference,
         })
         setSupportModalOpen(true)
+      } else if (data && data.verified && data.type === 'source_code') {
+        const successPayload = {
+          item: {
+            title: data.projectTitle || 'Source Code Package',
+            price: Number(data.amount) || 15000,
+            download_link: data.downloadUrl || '',
+          },
+          ref: data.reference || reference,
+          downloadUrl: data.downloadUrl || '',
+          buyerEmail: data.email || '',
+        }
+        window.__pendingSourceCodeSuccess = successPayload
+        window.dispatchEvent(new CustomEvent('source_code_checkout_success', { detail: successPayload }))
       }
     }
 

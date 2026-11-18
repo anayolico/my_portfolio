@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Download } from 'lucide-react'
-import { fetchFromApi } from '../services/api.js'
+import { API_BASE_URL } from '../services/api.js'
 import ShineBorder06 from '@/components/ui/shine-border-06'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -21,14 +21,31 @@ export function useSourceCodeCheckout() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [checkoutError, setCheckoutError] = useState('')
 
+  // Reset loading state if user returns via browser Back / bfcache from Paystack
   useEffect(() => {
-    if (!document.getElementById('paystack-script')) {
-      const script = document.createElement('script')
-      script.id = 'paystack-script'
-      script.src = 'https://js.paystack.co/v1/inline.js'
-      script.async = true
-      document.body.appendChild(script)
+    const handlePageShow = () => {
+      setIsSubmitting(false)
     }
+    window.addEventListener('pageshow', handlePageShow)
+    return () => window.removeEventListener('pageshow', handlePageShow)
+  }, [])
+
+  // Show Payment Successful modal when returning from Paystack hosted checkout
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.__pendingSourceCodeSuccess) {
+      setPaymentSuccessData(window.__pendingSourceCodeSuccess)
+      delete window.__pendingSourceCodeSuccess
+    }
+    const handleSuccess = (e) => {
+      if (e?.detail) {
+        setEmailModalOpen(false)
+        setIsSubmitting(false)
+        setPaymentSuccessData(e.detail)
+        delete window.__pendingSourceCodeSuccess
+      }
+    }
+    window.addEventListener('source_code_checkout_success', handleSuccess)
+    return () => window.removeEventListener('source_code_checkout_success', handleSuccess)
   }, [])
 
   const handleOpenCheckout = (item) => {
@@ -38,7 +55,7 @@ export function useSourceCodeCheckout() {
     setIsSubmitting(false)
   }
 
-  const triggerPaystackCheckout = (e) => {
+  const triggerPaystackCheckout = async (e) => {
     e.preventDefault()
     setCheckoutError('')
 
@@ -53,76 +70,32 @@ export function useSourceCodeCheckout() {
     }
 
     setIsSubmitting(true)
-
-    const paystackKey = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || 'pk_test_d3a016629910d635c02b28c8dbbb7190f84501a3'
-    const rawPrice = purchasingItem.price ? Number(String(purchasingItem.price).replace(/[^0-9.]/g, '')) : 15000
-    const finalPrice = isNaN(rawPrice) || rawPrice <= 0 ? 15000 : rawPrice
-    const amountInKobo = Math.round(finalPrice * 100)
-
-    if (window.PaystackPop) {
-      try {
-        const handler = window.PaystackPop.setup({
-          key: paystackKey,
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/paystack/initialize`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({
           email: buyerEmail.trim(),
-          amount: amountInKobo,
-          currency: 'NGN',
-          ref: 'SC_' + Math.floor((Math.random() * 1000000000) + 1),
-          metadata: {
-            type: 'source_code',
-            projectId: String(purchasingItem.id || 'custom'),
-            projectTitle: purchasingItem.title || 'Source Code Package',
-            filename: purchasingItem.filename || 'source-code.zip',
-            download_link: purchasingItem.download_link || purchasingItem.downloadLink || '',
-            buyerEmail: buyerEmail.trim(),
-            custom_fields: [
-              {
-                display_name: "Product Title",
-                variable_name: "product_title",
-                value: purchasingItem.title || 'Source Code Package'
-              },
-              {
-                display_name: "ZIP Filename",
-                variable_name: "zip_filename",
-                value: purchasingItem.filename || 'source-code.zip'
-              }
-            ]
-          },
-          callback: function (response) {
-            const driveUrl = purchasingItem.download_link || purchasingItem.downloadLink || ''
-
-            setIsSubmitting(false)
-            setEmailModalOpen(false)
-
-            setPaymentSuccessData({
-              item: purchasingItem,
-              ref: response.reference,
-              downloadUrl: driveUrl,
-              buyerEmail: buyerEmail.trim()
-            })
-
-            // Background verification without blocking or altering the Google Drive link
-            fetchFromApi(`/api/paystack/verify/${response.reference}`).catch(() => {})
-          },
-          onClose: function () {
-            console.log('Checkout closed by customer')
-            setIsSubmitting(false)
-          }
-        })
-        handler.openIframe()
-      } catch (err) {
-        console.error('Paystack setup error:', err)
-        setIsSubmitting(false)
-        setCheckoutError('Could not open payment window. Please check your connection and try again.')
-      }
-    } else {
-      setIsSubmitting(false)
-      alert(`Paystack Checkout Initialized for ${purchasingItem.title}. Reference: ${buyerEmail}`)
-      setEmailModalOpen(false)
-      setPaymentSuccessData({
-        item: purchasingItem,
-        ref: 'REF_' + Date.now(),
-        buyerEmail: buyerEmail.trim()
+          type: 'source_code',
+          projectId: purchasingItem.id,
+          returnUrl: window.location.origin,
+        }),
       })
+
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok || !data.authorizationUrl) {
+        throw new Error(data.error || 'Could not initialize Paystack checkout.')
+      }
+
+      // Redirect directly to Paystack hosted checkout page
+      window.location.href = data.authorizationUrl
+    } catch (err) {
+      console.error('Paystack initialize error:', err)
+      setIsSubmitting(false)
+      setCheckoutError(err.message || 'Could not connect to Paystack. Please check your connection and try again.')
     }
   }
 
