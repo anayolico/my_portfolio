@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import ProjectCard from '../components/ProjectCard.jsx'
 import { fetchFromApi } from '../services/api.js'
+import AwardImageModal from '../components/AwardImageModal.jsx'
 
 import ServerOfflineBot from '../components/ServerOfflineBot.jsx'
 
@@ -12,6 +13,7 @@ export default function Projects() {
   const [projects, setProjects] = useState([])
   const [loading, setLoading] = useState(true)
   const [isLive, setIsLive] = useState(false)
+  const [awardModalProject, setAwardModalProject] = useState(null)
 
   useEffect(() => {
     async function getProjects() {
@@ -170,7 +172,7 @@ export default function Projects() {
                           {/* Top Gold Pill Badge */}
                           <div className="flex items-center justify-between">
                             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[11px] font-extrabold uppercase tracking-wider font-mono">
-                              🏆 HACKATHON WINNER
+                              HACKATHON WINNER
                             </span>
                             <span className="text-[10px] font-bold uppercase tracking-wider text-amber-400/80 font-mono">1ST PLACE</span>
                           </div>
@@ -210,14 +212,13 @@ export default function Projects() {
 
                         {/* Bottom Button */}
                         <div className="pt-3 border-t border-amber-500/20 flex justify-end">
-                          <a
-                            href={p.demoLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                          <button
+                            type="button"
+                            onClick={() => setAwardModalProject(p)}
                             className="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-black text-xs shadow-md shadow-amber-500/20 flex items-center justify-center gap-1.5 transition-all cursor-pointer"
                           >
-                            <span>Live App ↗</span>
-                          </a>
+                            <span>View Award</span>
+                          </button>
                         </div>
                       </div>
                     ) : (
@@ -262,6 +263,11 @@ export default function Projects() {
           />
         )}
       </section>
+
+      <AwardImageModal
+        project={awardModalProject}
+        onClose={() => setAwardModalProject(null)}
+      />
     </>
   )
 }
