@@ -86,28 +86,60 @@ export function generateCvPdf(cv) {
     })
   }
 
+  const normalizeUrl = (raw) => {
+    if (!raw) return ''
+    return raw.startsWith('http://') || raw.startsWith('https://') ? raw : `https://${raw}`
+  }
+
+  const drawCenteredLinkedRow = (segments, rowY, fontSize = 8.5) => {
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(fontSize)
+    const totalWidth = segments.reduce((sum, seg) => sum + doc.getTextWidth(seg.text), 0)
+    let cursorX = (pageWidth - totalWidth) / 2
+    for (const seg of segments) {
+      if (seg.url) {
+        doc.setTextColor(...BLUE_MID)
+        doc.textWithLink(seg.text, cursorX, rowY, { url: seg.url })
+      } else {
+        doc.setTextColor(...(seg.color || SLATE_600))
+        doc.text(seg.text, cursorX, rowY)
+      }
+      cursorX += doc.getTextWidth(seg.text)
+    }
+  }
+
   const locText = cv.location && cv.location.startsWith('Remote') ? cv.location : `Remote / ${cv.location || 'Nigeria'}`
-  const contactParts = [
-    cv.email,
-    cv.phone,
-    cv.portfolio ? cv.portfolio.replace(/^https?:\/\//, '') : '',
-    locText,
+  const contactItems = [
+    cv.email ? { text: cv.email, url: `mailto:${cv.email}` } : null,
+    cv.phone ? { text: cv.phone } : null,
+    cv.portfolio ? { text: cv.portfolio.replace(/^https?:\/\//, ''), url: normalizeUrl(cv.portfolio) } : null,
+    locText ? { text: locText } : null,
   ].filter(Boolean)
 
-  doc.setFont('helvetica', 'normal')
-  doc.setFontSize(8.5)
-  doc.setTextColor(...SLATE_600)
-  doc.text(contactParts.join('  |  '), pageWidth / 2, y, { align: 'center' })
-  y += 4.2
+  const contactSegments = []
+  contactItems.forEach((item, idx) => {
+    if (idx > 0) contactSegments.push({ text: '  |  ', color: SLATE_500 })
+    contactSegments.push(item)
+  })
+  if (contactSegments.length > 0) {
+    drawCenteredLinkedRow(contactSegments, y, 8.5)
+    y += 4.5
+  }
 
-  const socialParts = [
-    cv.github ? `GitHub: ${cv.github.replace(/^https?:\/\//, '')}` : '',
-    cv.linkedin ? `LinkedIn: ${cv.linkedin.replace(/^https?:\/\//, '')}` : '',
-  ].filter(Boolean)
+  const socialSegments = []
+  if (cv.github) {
+    socialSegments.push({ text: 'GitHub: ', color: SLATE_600 })
+    socialSegments.push({ text: cv.github.replace(/^https?:\/\//, ''), url: normalizeUrl(cv.github) })
+  }
+  if (cv.linkedin) {
+    if (socialSegments.length > 0) socialSegments.push({ text: '   •   ', color: SLATE_500 })
+    socialSegments.push({ text: 'LinkedIn: ', color: SLATE_600 })
+    socialSegments.push({ text: cv.linkedin.replace(/^https?:\/\//, ''), url: normalizeUrl(cv.linkedin) })
+  }
 
-  if (socialParts.length > 0) {
-    doc.text(socialParts.join('   •   '), pageWidth / 2, y, { align: 'center' })
-    y += 3.5
+  if (socialSegments.length > 0) {
+    drawCenteredLinkedRow(socialSegments, y, 8.5)
+    y += 3.8
   }
 
   doc.setDrawColor(203, 213, 225)
