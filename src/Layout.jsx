@@ -3,14 +3,17 @@ import Header from './components/Header.jsx'
 import Footer from './components/Footer.jsx'
 import BackgroundAudio from './components/BackgroundAudio.jsx'
 import SupportModal from './components/SupportModal.jsx'
+import { fetchFromApi } from './services/api.js'
 
 /* Layout: wraps pages and provides header/footer */
 export default function Layout({children}){
   const [supportModalOpen, setSupportModalOpen] = useState(false)
   const [supportInitialAmount, setSupportInitialAmount] = useState(2000)
+  const [supportSuccessData, setSupportSuccessData] = useState(null)
 
   useEffect(() => {
     const handleOpenSupport = (e) => {
+      setSupportSuccessData(null)
       const amt = e?.detail?.amount
       if (amt !== undefined && amt !== null) {
         setSupportInitialAmount(amt)
@@ -24,6 +27,38 @@ export default function Layout({children}){
     return () => window.removeEventListener('open_support_modal', handleOpenSupport)
   }, [])
 
+  // Handle Paystack redirect back to /checkout-success?reference=...
+  useEffect(() => {
+    const path = window.location.pathname.toLowerCase()
+    if (!path.startsWith('/checkout-success')) return
+
+    const params = new URLSearchParams(window.location.search)
+    const reference = params.get('reference') || params.get('trxref')
+    if (!reference) {
+      window.history.replaceState({}, '', '/')
+      return
+    }
+
+    async function verifyReturnPayment() {
+      const data = await fetchFromApi(`/api/paystack/verify/${encodeURIComponent(reference)}`)
+      window.history.replaceState({}, '', '/')
+      if (data && data.verified && data.type === 'support') {
+        setSupportSuccessData({
+          amount: Number(data.amount) || 2000,
+          reference: data.reference || reference,
+        })
+        setSupportModalOpen(true)
+      }
+    }
+
+    verifyReturnPayment()
+  }, [])
+
+  const handleCloseSupportModal = () => {
+    setSupportModalOpen(false)
+    setSupportSuccessData(null)
+  }
+
   return (
     <div className="min-h-screen flex flex-col w-full max-w-full overflow-x-hidden">
       
@@ -36,8 +71,9 @@ export default function Layout({children}){
       <Footer />
       <SupportModal
         isOpen={supportModalOpen}
-        onClose={() => setSupportModalOpen(false)}
+        onClose={handleCloseSupportModal}
         initialAmount={supportInitialAmount}
+        initialSuccessData={supportSuccessData}
       />
     </div>
   )

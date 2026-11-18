@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Lock, X, Check } from 'lucide-react'
+import { API_BASE_URL } from '../services/api.js'
 
 const PRESET_AMOUNTS = [2000, 5000, 10000, 20000]
 
-export default function SupportModal({ isOpen, onClose, initialAmount = 2000 }) {
+export default function SupportModal({ isOpen, onClose, initialAmount = 2000, initialSuccessData = null }) {
   const [selectedAmount, setSelectedAmount] = useState(initialAmount)
   const [customAmount, setCustomAmount] = useState('')
   const [isCustom, setIsCustom] = useState(false)
@@ -27,8 +28,8 @@ export default function SupportModal({ isOpen, onClose, initialAmount = 2000 }) 
       }
     }
     setError('')
-    setSuccessData(null)
-  }, [initialAmount, isOpen])
+    setSuccessData(initialSuccessData || null)
+  }, [initialAmount, isOpen, initialSuccessData])
 
   const getActiveAmount = () => {
     if (isCustom) {
@@ -50,7 +51,7 @@ export default function SupportModal({ isOpen, onClose, initialAmount = 2000 }) 
     setError('')
   }
 
-  const handlePaystackSupport = (e) => {
+  const handlePaystackSupport = async (e) => {
     e.preventDefault()
     setError('')
 
@@ -66,55 +67,33 @@ export default function SupportModal({ isOpen, onClose, initialAmount = 2000 }) 
     }
 
     setIsSubmitting(true)
-    const paystackKey = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || 'pk_test_d3a016629910d635c02b28c8dbbb7190f84501a3'
-    const amountInKobo = finalAmount * 100
-
-    if (window.PaystackPop) {
-      try {
-        const handler = window.PaystackPop.setup({
-          key: paystackKey,
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/paystack/initialize`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({
           email: email.trim(),
-          amount: amountInKobo,
-          currency: 'NGN',
-          ref: 'SUP_' + Math.floor(Math.random() * 1000000000 + 1),
-          metadata: {
-            custom_fields: [
-              {
-                display_name: 'Supporter Name',
-                variable_name: 'supporter_name',
-                value: name.trim() || 'Anonymous'
-              },
-              {
-                display_name: 'Support Type',
-                variable_name: 'support_type',
-                value: 'Portfolio & Work Support'
-              }
-            ]
-          },
-          callback: function (response) {
-            setIsSubmitting(false)
-            setSuccessData({
-              amount: finalAmount,
-              reference: response.reference
-            })
-          },
-          onClose: function () {
-            setIsSubmitting(false)
-          }
-        })
-        handler.openIframe()
-      } catch (err) {
-        console.error('Paystack setup error:', err)
-        setIsSubmitting(false)
-        setError('Could not open payment window. Please try again.')
-      }
-    } else {
-      setIsSubmitting(false)
-      // Fallback
-      setSuccessData({
-        amount: finalAmount,
-        reference: 'DEV_' + Date.now()
+          amount: finalAmount,
+          type: 'support',
+          name: name.trim(),
+          returnUrl: window.location.origin,
+        }),
       })
+
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok || !data.authorizationUrl) {
+        throw new Error(data.error || 'Could not initialize Paystack checkout.')
+      }
+
+      // Redirect directly to Paystack hosted checkout page
+      window.location.href = data.authorizationUrl
+    } catch (err) {
+      console.error('Paystack initialize error:', err)
+      setIsSubmitting(false)
+      setError(err.message || 'Could not connect to Paystack. Please try again.')
     }
   }
 
