@@ -1,161 +1,27 @@
 import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import SEO from '../components/SEO'
+import ServerOfflineBot from '../components/ServerOfflineBot.jsx'
 import { fetchFromApi } from '../services/api'
-
-const DEFAULT_CV = {
-  fullName: "Caleb Anayo",
-  title: "Full-Stack & Backend Engineer | Mobile Application | Cloud Infrastructure & DevOps | SaaS Products",
-  location: "Remote / Nigeria",
-  phone: "+234 916 558 7681",
-  email: "acnwa1234@gmail.com",
-  portfolio: "https://anayolico.name.ng",
-  github: "github.com/anayolico",
-  linkedin: "linkedin.com/in/caleb-anayolico-9861a8350",
-  summary: "Driven Full-Stack & Backend Engineer with hands-on experience designing, shipping, and maintaining production-grade web and mobile applications across fintech, SaaS, and security domains. Strong command of React.js, Next.js, Node.js, Express, Python (FastAPI), React Native, and PostgreSQL (Prisma ORM, Neon DB), paired with cloud deployment experience on Vercel, Render, and AWS (S3). Skilled in configuring relational and document databases, integrating payment gateways (Paystack, Flutterwave), and deploying scalable server infrastructure.",
-  skills: [
-    {
-      category: "Backend",
-      items: ["Node.js", "Express.js", "Python (FastAPI)", "Java (Android)", "RESTful API Design", "JWT Authentication", "WebSockets", "Automation Systems"]
-    },
-    {
-      category: "Frontend",
-      items: ["React.js", "Next.js", "JavaScript (ES6+)", "HTML5", "CSS3 & Sass", "Tailwind CSS", "Vite", "React Native", "Responsive Web Design"]
-    },
-    {
-      category: "Databases",
-      items: ["PostgreSQL", "Prisma ORM", "MongoDB", "Supabase", "SQL", "Neon Database"]
-    },
-    {
-      category: "Cloud & DevOps",
-      items: ["Vercel", "Render", "Hostinger & VPS", "AWS (S3)", "Docker", "Git & GitHub Actions (CI/CD)", "Postman & API Testing"]
-    },
-    {
-      category: "Integrations & Tools",
-      items: ["Paystack", "Flutterwave", "Stripe", "Clerk", "Mailgun & Resend", "CloudConvert & Sharp API", "Figma"]
-    },
-    {
-      category: "AI & Automation",
-      items: ["Google Generative AI (Gemini API)", "OpenAI API", "Prompt Engineering", "Agentic Workflow Integration"]
-    }
-  ],
-  projects: [
-    {
-      title: "Nigeria SecureVote",
-      subtitle: "1st Place Hackathon Winner & Best Security Architecture",
-      tech: "React, Node.js, Python (FastAPI), Neon DB, PWA Offline Sync",
-      bullets: [
-        "Engineered an award-winning next-generation cryptographic E-Voting & Identity Ingestion platform for high-security multi-service elections.",
-        "Integrated real-time National Identity (NIMC/NIN) verification & dynamic citizen profile ingestion via Prembly API.",
-        "Built a PWA offline-first resilient vote queue with local cryptographic signing and WebAuthn biometric authorization enforcing single-vote integrity.",
-        "Developed a Python FastAPI fraud detection engine and real-time public transparency audit ledger."
-      ]
-    },
-    {
-      title: "LuminaConvert",
-      subtitle: "Online Media Converter & AI Workstation",
-      tech: "React, Vite, Node.js, Express, Prisma ORM, Neon PostgreSQL, Supabase, Google Generative AI",
-      bullets: [
-        "Engineered an online multi-format image & media conversion workstation with high-speed backend execution pipelines.",
-        "Integrated CloudConvert API, Sharp API, Google Generative AI assistant, and automated Resend transactional email workflows."
-      ]
-    },
-    {
-      title: "Mindful Canvas",
-      subtitle: "Distraction-Free Note-Taking Application",
-      tech: "React, Vite, Node.js, Express, PostgreSQL, Neon DB, Supabase",
-      bullets: [
-        "Designed a minimalist note-taking platform with secure authentication, real-time auto-saving, and React Markdown parsing."
-      ]
-    },
-    {
-      title: "Construction Company Web Platform",
-      subtitle: "Commercial Web Platform & Engineering Flow",
-      tech: "React.js, Node.js, Express, Tailwind CSS",
-      bullets: [
-        "Designed and engineered a commercial web platform for a Nigerian construction firm using React.js, Node.js, and Tailwind CSS with interactive project galleries and service inquiry flows."
-      ]
-    },
-    {
-      title: "Weather Forecast App",
-      subtitle: "Real-Time Weather Visualization & API Service",
-      tech: "React, OpenWeather API, CSS Weather Animations",
-      bullets: [
-        "Developed a real-time weather application with location search, multi-day forecasts, and smooth CSS weather visualizations."
-      ]
-    }
-  ],
-  experience: [
-    {
-      period: "",
-      role: "Full-Stack Software Engineer (Intern)",
-      company: "Fowgate",
-      bullets: [
-        "Building enterprise features, internal application modules, and optimizing frontend performance using React.js and Next.js.",
-        "Architecting scalable state management solutions, integrating RESTful API endpoints, and improving server payload loading speeds."
-      ]
-    },
-    {
-      period: "",
-      role: "Full-Stack Developer & NIIT Graduate",
-      company: "Self-Employed / NIIT",
-      bullets: [
-        "Earned a Diploma in Software Engineering from the National Institute of Information Technology (NIIT).",
-        "Delivered custom web and SaaS applications, integrating Paystack and Flutterwave payment gateways and designing normalized PostgreSQL database schemas."
-      ]
-    },
-    {
-      period: "",
-      role: "Mobile Application Developer",
-      company: "Freelance Client Work",
-      bullets: [
-        "Engineered cross-platform mobile applications using React Native and Java (Android).",
-        "Optimized mobile component render speeds, implemented offline data persistence, and integrated native mobile capabilities."
-      ]
-    },
-    {
-      period: "",
-      role: "UI/UX & Web Designer",
-      company: "Independent Client Work",
-      bullets: [
-        "Spearheaded user interface research and wireframing in Figma, translating visual mockups into clean, responsive frontend codebases."
-      ]
-    }
-  ],
-  education: [
-    {
-      degree: "Diploma in Software Engineering",
-      institution: "National Institute of Information Technology (NIIT)",
-      period: "Graduated",
-      bullets: [
-        "Algorithms, data structures, software engineering principles, and systems design."
-      ]
-    }
-  ],
-  certifications: [
-    { title: "Google AI Essentials", issuer: "Google" },
-    { title: "AWS AI Practitioner", issuer: "Amazon Web Services" },
-    { title: "LangChain for LLM Application Development", issuer: "DeepLearning.AI" },
-    { title: "Backend Web Development, Python & Django", issuer: "Code Camp" },
-    { title: "Diploma in Software Engineering", issuer: "NIIT" }
-  ]
-};
+import { generateCvPdf } from '../lib/generateCvPdf.js'
 
 export default function CV() {
-  const [cv, setCv] = useState(DEFAULT_CV);
+  const [cv, setCv] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadCv() {
       try {
         const res = await fetchFromApi('/api/cv');
-        if (res && res.fullName) {
-          setCv({ ...DEFAULT_CV, ...res });
-        } else if (res && res.data && res.data.fullName) {
-          setCv({ ...DEFAULT_CV, ...res.data });
+        const cvPayload = res?.data || res;
+        if (cvPayload && cvPayload.fullName) {
+          setCv(cvPayload);
+        } else {
+          setCv(null);
         }
       } catch (err) {
-        console.warn('Using default CV fallback');
+        console.warn('Error loading CV from database:', err);
+        setCv(null);
       } finally {
         setLoading(false);
       }
@@ -163,48 +29,15 @@ export default function CV() {
     loadCv();
   }, []);
 
-  const handleDownloadPdf = async () => {
-    const element = document.getElementById('cv-paper');
-    if (!element) {
-      window.print();
-      return;
-    }
-
+  const handleDownloadPdf = () => {
+    if (!cv) return;
     try {
-      if (!window.html2pdf) {
-        await new Promise((resolve, reject) => {
-          const script = document.createElement('script');
-          script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
-          script.onload = resolve;
-          script.onerror = reject;
-          document.head.appendChild(script);
-        });
-      }
-
-      if (window.html2pdf) {
-        const opt = {
-          margin: [8, 10, 8, 10],
-          filename: `${cv.fullName ? cv.fullName.replace(/\s+/g, '_') : 'Caleb_Anayolico'}_CV.pdf`,
-          image: { type: 'jpeg', quality: 0.98 },
-          html2canvas: {
-            scale: 2,
-            useCORS: true,
-            logging: false,
-            scrollY: 0,
-            scrollX: 0
-          },
-          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-          pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
-        };
-        window.html2pdf().set(opt).from(element).save();
-      } else {
-        window.print();
-      }
+      generateCvPdf(cv)
     } catch (err) {
-      console.warn('Fallback to native print:', err);
-      window.print();
+      console.warn('Fallback to native print:', err)
+      window.print()
     }
-  };
+  }
 
   return (
     <>
@@ -277,7 +110,8 @@ export default function CV() {
 
             <button
               onClick={handleDownloadPdf}
-              className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:brightness-110 text-white font-bold text-xs shadow-lg shadow-blue-500/25 transition-all flex items-center gap-2 cursor-pointer active:scale-95"
+              disabled={!cv || loading}
+              className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:brightness-110 text-white font-bold text-xs shadow-lg shadow-blue-500/25 transition-all flex items-center gap-2 cursor-pointer active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -286,7 +120,23 @@ export default function CV() {
             </button>
           </div>
 
-          {/* Animated Entry Wrapper */}
+          {loading ? (
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-12 space-y-6 animate-pulse">
+              <div className="h-8 w-64 bg-white/10 rounded mx-auto" />
+              <div className="h-4 w-96 bg-white/10 rounded mx-auto" />
+              <div className="space-y-3 pt-4">
+                <div className="h-4 w-full bg-white/10 rounded" />
+                <div className="h-4 w-5/6 bg-white/10 rounded" />
+                <div className="h-4 w-4/6 bg-white/10 rounded" />
+              </div>
+            </div>
+          ) : !cv ? (
+            <ServerOfflineBot
+              title="Server Offline"
+              message="Could not connect to the database to load your CV."
+            />
+          ) : (
+          /* Animated Entry Wrapper */
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
@@ -490,6 +340,7 @@ export default function CV() {
 
             </div> {/* End of #cv-paper */}
           </motion.div>
+          )}
         </div>
       </div>
     </>
