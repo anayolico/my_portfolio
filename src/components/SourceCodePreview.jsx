@@ -27,8 +27,8 @@ export default function SourceCodePreview() {
       const activeFree = freeList.filter(item => Boolean(item.is_featured || item.isFeatured))
       const activePremium = premiumList.filter(item => Boolean(item.is_featured || item.isFeatured))
 
-      setFreeCodebases((activeFree.length > 0 ? activeFree : freeList).slice(0, 2))
-      setPremiumCodebases((activePremium.length > 0 ? activePremium : premiumList).slice(0, 2))
+      setFreeCodebases(activeFree.slice(0, 2))
+      setPremiumCodebases(activePremium.slice(0, 2))
       setLoading(false)
     }
 
@@ -75,39 +75,38 @@ export default function SourceCodePreview() {
             </div>
           )}
 
-          {/* Premium Codebases Preview (max 2 cards, no section heading above, Source Code button pushed right) */}
+          {/* Premium Codebases Preview (max 2 cards, no section heading above) */}
           {premiumCodebases.length > 0 && (
-            <div className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {premiumCodebases.map(item => (
-                  <PremiumCodebaseCard
-                    key={item.id || item.title}
-                    item={item}
-                    onCheckout={checkout.handleOpenCheckout}
-                  />
-                ))}
-              </div>
-
-              <div className="flex justify-end pt-2 w-full">
-                <a
-                  href="/source-code"
-                  onClick={(e) => {
-                    e.preventDefault()
-                    window.history.pushState({}, '', '/source-code')
-                    window.dispatchEvent(new Event('popstate'))
-                  }}
-                >
-                  <motion.button
-                    whileHover={{ scale: 1.04, y: -2 }}
-                    whileTap={{ scale: 0.97 }}
-                    className="px-8 py-3.5 rounded-2xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/40 text-amber-300 font-extrabold text-xs sm:text-base shadow-xl transition-all duration-300 flex items-center justify-center cursor-pointer tracking-wide whitespace-nowrap"
-                  >
-                    <span>Source Code</span>
-                  </motion.button>
-                </a>
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {premiumCodebases.map(item => (
+                <PremiumCodebaseCard
+                  key={item.id || item.title}
+                  item={item}
+                  onCheckout={checkout.handleOpenCheckout}
+                />
+              ))}
             </div>
           )}
+
+          {/* Source Code button pushed right */}
+          <div className="flex justify-end pt-2 w-full">
+            <a
+              href="/source-code"
+              onClick={(e) => {
+                e.preventDefault()
+                window.history.pushState({}, '', '/source-code')
+                window.dispatchEvent(new Event('popstate'))
+              }}
+            >
+              <motion.button
+                whileHover={{ scale: 1.04, y: -2 }}
+                whileTap={{ scale: 0.97 }}
+                className="px-8 py-3.5 rounded-2xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/40 text-amber-300 font-extrabold text-xs sm:text-base shadow-xl transition-all duration-300 flex items-center justify-center cursor-pointer tracking-wide whitespace-nowrap"
+              >
+                <span>Source Code</span>
+              </motion.button>
+            </a>
+          </div>
         </div>
       )}
 
