@@ -28,8 +28,18 @@ export default function SupportModal({ isOpen, onClose, initialAmount = 2000, in
       }
     }
     setError('')
+    setIsSubmitting(false)
     setSuccessData(initialSuccessData || null)
   }, [initialAmount, isOpen, initialSuccessData])
+
+  // Reset loading state if user returns via browser Back / bfcache from Paystack
+  useEffect(() => {
+    const handlePageShow = () => {
+      setIsSubmitting(false)
+    }
+    window.addEventListener('pageshow', handlePageShow)
+    return () => window.removeEventListener('pageshow', handlePageShow)
+  }, [])
 
   const getActiveAmount = () => {
     if (isCustom) {
