@@ -11,6 +11,7 @@ import CV from './pages/CV.jsx'
 import AllProjects from './pages/AllProjects.jsx'
 import SourceCode from './pages/SourceCode.jsx'
 import SourceCodePreview from './components/SourceCodePreview.jsx'
+import CaleByteAIWidget from './components/CaleByteAIWidget.jsx'
 
 /* App.jsx: top-level composition of the single-page portfolio & standalone /cv, /projects & /source-code routes. */
 export default function App(){
@@ -57,15 +58,30 @@ export default function App(){
   const isSourceCodePage = currentPath.startsWith('/source-code')
 
   if (isCvPage) {
-    return <CV key={refreshKey} />
+    return (
+      <>
+        <CV key={refreshKey} />
+        <CaleByteAIWidget />
+      </>
+    )
   }
 
   if (isProjectsPage) {
-    return <AllProjects key={refreshKey} />
+    return (
+      <>
+        <AllProjects key={refreshKey} />
+        <CaleByteAIWidget />
+      </>
+    )
   }
 
   if (isSourceCodePage) {
-    return <SourceCode key={refreshKey} />
+    return (
+      <>
+        <SourceCode key={refreshKey} />
+        <CaleByteAIWidget />
+      </>
+    )
   }
 
   return (
@@ -95,6 +111,9 @@ export default function App(){
           <Contact />
         </main>
       </Layout>
+
+      {/* Bottom-left AI Assistant (Live Voice Call & Text Chat) */}
+      <CaleByteAIWidget />
     </>
   )
 }

@@ -1,0 +1,755 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Phone,
+  PhoneOff,
+  Mic,
+  MicOff,
+  MessageSquare,
+  Send,
+  X,
+  Sparkles,
+  RotateCcw,
+  Heart,
+  ExternalLink,
+  Volume2,
+} from 'lucide-react';
+import {
+  streamPortfolioChat,
+  requestLiveCallToken,
+  GeminiLiveCallClient,
+} from '../services/aiClient.js';
+
+const STARTER_QUESTIONS = [
+  "Tell me about Caleb's top projects",
+  'What skills & tech stack does he use?',
+  'How can I support CaleByte?',
+  'What source codes are available?',
+];
+
+const WELCOME_MESSAGE = {
+  id: 'welcome',
+  role: 'assistant',
+  content:
+    "Hi! I'm CaleByte AI. Ask me anything about Caleb's projects, tech stack, experience, source code store, CV, or how to support his work — or switch to Live Call to talk in real time.",
+};
+
+function formatSeconds(sec) {
+  const safe = Math.max(0, Math.floor(sec));
+  const m = String(Math.floor(safe / 60)).padStart(2, '0');
+  const s = String(safe % 60).padStart(2, '0');
+  return `${m}:${s}`;
+}
+
+export default function CaleByteAIWidget() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [mode, setMode] = useState('chat'); // 'chat' | 'call'
+
+  // Chat state (text-only — no image uploads)
+  const [messages, setMessages] = useState([WELCOME_MESSAGE]);
+  const [input, setInput] = useState('');
+  const [isStreaming, setIsStreaming] = useState(false);
+  const [interactionId, setInteractionId] = useState(null);
+  const [chatError, setChatError] = useState('');
+  const chatEndRef = useRef(null);
+  const abortRef = useRef(null);
+
+  // Live Call state
+  const [callStatus, setCallStatus] = useState('idle'); // 'idle' | 'connecting' | 'listening' | 'speaking' | 'muted'
+  const [isMuted, setIsMuted] = useState(false);
+  const [audioLevel, setAudioLevel] = useState(0);
+  const [callElapsed, setCallElapsed] = useState(0);
+  const [maxCallSeconds, setMaxCallSeconds] = useState(240);
+  const [callError, setCallError] = useState('');
+  const [transcripts, setTranscripts] = useState([]);
+  const liveClientRef = useRef(null);
+  const timerRef = useRef(null);
+  const transcriptEndRef = useRef(null);
+
+  const isCallActive = callStatus !== 'idle';
+
+  // Auto-scroll chat messages
+  useEffect(() => {
+    if (isOpen && mode === 'chat') {
+      chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages, isOpen, mode]);
+
+  // Auto-scroll live captions
+  useEffect(() => {
+    if (isOpen && mode === 'call') {
+      transcriptEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [transcripts, isOpen, mode]);
+
+  // Call duration timer & graceful auto-end at safety cap
+  useEffect(() => {
+    if (callStatus === 'listening' || callStatus === 'speaking' || callStatus === 'muted') {
+      if (!timerRef.current) {
+        timerRef.current = setInterval(() => {
+          setCallElapsed((prev) => {
+            const next = prev + 1;
+            if (next >= maxCallSeconds) {
+              endLiveCall('Call time limit reached. Feel free to continue in Text Chat or reach out via Contact!');
+              return maxCallSeconds;
+            }
+            return next;
+          });
+        }, 1000);
+      }
+    } else if (callStatus === 'idle') {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+    }
+  }, [callStatus, maxCallSeconds]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      abortRef.current?.abort?.();
+      if (timerRef.current) clearInterval(timerRef.current);
+      if (liveClientRef.current) {
+        liveClientRef.current.disconnect();
+        liveClientRef.current = null;
+        window.dispatchEvent(new Event('ai_live_call_end'));
+      }
+    };
+  }, []);
+
+  // --- Chat Handlers ---
+  const handleSendMessage = async (textOverride) => {
+    const trimmed = (typeof textOverride === 'string' ? textOverride : input).trim();
+    if (!trimmed || isStreaming) return;
+
+    setChatError('');
+    setInput('');
+
+    const userMsg = { id: `u-${Date.now()}`, role: 'user', content: trimmed };
+    const assistantMsgId = `a-${Date.now() + 1}`;
+    const historySnapshot = messages
+      .filter((m) => m.id !== 'welcome')
+      .map((m) => ({ role: m.role, content: m.content }));
+
+    setMessages((prev) => [
+      ...prev,
+      userMsg,
+      { id: assistantMsgId, role: 'assistant', content: '' },
+    ]);
+    setIsStreaming(true);
+
+    const controller = new AbortController();
+    abortRef.current = controller;
+
+    try {
+      const result = await streamPortfolioChat({
+        message: trimmed,
+        history: historySnapshot,
+        previousInteractionId: interactionId,
+        signal: controller.signal,
+        onDelta: (_chunk, full) => {
+          setMessages((prev) =>
+            prev.map((m) => (m.id === assistantMsgId ? { ...m, content: full } : m))
+          );
+        },
+      });
+      if (result.interactionId) {
+        setInteractionId(result.interactionId);
+      }
+    } catch (err) {
+      if (err?.name !== 'AbortError') {
+        const msg = err?.message || 'Could not reach CaleByte AI right now.';
+        setChatError(msg);
+        setMessages((prev) =>
+          prev.filter((m) => !(m.id === assistantMsgId && !m.content))
+        );
+      }
+    } finally {
+      setIsStreaming(false);
+      abortRef.current = null;
+    }
+  };
+
+  const handleResetChat = () => {
+    if (isStreaming) {
+      abortRef.current?.abort?.();
+      setIsStreaming(false);
+    }
+    setMessages([WELCOME_MESSAGE]);
+    setInteractionId(null);
+    setChatError('');
+  };
+
+  // --- Live Call Handlers ---
+  const startLiveCall = async () => {
+    if (isCallActive) return;
+    setCallError('');
+    setTranscripts([]);
+    setCallElapsed(0);
+    setIsMuted(false);
+    setCallStatus('connecting');
+
+    // Automatically pause background music so it doesn't interfere with voice input
+    window.dispatchEvent(new Event('ai_live_call_start'));
+
+    try {
+      const tokenData = await requestLiveCallToken();
+      if (tokenData.maxCallSeconds) {
+        setMaxCallSeconds(tokenData.maxCallSeconds);
+      }
+
+      const client = new GeminiLiveCallClient({
+        onStatusChange: (status) => {
+          setCallStatus(status);
+        },
+        onAudioLevel: (lvl) => {
+          setAudioLevel(lvl);
+        },
+        onTranscript: (speaker, text) => {
+          if (!text || !text.trim()) return;
+          setTranscripts((prev) => {
+            const last = prev[prev.length - 1];
+            if (last && last.speaker === speaker) {
+              const updated = [...prev];
+              updated[updated.length - 1] = {
+                ...last,
+                text: `${last.text}${text}`,
+              };
+              return updated;
+            }
+            return [...prev.slice(-15), { id: `${Date.now()}-${Math.random()}`, speaker, text }];
+          });
+        },
+        onError: (msg) => {
+          setCallError(msg);
+        },
+        onClose: () => {
+          liveClientRef.current = null;
+          setCallStatus('idle');
+          setAudioLevel(0);
+          window.dispatchEvent(new Event('ai_live_call_end'));
+        },
+      });
+
+      liveClientRef.current = client;
+      await client.connect({
+        token: tokenData.token,
+        model: tokenData.model,
+      });
+    } catch (err) {
+      console.error('[Live Call Start Error]', err);
+      if (liveClientRef.current) {
+        liveClientRef.current.disconnect();
+        liveClientRef.current = null;
+      }
+      setCallStatus('idle');
+      setAudioLevel(0);
+      setCallError(
+        err?.message || 'Could not start Live Call. Try again or use Text Chat.'
+      );
+      window.dispatchEvent(new Event('ai_live_call_end'));
+    }
+  };
+
+  const endLiveCall = (noticeMessage = '') => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+    if (liveClientRef.current) {
+      liveClientRef.current.disconnect();
+      liveClientRef.current = null;
+    }
+    setCallStatus('idle');
+    setIsMuted(false);
+    setAudioLevel(0);
+    if (noticeMessage) setCallError(noticeMessage);
+    window.dispatchEvent(new Event('ai_live_call_end'));
+  };
+
+  const toggleMute = () => {
+    const nextMuted = !isMuted;
+    setIsMuted(nextMuted);
+    liveClientRef.current?.setMuted(nextMuted);
+  };
+
+  const openSupportFromAi = () => {
+    const onHome = window.location.pathname === '/' || window.location.pathname === '';
+    if (onHome) {
+      window.dispatchEvent(new CustomEvent('open_support_modal', { detail: { amount: 2000 } }));
+    } else {
+      window.location.href = '/#contact';
+    }
+  };
+
+  const statusLabel = {
+    idle: 'Ready for a live voice call',
+    connecting: 'Connecting to CaleByte AI...',
+    listening: 'Listening — speak naturally',
+    speaking: 'CaleByte AI is speaking...',
+    muted: 'Microphone muted',
+  }[callStatus];
+
+  return (
+    <>
+      {/* Floating AI Assistant Launcher — Bottom-Left (Matches compact bottom-right music button) */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.85, y: 10 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ delay: 0.55, duration: 0.45 }}
+        className="fixed bottom-5 left-5 z-50 flex items-center gap-2.5"
+      >
+        <div className="relative flex items-center justify-center">
+          {isCallActive && (
+            <>
+              <motion.div
+                className="absolute -inset-2.5 rounded-full bg-emerald-400/25 pointer-events-none"
+                animate={{ scale: [1, 1.4, 1.7], opacity: [0.65, 0.25, 0] }}
+                transition={{ duration: 1.8, repeat: Infinity, ease: 'easeOut' }}
+              />
+              <motion.div
+                className="absolute -inset-1.5 rounded-full border border-emerald-400/50 border-dashed pointer-events-none"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
+              />
+            </>
+          )}
+
+          <motion.button
+            type="button"
+            onClick={() => setIsOpen((prev) => !prev)}
+            whileHover={{ scale: 1.07 }}
+            whileTap={{ scale: 0.94 }}
+            data-playing={isCallActive ? 'true' : 'false'}
+            className={`shiny-cta shiny-cta-circle relative group shadow-2xl transition-all duration-300 ${
+              isCallActive
+                ? 'is-playing shadow-emerald-500/40 ring-1 ring-emerald-400/60'
+                : 'hover:shadow-cyan-500/30'
+            }`}
+            aria-label={isOpen ? 'Close CaleByte AI Assistant' : 'Open CaleByte AI Chat and Live Call'}
+            title="CaleByte AI • Live Call & Chat"
+          >
+            <span className="shiny-content flex items-center justify-center relative z-10 w-full h-full text-white">
+              {isOpen ? (
+                <X className="w-5 h-5 text-white drop-shadow" />
+              ) : isCallActive ? (
+                <Volume2 className="w-5 h-5 text-emerald-300 animate-pulse drop-shadow" />
+              ) : (
+                <Phone className="w-5 h-5 text-white drop-shadow group-hover:scale-110 transition-transform" />
+              )}
+            </span>
+          </motion.button>
+        </div>
+
+        {/* Live call status pill when drawer is minimized */}
+        {!isOpen && isCallActive && (
+          <motion.button
+            type="button"
+            initial={{ opacity: 0, x: -8 }}
+            animate={{ opacity: 1, x: 0 }}
+            onClick={() => {
+              setMode('call');
+              setIsOpen(true);
+            }}
+            className="px-3 py-1.5 rounded-full bg-[#0d121d]/90 border border-emerald-400/40 text-[11px] font-bold text-emerald-300 shadow-xl backdrop-blur-xl flex items-center gap-2 cursor-pointer"
+          >
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span>Live • {formatSeconds(callElapsed)}</span>
+          </motion.button>
+        )}
+      </motion.div>
+
+      {/* Unified AI Chat & Live Call Drawer */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 18, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 18, scale: 0.96 }}
+            transition={{ duration: 0.22, ease: 'easeOut' }}
+            className="fixed bottom-20 left-4 sm:left-5 z-50 w-[calc(100vw-2rem)] sm:w-[395px] max-h-[min(600px,calc(100vh-6.5rem))] flex flex-col rounded-3xl border border-white/15 text-white overflow-hidden shadow-2xl shadow-black/90 backdrop-blur-2xl"
+            style={{
+              background:
+                'radial-gradient(ellipse 95% 65% at 50% 0%, #242c3d 0%, #121722 50%, #090c14 100%)',
+              boxShadow:
+                '0 25px 70px -15px rgba(0, 0, 0, 0.9), inset 0 1px 1px rgba(255, 255, 255, 0.14)',
+            }}
+          >
+            {/* Header */}
+            <div className="px-4 py-3.5 border-b border-white/10 flex items-center justify-between gap-2 bg-black/20">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-accent-teal to-accent-purple flex items-center justify-center text-white shadow-md shadow-accent-teal/25 flex-shrink-0">
+                  <Sparkles className="w-4 h-4" />
+                </div>
+                <div className="min-w-0">
+                  <h3 className="text-sm font-bold font-display text-white leading-tight truncate">
+                    Cale<span className="text-accent-teal">Byte</span> AI
+                  </h3>
+                  <p className="text-[11px] text-slate-400 truncate">
+                    {isCallActive
+                      ? `Live Call • ${formatSeconds(callElapsed)} / ${formatSeconds(maxCallSeconds)}`
+                      : 'Portfolio Assistant'}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-1.5">
+                {mode === 'chat' && messages.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={handleResetChat}
+                    title="Reset chat"
+                    className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5" />
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setIsOpen(false)}
+                  aria-label="Close AI panel"
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Mode Switcher: Text Chat vs Live Call */}
+            <div className="px-4 pt-3 pb-2">
+              <div className="grid grid-cols-2 gap-1.5 p-1 rounded-2xl bg-black/40 border border-white/10">
+                <button
+                  type="button"
+                  onClick={() => setMode('chat')}
+                  className={`py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                    mode === 'chat'
+                      ? 'bg-gradient-to-r from-accent-teal to-cyan-500 text-white shadow-md shadow-accent-teal/25'
+                      : 'text-slate-300 hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  <MessageSquare className="w-3.5 h-3.5" />
+                  <span>Chat</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setMode('call')}
+                  className={`py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                    mode === 'call'
+                      ? isCallActive
+                        ? 'bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/30'
+                        : 'bg-gradient-to-r from-accent-teal to-accent-purple text-white shadow-md shadow-accent-teal/25'
+                      : 'text-slate-300 hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  <Phone className="w-3.5 h-3.5" />
+                  <span>{isCallActive ? 'Live Call (On)' : 'Live Call'}</span>
+                </button>
+              </div>
+            </div>
+
+            {/* BODY: CHAT MODE (Text-only, no image uploads) */}
+            {mode === 'chat' ? (
+              <div className="flex flex-col flex-1 min-h-0">
+                <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3 min-h-[250px] max-h-[350px]">
+                  {messages.map((msg) => (
+                    <div
+                      key={msg.id}
+                      className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                    >
+                      <div
+                        className={`max-w-[86%] px-3.5 py-2.5 rounded-2xl text-xs leading-relaxed whitespace-pre-wrap break-words ${
+                          msg.role === 'user'
+                            ? 'bg-gradient-to-r from-accent-teal to-cyan-600 text-white rounded-br-md shadow-md shadow-accent-teal/20'
+                            : 'bg-white/[0.06] border border-white/10 text-slate-100 rounded-bl-md'
+                        }`}
+                      >
+                        {msg.content || (
+                          <span className="inline-flex items-center gap-1 text-slate-400">
+                            <span className="w-1.5 h-1.5 rounded-full bg-accent-teal animate-bounce" />
+                            <span className="w-1.5 h-1.5 rounded-full bg-accent-teal animate-bounce [animation-delay:120ms]" />
+                            <span className="w-1.5 h-1.5 rounded-full bg-accent-teal animate-bounce [animation-delay:240ms]" />
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+
+                  {/* Starter question chips on fresh chat */}
+                  {messages.length === 1 && !isStreaming && (
+                    <div className="pt-1 space-y-1.5">
+                      <p className="text-[10px] uppercase tracking-wider font-bold text-slate-400 px-0.5">
+                        Quick Questions
+                      </p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {STARTER_QUESTIONS.map((q) => (
+                          <button
+                            key={q}
+                            type="button"
+                            onClick={() => handleSendMessage(q)}
+                            className="text-left px-3 py-1.5 rounded-xl bg-white/[0.04] hover:bg-accent-teal/15 border border-white/10 hover:border-accent-teal/40 text-[11px] text-slate-200 hover:text-white transition-all cursor-pointer"
+                          >
+                            {q}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {chatError && (
+                    <div className="p-2.5 rounded-xl bg-rose-500/10 border border-rose-500/25 text-[11px] text-rose-300">
+                      {chatError}
+                    </div>
+                  )}
+
+                  <div ref={chatEndRef} />
+                </div>
+
+                {/* Quick Portfolio Shortcuts */}
+                <div className="px-4 pb-2 flex items-center gap-1.5 overflow-x-auto">
+                  <button
+                    type="button"
+                    onClick={openSupportFromAi}
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-400/10 hover:bg-amber-400/20 border border-amber-400/25 text-[10px] font-bold text-amber-300 whitespace-nowrap transition-colors cursor-pointer"
+                  >
+                    <Heart className="w-3 h-3" />
+                    <span>Support CaleByte</span>
+                  </button>
+                  <a
+                    href="/projects"
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/[0.05] hover:bg-white/10 border border-white/10 text-[10px] font-semibold text-slate-300 hover:text-white whitespace-nowrap transition-colors"
+                  >
+                    <span>Projects</span>
+                    <ExternalLink className="w-2.5 h-2.5" />
+                  </a>
+                  <a
+                    href="/source-code"
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/[0.05] hover:bg-white/10 border border-white/10 text-[10px] font-semibold text-slate-300 hover:text-white whitespace-nowrap transition-colors"
+                  >
+                    <span>Store</span>
+                    <ExternalLink className="w-2.5 h-2.5" />
+                  </a>
+                  <a
+                    href="/cv"
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/[0.05] hover:bg-white/10 border border-white/10 text-[10px] font-semibold text-slate-300 hover:text-white whitespace-nowrap transition-colors"
+                  >
+                    <span>CV</span>
+                    <ExternalLink className="w-2.5 h-2.5" />
+                  </a>
+                </div>
+
+                {/* Text-Only Input Bar */}
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handleSendMessage();
+                  }}
+                  className="p-3 border-t border-white/10 bg-black/30 flex items-center gap-2"
+                >
+                  <input
+                    type="text"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    maxLength={1500}
+                    disabled={isStreaming}
+                    placeholder="Ask anything about Caleb's work..."
+                    className="flex-1 px-3.5 py-2.5 rounded-xl bg-black/50 border border-white/10 focus:border-accent-teal text-xs text-white placeholder:text-slate-500 outline-none transition-all disabled:opacity-60"
+                  />
+                  <button
+                    type="submit"
+                    disabled={isStreaming || !input.trim()}
+                    aria-label="Send message"
+                    className="p-2.5 rounded-xl bg-gradient-to-r from-accent-teal to-cyan-500 text-white shadow-md shadow-accent-teal/25 hover:brightness-110 disabled:opacity-45 disabled:cursor-not-allowed transition-all cursor-pointer flex-shrink-0"
+                  >
+                    <Send className="w-4 h-4" />
+                  </button>
+                </form>
+              </div>
+            ) : (
+              /* BODY: GEMINI LIVE VOICE CALL MODE */
+              <div className="flex flex-col flex-1 px-4 py-4 space-y-4 min-h-[340px]">
+                {/* Voice Orb Stage */}
+                <div className="flex flex-col items-center justify-center pt-2 pb-1 space-y-3">
+                  <div className="relative flex items-center justify-center w-28 h-28">
+                    {isCallActive && (
+                      <>
+                        <motion.div
+                          className={`absolute inset-0 rounded-full blur-xl pointer-events-none ${
+                            callStatus === 'speaking'
+                              ? 'bg-accent-teal/40'
+                              : callStatus === 'muted'
+                                ? 'bg-slate-500/20'
+                                : 'bg-emerald-400/30'
+                          }`}
+                          animate={{
+                            scale:
+                              callStatus === 'speaking'
+                                ? [1, 1.28, 1.08, 1.22, 1]
+                                : 1 + audioLevel * 0.45,
+                          }}
+                          transition={{
+                            duration: callStatus === 'speaking' ? 1.4 : 0.12,
+                            repeat: callStatus === 'speaking' ? Infinity : 0,
+                          }}
+                        />
+                        <motion.div
+                          className="absolute -inset-2 rounded-full border border-accent-teal/35 pointer-events-none"
+                          animate={{ scale: [1, 1.15, 1], opacity: [0.6, 0.15, 0.6] }}
+                          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                        />
+                      </>
+                    )}
+
+                    <motion.div
+                      animate={{
+                        scale:
+                          callStatus === 'speaking'
+                            ? [1, 1.07, 0.98, 1.05, 1]
+                            : isCallActive && !isMuted
+                              ? 1 + audioLevel * 0.18
+                              : 1,
+                      }}
+                      transition={{
+                        duration: callStatus === 'speaking' ? 0.9 : 0.1,
+                        repeat: callStatus === 'speaking' ? Infinity : 0,
+                      }}
+                      className={`relative z-10 w-20 h-20 rounded-full flex items-center justify-center border shadow-2xl transition-colors ${
+                        callStatus === 'speaking'
+                          ? 'bg-gradient-to-br from-accent-teal to-accent-purple border-cyan-300/60 shadow-accent-teal/40'
+                          : callStatus === 'listening'
+                            ? 'bg-gradient-to-br from-emerald-500/90 to-accent-teal border-emerald-300/60 shadow-emerald-500/35'
+                            : callStatus === 'connecting'
+                              ? 'bg-white/10 border-accent-teal/50'
+                              : 'bg-white/[0.06] border-white/15'
+                      }`}
+                    >
+                      {callStatus === 'connecting' ? (
+                        <svg
+                          className="animate-spin w-7 h-7 text-accent-teal"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          />
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          />
+                        </svg>
+                      ) : isMuted ? (
+                        <MicOff className="w-7 h-7 text-slate-300" />
+                      ) : callStatus === 'speaking' ? (
+                        <Volume2 className="w-7 h-7 text-white" />
+                      ) : (
+                        <Mic className="w-7 h-7 text-white" />
+                      )}
+                    </motion.div>
+                  </div>
+
+                  <div className="text-center space-y-1">
+                    <p className="text-xs font-bold text-white">{statusLabel}</p>
+                    <p className="text-[11px] text-slate-400">
+                      {isCallActive
+                        ? `${formatSeconds(callElapsed)} / ${formatSeconds(maxCallSeconds)}`
+                        : 'Talk directly with CaleByte AI about projects, skills, store, or support.'}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Live Transcript Box */}
+                {transcripts.length > 0 && (
+                  <div className="flex-1 overflow-y-auto max-h-[130px] p-3 rounded-2xl bg-black/40 border border-white/10 space-y-2">
+                    {transcripts.map((item) => (
+                      <div key={item.id} className="text-[11px] leading-relaxed">
+                        <span
+                          className={`font-bold mr-1.5 ${
+                            item.speaker === 'user' ? 'text-cyan-300' : 'text-emerald-300'
+                          }`}
+                        >
+                          {item.speaker === 'user' ? 'You:' : 'CaleByte AI:'}
+                        </span>
+                        <span className="text-slate-200">{item.text}</span>
+                      </div>
+                    ))}
+                    <div ref={transcriptEndRef} />
+                  </div>
+                )}
+
+                {callError && (
+                  <div className="p-3 rounded-2xl bg-rose-500/10 border border-rose-500/25 text-[11px] text-rose-200 space-y-2">
+                    <p>{callError}</p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCallError('');
+                        setMode('chat');
+                      }}
+                      className="text-accent-teal hover:underline font-bold cursor-pointer"
+                    >
+                      Switch to Text Chat →
+                    </button>
+                  </div>
+                )}
+
+                {/* Call Action Controls */}
+                <div className="mt-auto pt-2 flex items-center justify-center gap-3">
+                  {!isCallActive ? (
+                    <button
+                      type="button"
+                      onClick={startLiveCall}
+                      className="w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-accent-teal to-cyan-500 hover:brightness-110 text-white text-xs font-bold shadow-lg shadow-accent-teal/30 flex items-center justify-center gap-2 transition-all cursor-pointer"
+                    >
+                      <Phone className="w-4 h-4" />
+                      <span>Start Live Voice Call</span>
+                    </button>
+                  ) : (
+                    <>
+                      <button
+                        type="button"
+                        onClick={toggleMute}
+                        disabled={callStatus === 'connecting'}
+                        className={`flex-1 py-3 px-4 rounded-2xl text-xs font-bold border flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50 ${
+                          isMuted
+                            ? 'bg-amber-500/20 border-amber-400/40 text-amber-200'
+                            : 'bg-white/[0.06] hover:bg-white/10 border-white/15 text-white'
+                        }`}
+                      >
+                        {isMuted ? (
+                          <>
+                            <MicOff className="w-4 h-4" />
+                            <span>Unmute</span>
+                          </>
+                        ) : (
+                          <>
+                            <Mic className="w-4 h-4" />
+                            <span>Mute</span>
+                          </>
+                        )}
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => endLiveCall()}
+                        className="flex-1 py-3 px-4 rounded-2xl bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold shadow-lg shadow-rose-500/25 flex items-center justify-center gap-2 transition-all cursor-pointer"
+                      >
+                        <PhoneOff className="w-4 h-4" />
+                        <span>End Call</span>
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
+}

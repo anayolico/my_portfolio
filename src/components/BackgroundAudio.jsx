@@ -32,10 +32,33 @@ function resolveAudioUrl(url) {
  */
 export default function BackgroundAudio() {
   const audioRef = useRef(null)
+  const wasPlayingBeforeCallRef = useRef(false)
   const [tracks, setTracks] = useState([{ id: 'default', title: 'Default Track', url: audio1 }])
   const [currentIndex, setCurrentIndex] = useState(0)
   const [playing, setPlaying] = useState(false)
   const [error, setError] = useState(null)
+
+  // Pause background music automatically during a Gemini Live voice call
+  useEffect(() => {
+    const handleCallStart = () => {
+      setPlaying((currentlyPlaying) => {
+        wasPlayingBeforeCallRef.current = currentlyPlaying
+        return false
+      })
+    }
+    const handleCallEnd = () => {
+      if (wasPlayingBeforeCallRef.current) {
+        wasPlayingBeforeCallRef.current = false
+        setPlaying(true)
+      }
+    }
+    window.addEventListener('ai_live_call_start', handleCallStart)
+    window.addEventListener('ai_live_call_end', handleCallEnd)
+    return () => {
+      window.removeEventListener('ai_live_call_start', handleCallStart)
+      window.removeEventListener('ai_live_call_end', handleCallEnd)
+    }
+  }, [])
 
   // Fetch playlist from database
   useEffect(() => {
@@ -121,12 +144,12 @@ export default function BackgroundAudio() {
         preload="auto"
       />
 
-      {/* Floating Shiny Music Control Button */}
+      {/* Floating Compact Shiny Music Control Button */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.8, y: 10 }}
+        initial={{ opacity: 0, scale: 0.85, y: 10 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ delay: 0.5, duration: 0.5 }}
-        className="fixed bottom-6 right-6 z-50 flex items-center gap-3"
+        transition={{ delay: 0.5, duration: 0.45 }}
+        className="fixed bottom-5 right-5 z-50 flex items-center gap-2.5"
       >
         {/* Outer pulsating sound waves and orbit ring when "singing" */}
         <div className="relative flex items-center justify-center">
@@ -134,9 +157,9 @@ export default function BackgroundAudio() {
             <>
               {/* Expanding audio pulse rings */}
               <motion.div
-                className="absolute -inset-3.5 sm:-inset-4 rounded-full bg-cyan-500/20 pointer-events-none"
+                className="absolute -inset-2 sm:-inset-2.5 rounded-full bg-cyan-500/20 pointer-events-none"
                 animate={{
-                  scale: [1, 1.45, 1.8],
+                  scale: [1, 1.35, 1.65],
                   opacity: [0.6, 0.25, 0],
                 }}
                 transition={{
@@ -146,9 +169,9 @@ export default function BackgroundAudio() {
                 }}
               />
               <motion.div
-                className="absolute -inset-3.5 sm:-inset-4 rounded-full bg-purple-500/20 pointer-events-none"
+                className="absolute -inset-2 sm:-inset-2.5 rounded-full bg-purple-500/20 pointer-events-none"
                 animate={{
-                  scale: [1, 1.3, 1.55],
+                  scale: [1, 1.25, 1.45],
                   opacity: [0.5, 0.2, 0],
                 }}
                 transition={{
@@ -160,20 +183,20 @@ export default function BackgroundAudio() {
               />
               {/* Rotating outer orbital sound ring around the button */}
               <motion.div
-                className="absolute -inset-2 sm:-inset-2.5 rounded-full border-2 border-cyan-400/40 border-dashed pointer-events-none"
+                className="absolute -inset-1.5 rounded-full border border-cyan-400/40 border-dashed pointer-events-none"
                 animate={{ rotate: 360 }}
                 transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
               />
             </>
           )}
 
-          {/* 21st.dev Shiny Button Component Styled for Audio (Enlarged) */}
+          {/* Compact Shiny Button Component Styled for Audio */}
           <motion.button
             onClick={handleTogglePlay}
-            whileHover={{ scale: 1.08 }}
+            whileHover={{ scale: 1.07 }}
             whileTap={{ scale: 0.94 }}
             data-playing={playing ? "true" : "false"}
-            className={`shiny-cta shiny-cta-circle w-16 h-16 sm:w-20 sm:h-20 relative group shadow-2xl transition-all duration-300 ${
+            className={`shiny-cta shiny-cta-circle relative group shadow-2xl transition-all duration-300 ${
               playing ? 'is-playing shadow-cyan-500/40 ring-1 ring-cyan-400/50' : 'hover:shadow-cyan-500/30'
             }`}
             aria-pressed={playing}
@@ -182,30 +205,30 @@ export default function BackgroundAudio() {
             {/* Center Content with Animated Icons */}
             <span className="shiny-content flex items-center justify-center relative z-10 w-full h-full text-white">
               {playing ? (
-                <div className="flex items-center justify-center gap-2">
-                  {/* Equalizer animated bars (Larger and bolder) */}
-                  <div className="flex items-end gap-1 h-6 sm:h-7">
+                <div className="flex items-center justify-center gap-1">
+                  {/* Compact equalizer animated bars */}
+                  <div className="flex items-end gap-0.5 h-4">
                     <motion.span
-                      className="w-1 sm:w-1.5 bg-cyan-400 rounded-full"
-                      animate={{ height: ['6px', '22px', '10px', '26px', '6px'] }}
+                      className="w-0.5 sm:w-1 bg-cyan-400 rounded-full"
+                      animate={{ height: ['4px', '14px', '7px', '16px', '4px'] }}
                       transition={{ duration: 1.1, repeat: Infinity, ease: 'easeInOut' }}
                     />
                     <motion.span
-                      className="w-1 sm:w-1.5 bg-pink-400 rounded-full"
-                      animate={{ height: ['18px', '8px', '24px', '12px', '18px'] }}
+                      className="w-0.5 sm:w-1 bg-pink-400 rounded-full"
+                      animate={{ height: ['12px', '5px', '15px', '8px', '12px'] }}
                       transition={{ duration: 0.9, repeat: Infinity, ease: 'easeInOut', delay: 0.15 }}
                     />
                     <motion.span
-                      className="w-1 sm:w-1.5 bg-purple-400 rounded-full"
-                      animate={{ height: ['10px', '26px', '6px', '20px', '10px'] }}
+                      className="w-0.5 sm:w-1 bg-purple-400 rounded-full"
+                      animate={{ height: ['7px', '16px', '4px', '13px', '7px'] }}
                       transition={{ duration: 1.3, repeat: Infinity, ease: 'easeInOut', delay: 0.35 }}
                     />
                   </div>
-                  <Pause className="w-6 h-6 sm:w-7 sm:h-7 text-white drop-shadow-md" />
+                  <Pause className="w-4 h-4 text-white drop-shadow-md" />
                 </div>
               ) : (
-                <div className="flex items-center justify-center pl-1">
-                  <Play className="w-7 h-7 sm:w-8 sm:h-8 text-white drop-shadow-md group-hover:scale-110 transition-transform" />
+                <div className="flex items-center justify-center pl-0.5">
+                  <Play className="w-5 h-5 text-white drop-shadow-md group-hover:scale-110 transition-transform" />
                 </div>
               )}
             </span>

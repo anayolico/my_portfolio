@@ -173,27 +173,27 @@
   opacity: 1;
 }
 
-/* Special styling for circular audio player buttons */
+/* Special styling for circular floating action buttons (Audio & AI Call) */
 .shiny-cta-circle {
   padding: 0 !important;
-  width: 4.5rem !important;
-  height: 4.5rem !important;
-  min-width: 4.5rem !important;
-  min-height: 4.5rem !important;
+  width: 3rem !important;
+  height: 3rem !important;
+  min-width: 3rem !important;
+  min-height: 3rem !important;
   aspect-ratio: 1 / 1 !important;
   border-radius: 9999px !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  border-width: 2px !important;
+  border-width: 1.5px !important;
 }
 
 @media (min-width: 640px) {
   .shiny-cta-circle {
-    width: 5rem !important;
-    height: 5rem !important;
-    min-width: 5rem !important;
-    min-height: 5rem !important;
+    width: 3.5rem !important;
+    height: 3.5rem !important;
+    min-width: 3.5rem !important;
+    min-height: 3.5rem !important;
   }
 }
 
