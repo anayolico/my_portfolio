@@ -107,7 +107,7 @@ export default function CaleByteAIWidget() {
   const [isMuted, setIsMuted] = useState(false);
   const [audioLevel, setAudioLevel] = useState(0);
   const [callElapsed, setCallElapsed] = useState(0);
-  const [maxCallSeconds, setMaxCallSeconds] = useState(240);
+  const [maxCallSeconds, setMaxCallSeconds] = useState(180);
   const [callError, setCallError] = useState('');
   const [transcripts, setTranscripts] = useState([]);
   const liveClientRef = useRef(null);
@@ -777,6 +777,11 @@ export default function CaleByteAIWidget() {
                         ? `${formatSeconds(callElapsed)} / ${formatSeconds(maxCallSeconds)}`
                         : 'Talk directly with CaleByte AI about projects, skills, store, or support.'}
                     </p>
+                    {!isCallActive && (
+                      <p className="text-[11px] font-medium text-accent-teal/90">
+                        Each call lasts up to {Math.max(1, Math.round(maxCallSeconds / 60))} minutes.
+                      </p>
+                    )}
                   </div>
                 </div>
 
