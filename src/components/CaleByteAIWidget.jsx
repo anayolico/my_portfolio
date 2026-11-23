@@ -8,12 +8,10 @@ import {
   MessageSquare,
   Send,
   X,
-  Sparkles,
   RotateCcw,
-  Heart,
-  ExternalLink,
   Volume2,
 } from 'lucide-react';
+import calebyteLogo from './ima-and/calebytelogo.png';
 import {
   fetchAiStatus,
   streamPortfolioChat,
@@ -25,14 +23,13 @@ const STARTER_QUESTIONS = [
   "Tell me about Caleb's top projects",
   'What skills & tech stack does he use?',
   'How can I support CaleByte?',
-  'What source codes are available?',
 ];
 
 const WELCOME_MESSAGE = {
   id: 'welcome',
   role: 'assistant',
   content:
-    "Hi! I'm CaleByte AI. Ask me anything about Caleb's projects, tech stack, experience, source code store, CV, or how to support his work — or switch to Live Call to talk in real time.",
+    "Hi! I'm CaleByte AI. Ask me anything about Caleb's projects, skills, or services.",
 };
 
 function formatSeconds(sec) {
@@ -102,6 +99,7 @@ export default function CaleByteAIWidget() {
   const [interactionId, setInteractionId] = useState(null);
   const [chatError, setChatError] = useState('');
   const chatEndRef = useRef(null);
+  const textareaRef = useRef(null);
   const abortRef = useRef(null);
 
   // Live Call state
@@ -169,6 +167,14 @@ export default function CaleByteAIWidget() {
     document.addEventListener('mousedown', handleOutsideClick);
     return () => document.removeEventListener('mousedown', handleOutsideClick);
   }, [menuOpen]);
+
+  // Auto-expand chat textarea height as text wraps onto new lines
+  useEffect(() => {
+    const el = textareaRef.current;
+    if (!el) return;
+    el.style.height = 'auto';
+    el.style.height = `${Math.min(el.scrollHeight, 128)}px`;
+  }, [input, isOpen, mode]);
 
   // Auto-scroll chat messages
   useEffect(() => {
@@ -376,15 +382,6 @@ export default function CaleByteAIWidget() {
     liveClientRef.current?.setMuted(nextMuted);
   };
 
-  const openSupportFromAi = () => {
-    const onHome = window.location.pathname === '/' || window.location.pathname === '';
-    if (onHome) {
-      window.dispatchEvent(new CustomEvent('open_support_modal', { detail: { amount: 2000 } }));
-    } else {
-      window.location.href = '/#contact';
-    }
-  };
-
   const statusLabel = {
     idle: 'Ready for a live voice call',
     connecting: 'Connecting to CaleByte AI...',
@@ -548,37 +545,33 @@ export default function CaleByteAIWidget() {
                 '0 25px 70px -15px rgba(0, 0, 0, 0.9), inset 0 1px 1px rgba(255, 255, 255, 0.14)',
             }}
           >
-            {/* Header */}
-            <div className="px-5 py-4 border-b border-white/10 flex items-center justify-between gap-2 bg-black/20 flex-shrink-0">
-              <div className="flex items-center gap-3 min-w-0">
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-accent-teal to-accent-purple flex items-center justify-center text-white shadow-md shadow-accent-teal/25 flex-shrink-0">
-                  {mode === 'call' ? (
-                    <Phone className="w-4 h-4" />
-                  ) : (
-                    <Sparkles className="w-4 h-4" />
-                  )}
-                </div>
-                <div className="min-w-0">
+            {/* Compact Header with CaleByte Brand Logo */}
+            <div className="px-4 py-2.5 border-b border-white/10 flex items-center justify-between gap-2 bg-black/20 flex-shrink-0">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <img
+                  src={calebyteLogo}
+                  alt="CaleByte Logo"
+                  className="w-7 h-7 object-contain flex-shrink-0"
+                />
+                <div className="flex items-center gap-2 min-w-0">
                   <h3 className="text-sm font-bold font-display text-white leading-tight truncate">
                     Cale<span className="text-accent-teal">Byte</span> AI
                   </h3>
-                  <p className="text-[11px] text-slate-400 truncate">
-                    {mode === 'call'
-                      ? isCallActive
-                        ? `Live Call • ${formatSeconds(callElapsed)} / ${formatSeconds(maxCallSeconds)}`
-                        : 'Live Voice Call'
-                      : 'Portfolio Chat Assistant'}
-                  </p>
+                  {mode === 'call' && isCallActive && (
+                    <span className="text-[11px] font-mono font-bold text-emerald-300">
+                      {formatSeconds(callElapsed)} / {formatSeconds(maxCallSeconds)}
+                    </span>
+                  )}
                 </div>
               </div>
 
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-1">
                 {mode === 'chat' && messages.length > 1 && (
                   <button
                     type="button"
                     onClick={handleResetChat}
                     title="Reset chat"
-                    className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                    className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
                   >
                     <RotateCcw className="w-3.5 h-3.5" />
                   </button>
@@ -587,7 +580,7 @@ export default function CaleByteAIWidget() {
                   type="button"
                   onClick={() => setIsOpen(false)}
                   aria-label="Close AI modal"
-                  className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -655,61 +648,35 @@ export default function CaleByteAIWidget() {
                   <div ref={chatEndRef} />
                 </div>
 
-                {/* Quick Portfolio Shortcuts */}
-                <div className="px-5 py-2.5 flex items-center gap-2 overflow-x-auto no-scrollbar flex-shrink-0 border-t border-white/5">
-                  <button
-                    type="button"
-                    onClick={openSupportFromAi}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-400/10 hover:bg-amber-400/20 border border-amber-400/25 text-[11px] font-bold text-amber-300 whitespace-nowrap transition-colors cursor-pointer"
-                  >
-                    <Heart className="w-3 h-3" />
-                    <span>Support CaleByte</span>
-                  </button>
-                  <a
-                    href="/projects"
-                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white/[0.05] hover:bg-white/10 border border-white/10 text-[11px] font-semibold text-slate-300 hover:text-white whitespace-nowrap transition-colors"
-                  >
-                    <span>Projects</span>
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
-                  <a
-                    href="/source-code"
-                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white/[0.05] hover:bg-white/10 border border-white/10 text-[11px] font-semibold text-slate-300 hover:text-white whitespace-nowrap transition-colors"
-                  >
-                    <span>Store</span>
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
-                  <a
-                    href="/cv"
-                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white/[0.05] hover:bg-white/10 border border-white/10 text-[11px] font-semibold text-slate-300 hover:text-white whitespace-nowrap transition-colors"
-                  >
-                    <span>CV</span>
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
-                </div>
-
-                {/* Text-Only Input Bar */}
+                {/* Auto-Expanding Multiline Text Input Bar */}
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
                     handleSendMessage();
                   }}
-                  className="p-3.5 border-t border-white/10 bg-black/30 flex items-center gap-2.5 flex-shrink-0"
+                  className="p-3 border-t border-white/10 bg-black/30 flex items-end gap-2.5 flex-shrink-0"
                 >
-                  <input
-                    type="text"
+                  <textarea
+                    ref={textareaRef}
+                    rows={1}
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        handleSendMessage();
+                      }
+                    }}
                     maxLength={1500}
                     disabled={isStreaming}
                     placeholder="Ask anything about Caleb's work..."
-                    className="flex-1 px-4 py-3 rounded-xl bg-black/50 border border-white/10 focus:border-accent-teal text-xs sm:text-[13px] text-white placeholder:text-slate-500 outline-none transition-all disabled:opacity-60"
+                    className="flex-1 px-4 py-2.5 rounded-xl bg-black/50 border border-white/10 focus:border-accent-teal text-xs sm:text-[13px] leading-relaxed text-white placeholder:text-slate-500 outline-none transition-all disabled:opacity-60 resize-none overflow-y-auto no-scrollbar max-h-32 break-words"
                   />
                   <button
                     type="submit"
                     disabled={isStreaming || !input.trim()}
                     aria-label="Send message"
-                    className="p-3 rounded-xl bg-gradient-to-r from-accent-teal to-cyan-500 text-white shadow-md shadow-accent-teal/25 hover:brightness-110 disabled:opacity-45 disabled:cursor-not-allowed transition-all cursor-pointer flex-shrink-0"
+                    className="p-2.5 rounded-xl bg-gradient-to-r from-accent-teal to-cyan-500 text-white shadow-md shadow-accent-teal/25 hover:brightness-110 disabled:opacity-45 disabled:cursor-not-allowed transition-all cursor-pointer flex-shrink-0"
                   >
                     <Send className="w-4 h-4" />
                   </button>
