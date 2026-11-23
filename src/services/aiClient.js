@@ -324,8 +324,8 @@ export class GeminiLiveCallClient {
     this.sourceNode = this.inputAudioCtx.createMediaStreamSource(this.micStream);
     const inputRate = this.inputAudioCtx.sampleRate;
 
-    const NOISE_GATE_THRESHOLD = 0.012; // Filters faint room/fan hum without clipping real speech
-    const NOISE_GATE_HANGOVER_MS = 380; // Keep streaming smoothly across brief word pauses
+    const NOISE_GATE_THRESHOLD = 0.005; // Gentle threshold preserves soft tonal starts in Igbo/Yoruba/Hausa
+    const NOISE_GATE_HANGOVER_MS = 500; // Keep streaming smoothly across brief word pauses and tonal endings
     const micReadyAt = Date.now() + initialIgnoreMs;
     let lastVoiceActivityAt = 0;
     let wasStreamingSpeech = false;
