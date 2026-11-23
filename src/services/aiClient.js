@@ -93,13 +93,14 @@ export async function streamPortfolioChat({
 /**
  * Requests a short-lived single-use ephemeral token for Gemini Live from pro-back.
  */
-export async function requestLiveCallToken() {
+export async function requestLiveCallToken(language = 'english') {
   const res = await fetch(`${API_BASE_URL}/api/ai/live-token`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',
     },
+    body: JSON.stringify({ language }),
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok || !data.token) {
@@ -272,8 +273,6 @@ export class GeminiLiveCallClient {
       model: model || 'gemini-3.8-live',
       config: {
         responseModalities: [Modality.AUDIO],
-        inputAudioTranscription: {},
-        outputAudioTranscription: {},
       },
       callbacks: {
         onopen: () => {
@@ -316,20 +315,43 @@ export class GeminiLiveCallClient {
     this.sourceNode = this.inputAudioCtx.createMediaStreamSource(this.micStream);
     const inputRate = this.inputAudioCtx.sampleRate;
 
+    const NOISE_GATE_THRESHOLD = 0.012; // Filters faint room/fan hum without clipping real speech
+    const NOISE_GATE_HANGOVER_MS = 380; // Keep streaming smoothly across brief word pauses
+    let lastVoiceActivityAt = 0;
+    let wasStreamingSpeech = false;
+
     const handleSamples = (float32Samples) => {
       if (!this.isConnected || !this.session || this.isMuted) {
         this.onAudioLevel?.(0);
         return;
       }
 
-      // Compute RMS volume for orb animation
+      // Compute raw RMS for both orb animation and lightweight noise gate
       let sum = 0;
       for (let i = 0; i < float32Samples.length; i++) {
         sum += float32Samples[i] * float32Samples[i];
       }
-      const rms = Math.min(1, Math.sqrt(sum / float32Samples.length) * 5);
-      this.onAudioLevel?.(rms);
+      const rawRms = Math.sqrt(sum / float32Samples.length);
+      const visualLevel = rawRms >= NOISE_GATE_THRESHOLD ? Math.min(1, rawRms * 5) : 0;
+      this.onAudioLevel?.(visualLevel);
 
+      const now = Date.now();
+      if (rawRms >= NOISE_GATE_THRESHOLD) {
+        lastVoiceActivityAt = now;
+      }
+
+      const gateOpen = now - lastVoiceActivityAt <= NOISE_GATE_HANGOVER_MS;
+      if (!gateOpen) {
+        if (wasStreamingSpeech) {
+          wasStreamingSpeech = false;
+          try {
+            this.session.sendRealtimeInput({ audioStreamEnd: true });
+          } catch {}
+        }
+        return;
+      }
+
+      wasStreamingSpeech = true;
       const pcm16k = downsampleTo16k(float32Samples, inputRate);
       const base64Audio = floatTo16BitPcmBase64(pcm16k);
 

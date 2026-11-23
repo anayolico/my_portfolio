@@ -10,6 +10,9 @@ import {
   X,
   RotateCcw,
   Volume2,
+  Globe,
+  ChevronDown,
+  Check,
 } from 'lucide-react';
 import calebyteLogo from './ima-and/calebytelogo.png';
 import {
@@ -18,6 +21,16 @@ import {
   requestLiveCallToken,
   GeminiLiveCallClient,
 } from '../services/aiClient.js';
+
+const LIVE_LANGUAGES = [
+  { id: 'english', label: 'English' },
+  { id: 'pidgin', label: 'Nigerian Pidgin' },
+  { id: 'igbo', label: 'Igbo' },
+  { id: 'yoruba', label: 'Yoruba' },
+  { id: 'hausa', label: 'Hausa' },
+  { id: 'french', label: 'French' },
+  { id: 'spanish', label: 'Spanish' },
+];
 
 const STARTER_QUESTIONS = [
   "Tell me about Caleb's top projects",
@@ -104,17 +117,20 @@ export default function CaleByteAIWidget() {
 
   // Live Call state
   const [callStatus, setCallStatus] = useState('idle'); // 'idle' | 'connecting' | 'listening' | 'speaking' | 'muted'
+  const [callLanguage, setCallLanguage] = useState('english');
+  const [langMenuOpen, setLangMenuOpen] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [audioLevel, setAudioLevel] = useState(0);
   const [callElapsed, setCallElapsed] = useState(0);
   const [maxCallSeconds, setMaxCallSeconds] = useState(180);
   const [callError, setCallError] = useState('');
-  const [transcripts, setTranscripts] = useState([]);
   const liveClientRef = useRef(null);
   const timerRef = useRef(null);
-  const transcriptEndRef = useRef(null);
+  const langDropdownRef = useRef(null);
 
   const isCallActive = callStatus !== 'idle';
+  const activeLanguageObj =
+    LIVE_LANGUAGES.find((l) => l.id === callLanguage) || LIVE_LANGUAGES[0];
 
   // Fetch initial AI visibility from backend & stay synced in real time via SSE
   useEffect(() => {
@@ -176,19 +192,24 @@ export default function CaleByteAIWidget() {
     el.style.height = `${Math.min(el.scrollHeight, 128)}px`;
   }, [input, isOpen, mode]);
 
+  // Close language dropdown when clicking outside
+  useEffect(() => {
+    if (!langMenuOpen) return;
+    const handleOutsideClick = (e) => {
+      if (langDropdownRef.current && !langDropdownRef.current.contains(e.target)) {
+        setLangMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
+  }, [langMenuOpen]);
+
   // Auto-scroll chat messages
   useEffect(() => {
     if (isOpen && mode === 'chat') {
       chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages, isOpen, mode]);
-
-  // Auto-scroll live captions
-  useEffect(() => {
-    if (isOpen && mode === 'call') {
-      transcriptEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [transcripts, isOpen, mode]);
 
   // Call duration timer & graceful auto-end at safety cap
   useEffect(() => {
@@ -293,7 +314,7 @@ export default function CaleByteAIWidget() {
   const startLiveCall = async () => {
     if (isCallActive) return;
     setCallError('');
-    setTranscripts([]);
+    setLangMenuOpen(false);
     setCallElapsed(0);
     setIsMuted(false);
     setCallStatus('connecting');
@@ -302,7 +323,7 @@ export default function CaleByteAIWidget() {
     window.dispatchEvent(new Event('ai_live_call_start'));
 
     try {
-      const tokenData = await requestLiveCallToken();
+      const tokenData = await requestLiveCallToken(callLanguage);
       if (tokenData.maxCallSeconds) {
         setMaxCallSeconds(tokenData.maxCallSeconds);
       }
@@ -313,21 +334,6 @@ export default function CaleByteAIWidget() {
         },
         onAudioLevel: (lvl) => {
           setAudioLevel(lvl);
-        },
-        onTranscript: (speaker, text) => {
-          if (!text || !text.trim()) return;
-          setTranscripts((prev) => {
-            const last = prev[prev.length - 1];
-            if (last && last.speaker === speaker) {
-              const updated = [...prev];
-              updated[updated.length - 1] = {
-                ...last,
-                text: `${last.text}${text}`,
-              };
-              return updated;
-            }
-            return [...prev.slice(-15), { id: `${Date.now()}-${Math.random()}`, speaker, text }];
-          });
         },
         onError: (msg) => {
           setCallError(msg);
@@ -774,7 +780,7 @@ export default function CaleByteAIWidget() {
                     <p className="text-sm font-bold text-white">{statusLabel}</p>
                     <p className="text-xs text-slate-400 leading-relaxed">
                       {isCallActive
-                        ? `${formatSeconds(callElapsed)} / ${formatSeconds(maxCallSeconds)}`
+                        ? `${activeLanguageObj.label} • ${formatSeconds(callElapsed)} / ${formatSeconds(maxCallSeconds)}`
                         : 'Talk directly with CaleByte AI about projects, skills, store, or support.'}
                     </p>
                     {!isCallActive && (
@@ -784,25 +790,6 @@ export default function CaleByteAIWidget() {
                     )}
                   </div>
                 </div>
-
-                {/* Live Transcript Box */}
-                {transcripts.length > 0 && (
-                  <div className="overflow-y-auto no-scrollbar max-h-[180px] p-3.5 rounded-2xl bg-black/40 border border-white/10 space-y-2 flex-shrink-0">
-                    {transcripts.map((item) => (
-                      <div key={item.id} className="text-xs leading-relaxed">
-                        <span
-                          className={`font-bold mr-1.5 ${
-                            item.speaker === 'user' ? 'text-cyan-300' : 'text-emerald-300'
-                          }`}
-                        >
-                          {item.speaker === 'user' ? 'You:' : 'CaleByte AI:'}
-                        </span>
-                        <span className="text-slate-200">{item.text}</span>
-                      </div>
-                    ))}
-                    <div ref={transcriptEndRef} />
-                  </div>
-                )}
 
                 {callError && (
                   <div className="p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/25 text-xs text-rose-200 space-y-2 flex-shrink-0">
@@ -820,19 +807,84 @@ export default function CaleByteAIWidget() {
                   </div>
                 )}
 
-                {/* Call Action Controls */}
-                <div className="pt-2 flex items-center justify-center gap-3 flex-shrink-0">
+                {/* Language Selector & Call Action Controls */}
+                <div className="pt-2 space-y-3 flex-shrink-0">
                   {!isCallActive ? (
-                    <button
-                      type="button"
-                      onClick={startLiveCall}
-                      className="w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-accent-teal to-cyan-500 hover:brightness-110 text-white text-xs sm:text-sm font-bold shadow-lg shadow-accent-teal/30 flex items-center justify-center gap-2 transition-all cursor-pointer"
-                    >
-                      <Phone className="w-4 h-4" />
-                      <span>Start Live Voice Call</span>
-                    </button>
-                  ) : (
                     <>
+                      {/* Custom Dark Glass Language Dropdown (opens smoothly upward) */}
+                      <div className="relative" ref={langDropdownRef}>
+                        <button
+                          type="button"
+                          onClick={() => setLangMenuOpen((prev) => !prev)}
+                          aria-haspopup="listbox"
+                          aria-expanded={langMenuOpen}
+                          className={`w-full px-4 py-3 rounded-2xl bg-black/45 border text-xs font-semibold text-white flex items-center justify-between transition-all cursor-pointer ${
+                            langMenuOpen
+                              ? 'border-accent-teal shadow-[0_0_0_3px_rgba(23,162,184,0.2)]'
+                              : 'border-white/10 hover:border-accent-teal/50'
+                          }`}
+                        >
+                          <span className="flex items-center gap-2.5">
+                            <Globe className="w-4 h-4 text-accent-teal" />
+                            <span className="text-slate-400 font-medium">Language:</span>
+                            <span className="text-white font-bold">{activeLanguageObj.label}</span>
+                          </span>
+                          <ChevronDown
+                            className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${
+                              langMenuOpen ? 'rotate-180 text-accent-teal' : ''
+                            }`}
+                          />
+                        </button>
+
+                        <AnimatePresence>
+                          {langMenuOpen && (
+                            <motion.div
+                              initial={{ opacity: 0, y: 8, scale: 0.97 }}
+                              animate={{ opacity: 1, y: 0, scale: 1 }}
+                              exit={{ opacity: 0, y: 8, scale: 0.97 }}
+                              transition={{ duration: 0.16, ease: 'easeOut' }}
+                              role="listbox"
+                              className="absolute left-0 right-0 bottom-full mb-2 z-30 rounded-2xl bg-[#111622]/95 backdrop-blur-2xl border border-white/15 shadow-2xl shadow-black/85 p-1.5 space-y-1 max-h-56 overflow-y-auto no-scrollbar"
+                            >
+                              {LIVE_LANGUAGES.map((lang) => {
+                                const selected = lang.id === callLanguage;
+                                return (
+                                  <button
+                                    key={lang.id}
+                                    type="button"
+                                    role="option"
+                                    aria-selected={selected}
+                                    onClick={() => {
+                                      setCallLanguage(lang.id);
+                                      setLangMenuOpen(false);
+                                    }}
+                                    className={`w-full px-3.5 py-2.5 rounded-xl text-xs flex items-center justify-between transition-all cursor-pointer ${
+                                      selected
+                                        ? 'bg-accent-teal/15 text-accent-teal border border-accent-teal/30 font-bold'
+                                        : 'text-slate-200 hover:bg-white/[0.06] hover:text-white border border-transparent font-medium'
+                                    }`}
+                                  >
+                                    <span>{lang.label}</span>
+                                    {selected && <Check className="w-4 h-4 text-accent-teal" />}
+                                  </button>
+                                );
+                              })}
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={startLiveCall}
+                        className="w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-accent-teal to-cyan-500 hover:brightness-110 text-white text-xs sm:text-sm font-bold shadow-lg shadow-accent-teal/30 flex items-center justify-center gap-2 transition-all cursor-pointer"
+                      >
+                        <Phone className="w-4 h-4" />
+                        <span>Start Live Voice Call</span>
+                      </button>
+                    </>
+                  ) : (
+                    <div className="flex items-center justify-center gap-3">
                       <button
                         type="button"
                         onClick={toggleMute}
@@ -864,7 +916,7 @@ export default function CaleByteAIWidget() {
                         <PhoneOff className="w-4 h-4" />
                         <span>End Call</span>
                       </button>
-                    </>
+                    </div>
                   )}
                 </div>
               </div>
