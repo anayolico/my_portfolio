@@ -300,12 +300,21 @@ export class GeminiLiveCallClient {
 
     this.isConnected = true;
 
-    // 4. Start microphone PCM capture (16kHz mono)
-    await this._startMicCapture();
+    // 4. Trigger automatic welcome greeting right when the call connects
+    try {
+      this.session.sendRealtimeInput({
+        text: 'The visitor just connected to the live call. Greet them warmly right now in 1 to 2 short sentences in the selected language, introducing yourself as CaleByte AI and asking how you can help.',
+      });
+    } catch {
+      // Ignore if session closed immediately
+    }
+
+    // 5. Start microphone PCM capture (16kHz mono) with brief initial settle delay so click sounds don't interrupt the greeting
+    await this._startMicCapture(500);
     this.onStatusChange?.('listening');
   }
 
-  async _startMicCapture() {
+  async _startMicCapture(initialIgnoreMs = 0) {
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
     this.inputAudioCtx = new AudioCtx();
     if (this.inputAudioCtx.state === 'suspended') {
@@ -317,11 +326,12 @@ export class GeminiLiveCallClient {
 
     const NOISE_GATE_THRESHOLD = 0.012; // Filters faint room/fan hum without clipping real speech
     const NOISE_GATE_HANGOVER_MS = 380; // Keep streaming smoothly across brief word pauses
+    const micReadyAt = Date.now() + initialIgnoreMs;
     let lastVoiceActivityAt = 0;
     let wasStreamingSpeech = false;
 
     const handleSamples = (float32Samples) => {
-      if (!this.isConnected || !this.session || this.isMuted) {
+      if (!this.isConnected || !this.session || this.isMuted || Date.now() < micReadyAt) {
         this.onAudioLevel?.(0);
         return;
       }
