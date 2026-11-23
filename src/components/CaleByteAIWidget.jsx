@@ -42,6 +42,52 @@ function formatSeconds(sec) {
   return `${m}:${s}`;
 }
 
+/**
+ * Lightweight safe inline formatter for AI chat bubbles:
+ * renders **bold**, *italic*, and clickable https:// links cleanly without raw markdown asterisks.
+ */
+function renderFormattedMessage(text) {
+  if (!text) return null;
+  const tokenRegex = /(\*\*[^*]+\*\*|\*[^*\n]+\*|https?:\/\/[^\s)<>]+)/g;
+  const parts = text.split(tokenRegex);
+
+  return parts.map((part, idx) => {
+    if (!part) return null;
+    if (part.startsWith('**') && part.endsWith('**') && part.length > 4) {
+      return (
+        <strong key={idx} className="font-bold text-white">
+          {part.slice(2, -2)}
+        </strong>
+      );
+    }
+    if (part.startsWith('*') && part.endsWith('*') && part.length > 2) {
+      return (
+        <em key={idx} className="italic text-slate-200">
+          {part.slice(1, -1)}
+        </em>
+      );
+    }
+    if (/^https?:\/\//.test(part)) {
+      const cleanUrl = part.replace(/[.,;:!?]+$/, '');
+      const trailing = part.slice(cleanUrl.length);
+      return (
+        <React.Fragment key={idx}>
+          <a
+            href={cleanUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-accent-teal hover:underline font-medium break-all"
+          >
+            {cleanUrl}
+          </a>
+          {trailing}
+        </React.Fragment>
+      );
+    }
+    return <React.Fragment key={idx}>{part}</React.Fragment>;
+  });
+}
+
 export default function CaleByteAIWidget() {
   const [isAiEnabled, setIsAiEnabled] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -564,7 +610,11 @@ export default function CaleByteAIWidget() {
                             : 'bg-white/[0.06] border border-white/10 text-slate-100 rounded-bl-md'
                         }`}
                       >
-                        {msg.content || (
+                        {msg.content ? (
+                          msg.role === 'assistant'
+                            ? renderFormattedMessage(msg.content)
+                            : msg.content
+                        ) : (
                           <span className="inline-flex items-center gap-1 text-slate-400">
                             <span className="w-1.5 h-1.5 rounded-full bg-accent-teal animate-bounce" />
                             <span className="w-1.5 h-1.5 rounded-full bg-accent-teal animate-bounce [animation-delay:120ms]" />
