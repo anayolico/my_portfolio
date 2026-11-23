@@ -184,3 +184,12 @@ h1, h2, h3, h4, h5, h6 {
   mask-image: linear-gradient(to right, transparent 0%, black 7%, black 93%, transparent 100%);
 }
 
+/* Hide scrollbars cleanly while keeping smooth scroll */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+

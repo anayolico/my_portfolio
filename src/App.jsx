@@ -39,6 +39,8 @@ export default function App(){
       try {
         const data = JSON.parse(event.data);
         if (data.type === 'refresh') {
+          // Notify AI widget immediately if Admin toggled AI visibility ON/OFF
+          window.dispatchEvent(new CustomEvent('ai_visibility_refresh', { detail: data }))
           // Force a full component re-mount to fetch fresh data instantly
           setRefreshKey(prev => prev + 1)
         }

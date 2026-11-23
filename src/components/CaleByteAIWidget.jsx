@@ -15,6 +15,7 @@ import {
   Volume2,
 } from 'lucide-react';
 import {
+  fetchAiStatus,
   streamPortfolioChat,
   requestLiveCallToken,
   GeminiLiveCallClient,
@@ -42,8 +43,11 @@ function formatSeconds(sec) {
 }
 
 export default function CaleByteAIWidget() {
+  const [isAiEnabled, setIsAiEnabled] = useState(true);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [mode, setMode] = useState('chat'); // 'chat' | 'call'
+  const launcherRef = useRef(null);
 
   // Chat state (text-only — no image uploads)
   const [messages, setMessages] = useState([WELCOME_MESSAGE]);
@@ -67,6 +71,58 @@ export default function CaleByteAIWidget() {
   const transcriptEndRef = useRef(null);
 
   const isCallActive = callStatus !== 'idle';
+
+  // Fetch initial AI visibility from backend & stay synced in real time via SSE
+  useEffect(() => {
+    let active = true;
+    async function syncAiVisibility() {
+      const status = await fetchAiStatus();
+      if (!active || !status) return;
+      if (typeof status.enabled === 'boolean') {
+        setIsAiEnabled(status.enabled);
+      }
+      if (status.maxCallSeconds) {
+        setMaxCallSeconds(status.maxCallSeconds);
+      }
+    }
+    syncAiVisibility();
+
+    const handleVisibilityRefresh = (e) => {
+      if (typeof e?.detail?.aiEnabled === 'boolean') {
+        setIsAiEnabled(e.detail.aiEnabled);
+      } else {
+        syncAiVisibility();
+      }
+    };
+    window.addEventListener('ai_visibility_refresh', handleVisibilityRefresh);
+    return () => {
+      active = false;
+      window.removeEventListener('ai_visibility_refresh', handleVisibilityRefresh);
+    };
+  }, []);
+
+  // Close everything cleanly if Admin switches AI OFF while open or on a call
+  useEffect(() => {
+    if (!isAiEnabled) {
+      setMenuOpen(false);
+      setIsOpen(false);
+      if (liveClientRef.current) {
+        endLiveCall();
+      }
+    }
+  }, [isAiEnabled]);
+
+  // Close pop-out Call/Chat menu when clicking outside
+  useEffect(() => {
+    if (!menuOpen) return;
+    const handleOutsideClick = (e) => {
+      if (launcherRef.current && !launcherRef.current.contains(e.target)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
+  }, [menuOpen]);
 
   // Auto-scroll chat messages
   useEffect(() => {
@@ -291,84 +347,154 @@ export default function CaleByteAIWidget() {
     muted: 'Microphone muted',
   }[callStatus];
 
+  const handleLauncherClick = () => {
+    if (isOpen) {
+      setIsOpen(false);
+      setMenuOpen(false);
+      return;
+    }
+    if (isCallActive) {
+      setMode('call');
+      setMenuOpen(false);
+      setIsOpen(true);
+      return;
+    }
+    setMenuOpen((prev) => !prev);
+  };
+
+  const handleOpenMode = (selectedMode) => {
+    setMode(selectedMode);
+    setMenuOpen(false);
+    setIsOpen(true);
+  };
+
+  if (!isAiEnabled) {
+    return null;
+  }
+
   return (
     <>
-      {/* Floating AI Assistant Launcher — Bottom-Left (Matches compact bottom-right music button) */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.85, y: 10 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ delay: 0.55, duration: 0.45 }}
-        className="fixed bottom-5 left-5 z-50 flex items-center gap-2.5"
-      >
-        <div className="relative flex items-center justify-center">
-          {isCallActive && (
-            <>
-              <motion.div
-                className="absolute -inset-2.5 rounded-full bg-emerald-400/25 pointer-events-none"
-                animate={{ scale: [1, 1.4, 1.7], opacity: [0.65, 0.25, 0] }}
-                transition={{ duration: 1.8, repeat: Infinity, ease: 'easeOut' }}
-              />
-              <motion.div
-                className="absolute -inset-1.5 rounded-full border border-emerald-400/50 border-dashed pointer-events-none"
-                animate={{ rotate: 360 }}
-                transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
-              />
-            </>
-          )}
-
-          <motion.button
-            type="button"
-            onClick={() => setIsOpen((prev) => !prev)}
-            whileHover={{ scale: 1.07 }}
-            whileTap={{ scale: 0.94 }}
-            data-playing={isCallActive ? 'true' : 'false'}
-            className={`shiny-cta shiny-cta-circle relative group shadow-2xl transition-all duration-300 ${
-              isCallActive
-                ? 'is-playing shadow-emerald-500/40 ring-1 ring-emerald-400/60'
-                : 'hover:shadow-cyan-500/30'
-            }`}
-            aria-label={isOpen ? 'Close CaleByte AI Assistant' : 'Open CaleByte AI Chat and Live Call'}
-            title="CaleByte AI • Live Call & Chat"
+      {/* Floating AI Assistant Launcher — Hidden while modal is open so the tall modal sits cleanly at the bottom */}
+      <AnimatePresence>
+        {!isOpen && (
+          <motion.div
+            ref={launcherRef}
+            initial={{ opacity: 0, scale: 0.85, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.85, y: 10 }}
+            transition={{ duration: 0.25 }}
+            className="fixed bottom-5 left-5 z-50 flex items-center"
           >
-            <span className="shiny-content flex items-center justify-center relative z-10 w-full h-full text-white">
-              {isOpen ? (
-                <X className="w-5 h-5 text-white drop-shadow" />
-              ) : isCallActive ? (
-                <Volume2 className="w-5 h-5 text-emerald-300 animate-pulse drop-shadow" />
-              ) : (
-                <Phone className="w-5 h-5 text-white drop-shadow group-hover:scale-110 transition-transform" />
+            <div className="relative flex items-center justify-center">
+              {isCallActive && (
+                <>
+                  <motion.div
+                    className="absolute -inset-2.5 rounded-full bg-emerald-400/25 pointer-events-none"
+                    animate={{ scale: [1, 1.4, 1.7], opacity: [0.65, 0.25, 0] }}
+                    transition={{ duration: 1.8, repeat: Infinity, ease: 'easeOut' }}
+                  />
+                  <motion.div
+                    className="absolute -inset-1.5 rounded-full border border-emerald-400/50 border-dashed pointer-events-none"
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
+                  />
+                </>
               )}
-            </span>
-          </motion.button>
-        </div>
 
-        {/* Live call status pill when drawer is minimized */}
-        {!isOpen && isCallActive && (
-          <motion.button
-            type="button"
-            initial={{ opacity: 0, x: -8 }}
-            animate={{ opacity: 1, x: 0 }}
-            onClick={() => {
-              setMode('call');
-              setIsOpen(true);
-            }}
-            className="px-3 py-1.5 rounded-full bg-[#0d121d]/90 border border-emerald-400/40 text-[11px] font-bold text-emerald-300 shadow-xl backdrop-blur-xl flex items-center gap-2 cursor-pointer"
-          >
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span>Live • {formatSeconds(callElapsed)}</span>
-          </motion.button>
+              <motion.button
+                type="button"
+                onClick={handleLauncherClick}
+                whileHover={{ scale: 1.07 }}
+                whileTap={{ scale: 0.94 }}
+                data-playing={isCallActive || menuOpen ? 'true' : 'false'}
+                className={`shiny-cta shiny-cta-circle relative group shadow-2xl transition-all duration-300 ${
+                  isCallActive
+                    ? 'is-playing shadow-emerald-500/40 ring-1 ring-emerald-400/60'
+                    : 'hover:shadow-cyan-500/30'
+                }`}
+                aria-label={menuOpen ? 'Close CaleByte AI options' : 'Open CaleByte AI Live Call or Chat'}
+                title="CaleByte AI • Live Call & Chat"
+              >
+                <span className="shiny-content flex items-center justify-center relative z-10 w-full h-full text-white">
+                  {menuOpen ? (
+                    <X className="w-5 h-5 text-white drop-shadow" />
+                  ) : isCallActive ? (
+                    <Volume2 className="w-5 h-5 text-emerald-300 animate-pulse drop-shadow" />
+                  ) : (
+                    <Phone className="w-5 h-5 text-white drop-shadow group-hover:scale-110 transition-transform" />
+                  )}
+                </span>
+              </motion.button>
+            </div>
+
+            {/* Slide-Out Card to the RIGHT of the Call Button: Chat & Live Call */}
+            <AnimatePresence>
+              {menuOpen && (
+                <motion.div
+                  initial={{ opacity: 0, x: -18, scale: 0.92 }}
+                  animate={{ opacity: 1, x: 0, scale: 1 }}
+                  exit={{ opacity: 0, x: -18, scale: 0.92 }}
+                  transition={{ duration: 0.2, ease: 'easeOut' }}
+                  className="ml-3 p-1.5 rounded-2xl border border-white/15 shadow-2xl shadow-black/80 backdrop-blur-2xl flex items-center gap-1.5"
+                  style={{
+                    background:
+                      'radial-gradient(ellipse 95% 80% at 50% 0%, #242c3d 0%, #121722 60%, #090c14 100%)',
+                  }}
+                >
+                  <button
+                    type="button"
+                    onClick={() => handleOpenMode('chat')}
+                    className="px-3.5 py-2 rounded-xl bg-white/[0.05] hover:bg-accent-teal/20 border border-white/10 hover:border-accent-teal/50 text-white text-xs font-bold flex items-center gap-2 transition-all whitespace-nowrap cursor-pointer"
+                  >
+                    <span className="w-6 h-6 rounded-lg bg-gradient-to-br from-accent-teal to-cyan-500 flex items-center justify-center text-white flex-shrink-0">
+                      <MessageSquare className="w-3.5 h-3.5" />
+                    </span>
+                    <span>Chat</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleOpenMode('call')}
+                    className="px-3.5 py-2 rounded-xl bg-white/[0.05] hover:bg-accent-purple/25 border border-white/10 hover:border-accent-teal/50 text-white text-xs font-bold flex items-center gap-2 transition-all whitespace-nowrap cursor-pointer"
+                  >
+                    <span className="w-6 h-6 rounded-lg bg-gradient-to-br from-accent-teal to-accent-purple flex items-center justify-center text-white flex-shrink-0">
+                      <Phone className="w-3.5 h-3.5" />
+                    </span>
+                    <span>Live Call</span>
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Live call status pill when drawer is minimized */}
+            {!menuOpen && isCallActive && (
+              <motion.button
+                type="button"
+                initial={{ opacity: 0, x: -8 }}
+                animate={{ opacity: 1, x: 0 }}
+                onClick={() => {
+                  setMode('call');
+                  setIsOpen(true);
+                }}
+                className="ml-3 px-3 py-1.5 rounded-full bg-[#0d121d]/90 border border-emerald-400/40 text-[11px] font-bold text-emerald-300 shadow-xl backdrop-blur-xl flex items-center gap-2 cursor-pointer"
+              >
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span>Live • {formatSeconds(callElapsed)}</span>
+              </motion.button>
+            )}
+          </motion.div>
         )}
-      </motion.div>
+      </AnimatePresence>
 
-      {/* Unified AI Chat & Live Call Drawer */}
+      {/* Dedicated Tall & Wide Modal (Chat Modal or Live Call Modal — No inner tab bar, hidden scrollbar) */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: 18, scale: 0.96 }}
+            initial={{ opacity: 0, y: 20, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 18, scale: 0.96 }}
+            exit={{ opacity: 0, y: 20, scale: 0.96 }}
             transition={{ duration: 0.22, ease: 'easeOut' }}
-            className="fixed bottom-20 left-4 sm:left-5 z-50 w-[calc(100vw-2rem)] sm:w-[395px] max-h-[min(600px,calc(100vh-6.5rem))] flex flex-col rounded-3xl border border-white/15 text-white overflow-hidden shadow-2xl shadow-black/90 backdrop-blur-2xl"
+            className="fixed bottom-4 left-4 sm:bottom-5 sm:left-5 z-50 w-[calc(100vw-2rem)] sm:w-[445px] md:w-[465px] h-[min(680px,calc(100vh-2.25rem))] flex flex-col rounded-3xl border border-white/15 text-white overflow-hidden shadow-2xl shadow-black/90 backdrop-blur-2xl"
             style={{
               background:
                 'radial-gradient(ellipse 95% 65% at 50% 0%, #242c3d 0%, #121722 50%, #090c14 100%)',
@@ -377,19 +503,25 @@ export default function CaleByteAIWidget() {
             }}
           >
             {/* Header */}
-            <div className="px-4 py-3.5 border-b border-white/10 flex items-center justify-between gap-2 bg-black/20">
-              <div className="flex items-center gap-2.5 min-w-0">
-                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-accent-teal to-accent-purple flex items-center justify-center text-white shadow-md shadow-accent-teal/25 flex-shrink-0">
-                  <Sparkles className="w-4 h-4" />
+            <div className="px-5 py-4 border-b border-white/10 flex items-center justify-between gap-2 bg-black/20 flex-shrink-0">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-accent-teal to-accent-purple flex items-center justify-center text-white shadow-md shadow-accent-teal/25 flex-shrink-0">
+                  {mode === 'call' ? (
+                    <Phone className="w-4 h-4" />
+                  ) : (
+                    <Sparkles className="w-4 h-4" />
+                  )}
                 </div>
                 <div className="min-w-0">
                   <h3 className="text-sm font-bold font-display text-white leading-tight truncate">
                     Cale<span className="text-accent-teal">Byte</span> AI
                   </h3>
                   <p className="text-[11px] text-slate-400 truncate">
-                    {isCallActive
-                      ? `Live Call • ${formatSeconds(callElapsed)} / ${formatSeconds(maxCallSeconds)}`
-                      : 'Portfolio Assistant'}
+                    {mode === 'call'
+                      ? isCallActive
+                        ? `Live Call • ${formatSeconds(callElapsed)} / ${formatSeconds(maxCallSeconds)}`
+                        : 'Live Voice Call'
+                      : 'Portfolio Chat Assistant'}
                   </p>
                 </div>
               </div>
@@ -400,7 +532,7 @@ export default function CaleByteAIWidget() {
                     type="button"
                     onClick={handleResetChat}
                     title="Reset chat"
-                    className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                    className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
                   >
                     <RotateCcw className="w-3.5 h-3.5" />
                   </button>
@@ -408,57 +540,25 @@ export default function CaleByteAIWidget() {
                 <button
                   type="button"
                   onClick={() => setIsOpen(false)}
-                  aria-label="Close AI panel"
-                  className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                  aria-label="Close AI modal"
+                  className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
             </div>
 
-            {/* Mode Switcher: Text Chat vs Live Call */}
-            <div className="px-4 pt-3 pb-2">
-              <div className="grid grid-cols-2 gap-1.5 p-1 rounded-2xl bg-black/40 border border-white/10">
-                <button
-                  type="button"
-                  onClick={() => setMode('chat')}
-                  className={`py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
-                    mode === 'chat'
-                      ? 'bg-gradient-to-r from-accent-teal to-cyan-500 text-white shadow-md shadow-accent-teal/25'
-                      : 'text-slate-300 hover:text-white hover:bg-white/5'
-                  }`}
-                >
-                  <MessageSquare className="w-3.5 h-3.5" />
-                  <span>Chat</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setMode('call')}
-                  className={`py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
-                    mode === 'call'
-                      ? isCallActive
-                        ? 'bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/30'
-                        : 'bg-gradient-to-r from-accent-teal to-accent-purple text-white shadow-md shadow-accent-teal/25'
-                      : 'text-slate-300 hover:text-white hover:bg-white/5'
-                  }`}
-                >
-                  <Phone className="w-3.5 h-3.5" />
-                  <span>{isCallActive ? 'Live Call (On)' : 'Live Call'}</span>
-                </button>
-              </div>
-            </div>
-
-            {/* BODY: CHAT MODE (Text-only, no image uploads) */}
+            {/* BODY: CHAT MODAL (Text-only, smoothly scrollable with hidden scrollbar) */}
             {mode === 'chat' ? (
               <div className="flex flex-col flex-1 min-h-0">
-                <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3 min-h-[250px] max-h-[350px]">
+                <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar px-5 py-4 space-y-3.5">
                   {messages.map((msg) => (
                     <div
                       key={msg.id}
                       className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                     >
                       <div
-                        className={`max-w-[86%] px-3.5 py-2.5 rounded-2xl text-xs leading-relaxed whitespace-pre-wrap break-words ${
+                        className={`max-w-[85%] px-4 py-3 rounded-2xl text-[13px] leading-relaxed whitespace-pre-wrap break-words ${
                           msg.role === 'user'
                             ? 'bg-gradient-to-r from-accent-teal to-cyan-600 text-white rounded-br-md shadow-md shadow-accent-teal/20'
                             : 'bg-white/[0.06] border border-white/10 text-slate-100 rounded-bl-md'
@@ -477,17 +577,17 @@ export default function CaleByteAIWidget() {
 
                   {/* Starter question chips on fresh chat */}
                   {messages.length === 1 && !isStreaming && (
-                    <div className="pt-1 space-y-1.5">
+                    <div className="pt-2 space-y-2">
                       <p className="text-[10px] uppercase tracking-wider font-bold text-slate-400 px-0.5">
                         Quick Questions
                       </p>
-                      <div className="flex flex-wrap gap-1.5">
+                      <div className="flex flex-wrap gap-2">
                         {STARTER_QUESTIONS.map((q) => (
                           <button
                             key={q}
                             type="button"
                             onClick={() => handleSendMessage(q)}
-                            className="text-left px-3 py-1.5 rounded-xl bg-white/[0.04] hover:bg-accent-teal/15 border border-white/10 hover:border-accent-teal/40 text-[11px] text-slate-200 hover:text-white transition-all cursor-pointer"
+                            className="text-left px-3.5 py-2 rounded-xl bg-white/[0.04] hover:bg-accent-teal/15 border border-white/10 hover:border-accent-teal/40 text-xs text-slate-200 hover:text-white transition-all cursor-pointer"
                           >
                             {q}
                           </button>
@@ -497,7 +597,7 @@ export default function CaleByteAIWidget() {
                   )}
 
                   {chatError && (
-                    <div className="p-2.5 rounded-xl bg-rose-500/10 border border-rose-500/25 text-[11px] text-rose-300">
+                    <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/25 text-xs text-rose-300">
                       {chatError}
                     </div>
                   )}
@@ -506,35 +606,35 @@ export default function CaleByteAIWidget() {
                 </div>
 
                 {/* Quick Portfolio Shortcuts */}
-                <div className="px-4 pb-2 flex items-center gap-1.5 overflow-x-auto">
+                <div className="px-5 py-2.5 flex items-center gap-2 overflow-x-auto no-scrollbar flex-shrink-0 border-t border-white/5">
                   <button
                     type="button"
                     onClick={openSupportFromAi}
-                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-400/10 hover:bg-amber-400/20 border border-amber-400/25 text-[10px] font-bold text-amber-300 whitespace-nowrap transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-400/10 hover:bg-amber-400/20 border border-amber-400/25 text-[11px] font-bold text-amber-300 whitespace-nowrap transition-colors cursor-pointer"
                   >
                     <Heart className="w-3 h-3" />
                     <span>Support CaleByte</span>
                   </button>
                   <a
                     href="/projects"
-                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/[0.05] hover:bg-white/10 border border-white/10 text-[10px] font-semibold text-slate-300 hover:text-white whitespace-nowrap transition-colors"
+                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white/[0.05] hover:bg-white/10 border border-white/10 text-[11px] font-semibold text-slate-300 hover:text-white whitespace-nowrap transition-colors"
                   >
                     <span>Projects</span>
-                    <ExternalLink className="w-2.5 h-2.5" />
+                    <ExternalLink className="w-3 h-3" />
                   </a>
                   <a
                     href="/source-code"
-                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/[0.05] hover:bg-white/10 border border-white/10 text-[10px] font-semibold text-slate-300 hover:text-white whitespace-nowrap transition-colors"
+                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white/[0.05] hover:bg-white/10 border border-white/10 text-[11px] font-semibold text-slate-300 hover:text-white whitespace-nowrap transition-colors"
                   >
                     <span>Store</span>
-                    <ExternalLink className="w-2.5 h-2.5" />
+                    <ExternalLink className="w-3 h-3" />
                   </a>
                   <a
                     href="/cv"
-                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/[0.05] hover:bg-white/10 border border-white/10 text-[10px] font-semibold text-slate-300 hover:text-white whitespace-nowrap transition-colors"
+                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white/[0.05] hover:bg-white/10 border border-white/10 text-[11px] font-semibold text-slate-300 hover:text-white whitespace-nowrap transition-colors"
                   >
                     <span>CV</span>
-                    <ExternalLink className="w-2.5 h-2.5" />
+                    <ExternalLink className="w-3 h-3" />
                   </a>
                 </div>
 
@@ -544,7 +644,7 @@ export default function CaleByteAIWidget() {
                     e.preventDefault();
                     handleSendMessage();
                   }}
-                  className="p-3 border-t border-white/10 bg-black/30 flex items-center gap-2"
+                  className="p-3.5 border-t border-white/10 bg-black/30 flex items-center gap-2.5 flex-shrink-0"
                 >
                   <input
                     type="text"
@@ -553,28 +653,28 @@ export default function CaleByteAIWidget() {
                     maxLength={1500}
                     disabled={isStreaming}
                     placeholder="Ask anything about Caleb's work..."
-                    className="flex-1 px-3.5 py-2.5 rounded-xl bg-black/50 border border-white/10 focus:border-accent-teal text-xs text-white placeholder:text-slate-500 outline-none transition-all disabled:opacity-60"
+                    className="flex-1 px-4 py-3 rounded-xl bg-black/50 border border-white/10 focus:border-accent-teal text-xs sm:text-[13px] text-white placeholder:text-slate-500 outline-none transition-all disabled:opacity-60"
                   />
                   <button
                     type="submit"
                     disabled={isStreaming || !input.trim()}
                     aria-label="Send message"
-                    className="p-2.5 rounded-xl bg-gradient-to-r from-accent-teal to-cyan-500 text-white shadow-md shadow-accent-teal/25 hover:brightness-110 disabled:opacity-45 disabled:cursor-not-allowed transition-all cursor-pointer flex-shrink-0"
+                    className="p-3 rounded-xl bg-gradient-to-r from-accent-teal to-cyan-500 text-white shadow-md shadow-accent-teal/25 hover:brightness-110 disabled:opacity-45 disabled:cursor-not-allowed transition-all cursor-pointer flex-shrink-0"
                   >
                     <Send className="w-4 h-4" />
                   </button>
                 </form>
               </div>
             ) : (
-              /* BODY: GEMINI LIVE VOICE CALL MODE */
-              <div className="flex flex-col flex-1 px-4 py-4 space-y-4 min-h-[340px]">
+              /* BODY: GEMINI LIVE VOICE CALL MODAL */
+              <div className="flex flex-col flex-1 min-h-0 px-5 py-6 space-y-5 overflow-y-auto no-scrollbar">
                 {/* Voice Orb Stage */}
-                <div className="flex flex-col items-center justify-center pt-2 pb-1 space-y-3">
-                  <div className="relative flex items-center justify-center w-28 h-28">
+                <div className="flex-1 flex flex-col items-center justify-center space-y-4">
+                  <div className="relative flex items-center justify-center w-36 h-36">
                     {isCallActive && (
                       <>
                         <motion.div
-                          className={`absolute inset-0 rounded-full blur-xl pointer-events-none ${
+                          className={`absolute inset-0 rounded-full blur-2xl pointer-events-none ${
                             callStatus === 'speaking'
                               ? 'bg-accent-teal/40'
                               : callStatus === 'muted'
@@ -593,7 +693,7 @@ export default function CaleByteAIWidget() {
                           }}
                         />
                         <motion.div
-                          className="absolute -inset-2 rounded-full border border-accent-teal/35 pointer-events-none"
+                          className="absolute -inset-2.5 rounded-full border border-accent-teal/35 pointer-events-none"
                           animate={{ scale: [1, 1.15, 1], opacity: [0.6, 0.15, 0.6] }}
                           transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
                         />
@@ -613,7 +713,7 @@ export default function CaleByteAIWidget() {
                         duration: callStatus === 'speaking' ? 0.9 : 0.1,
                         repeat: callStatus === 'speaking' ? Infinity : 0,
                       }}
-                      className={`relative z-10 w-20 h-20 rounded-full flex items-center justify-center border shadow-2xl transition-colors ${
+                      className={`relative z-10 w-24 h-24 rounded-full flex items-center justify-center border shadow-2xl transition-colors ${
                         callStatus === 'speaking'
                           ? 'bg-gradient-to-br from-accent-teal to-accent-purple border-cyan-300/60 shadow-accent-teal/40'
                           : callStatus === 'listening'
@@ -625,7 +725,7 @@ export default function CaleByteAIWidget() {
                     >
                       {callStatus === 'connecting' ? (
                         <svg
-                          className="animate-spin w-7 h-7 text-accent-teal"
+                          className="animate-spin w-8 h-8 text-accent-teal"
                           fill="none"
                           viewBox="0 0 24 24"
                         >
@@ -644,18 +744,18 @@ export default function CaleByteAIWidget() {
                           />
                         </svg>
                       ) : isMuted ? (
-                        <MicOff className="w-7 h-7 text-slate-300" />
+                        <MicOff className="w-8 h-8 text-slate-300" />
                       ) : callStatus === 'speaking' ? (
-                        <Volume2 className="w-7 h-7 text-white" />
+                        <Volume2 className="w-8 h-8 text-white" />
                       ) : (
-                        <Mic className="w-7 h-7 text-white" />
+                        <Mic className="w-8 h-8 text-white" />
                       )}
                     </motion.div>
                   </div>
 
-                  <div className="text-center space-y-1">
-                    <p className="text-xs font-bold text-white">{statusLabel}</p>
-                    <p className="text-[11px] text-slate-400">
+                  <div className="text-center space-y-1.5 max-w-xs">
+                    <p className="text-sm font-bold text-white">{statusLabel}</p>
+                    <p className="text-xs text-slate-400 leading-relaxed">
                       {isCallActive
                         ? `${formatSeconds(callElapsed)} / ${formatSeconds(maxCallSeconds)}`
                         : 'Talk directly with CaleByte AI about projects, skills, store, or support.'}
@@ -665,9 +765,9 @@ export default function CaleByteAIWidget() {
 
                 {/* Live Transcript Box */}
                 {transcripts.length > 0 && (
-                  <div className="flex-1 overflow-y-auto max-h-[130px] p-3 rounded-2xl bg-black/40 border border-white/10 space-y-2">
+                  <div className="overflow-y-auto no-scrollbar max-h-[180px] p-3.5 rounded-2xl bg-black/40 border border-white/10 space-y-2 flex-shrink-0">
                     {transcripts.map((item) => (
-                      <div key={item.id} className="text-[11px] leading-relaxed">
+                      <div key={item.id} className="text-xs leading-relaxed">
                         <span
                           className={`font-bold mr-1.5 ${
                             item.speaker === 'user' ? 'text-cyan-300' : 'text-emerald-300'
@@ -683,7 +783,7 @@ export default function CaleByteAIWidget() {
                 )}
 
                 {callError && (
-                  <div className="p-3 rounded-2xl bg-rose-500/10 border border-rose-500/25 text-[11px] text-rose-200 space-y-2">
+                  <div className="p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/25 text-xs text-rose-200 space-y-2 flex-shrink-0">
                     <p>{callError}</p>
                     <button
                       type="button"
@@ -699,12 +799,12 @@ export default function CaleByteAIWidget() {
                 )}
 
                 {/* Call Action Controls */}
-                <div className="mt-auto pt-2 flex items-center justify-center gap-3">
+                <div className="pt-2 flex items-center justify-center gap-3 flex-shrink-0">
                   {!isCallActive ? (
                     <button
                       type="button"
                       onClick={startLiveCall}
-                      className="w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-accent-teal to-cyan-500 hover:brightness-110 text-white text-xs font-bold shadow-lg shadow-accent-teal/30 flex items-center justify-center gap-2 transition-all cursor-pointer"
+                      className="w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-accent-teal to-cyan-500 hover:brightness-110 text-white text-xs sm:text-sm font-bold shadow-lg shadow-accent-teal/30 flex items-center justify-center gap-2 transition-all cursor-pointer"
                     >
                       <Phone className="w-4 h-4" />
                       <span>Start Live Voice Call</span>
@@ -715,7 +815,7 @@ export default function CaleByteAIWidget() {
                         type="button"
                         onClick={toggleMute}
                         disabled={callStatus === 'connecting'}
-                        className={`flex-1 py-3 px-4 rounded-2xl text-xs font-bold border flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50 ${
+                        className={`flex-1 py-3.5 px-4 rounded-2xl text-xs sm:text-sm font-bold border flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50 ${
                           isMuted
                             ? 'bg-amber-500/20 border-amber-400/40 text-amber-200'
                             : 'bg-white/[0.06] hover:bg-white/10 border-white/15 text-white'
@@ -737,7 +837,7 @@ export default function CaleByteAIWidget() {
                       <button
                         type="button"
                         onClick={() => endLiveCall()}
-                        className="flex-1 py-3 px-4 rounded-2xl bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold shadow-lg shadow-rose-500/25 flex items-center justify-center gap-2 transition-all cursor-pointer"
+                        className="flex-1 py-3.5 px-4 rounded-2xl bg-rose-500 hover:bg-rose-600 text-white text-xs sm:text-sm font-bold shadow-lg shadow-rose-500/25 flex items-center justify-center gap-2 transition-all cursor-pointer"
                       >
                         <PhoneOff className="w-4 h-4" />
                         <span>End Call</span>
