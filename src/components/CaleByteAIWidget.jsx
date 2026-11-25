@@ -30,8 +30,6 @@ const LIVE_LANGUAGES = [
   { id: 'igbo', label: 'Igbo' },
   { id: 'yoruba', label: 'Yoruba' },
   { id: 'hausa', label: 'Hausa' },
-  { id: 'french', label: 'French' },
-  { id: 'spanish', label: 'Spanish' },
 ];
 
 const STARTER_QUESTIONS = [
