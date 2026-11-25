@@ -44,7 +44,7 @@ const WELCOME_MESSAGE = {
   id: 'welcome',
   role: 'assistant',
   content:
-    "Hi! I'm CaleByte AI. Ask me anything about Caleb's projects, skills, or services.",
+    "Hi! Welcome to CaleByte Support. Ask anything about Caleb's projects, skills, or services.",
 };
 
 function formatSeconds(sec) {
@@ -295,7 +295,7 @@ export default function CaleByteAIWidget() {
       }
     } catch (err) {
       if (err?.name !== 'AbortError') {
-        const msg = err?.message || 'Could not reach CaleByte AI right now.';
+        const msg = err?.message || 'Could not reach CaleByte Support right now.';
         setChatError(msg);
         setMessages((prev) =>
           prev.filter((m) => !(m.id === assistantMsgId && !m.content))
@@ -503,8 +503,8 @@ export default function CaleByteAIWidget() {
                     ? 'is-playing shadow-emerald-500/40 ring-1 ring-emerald-400/60'
                     : 'hover:shadow-cyan-500/30'
                 }`}
-                aria-label={menuOpen ? 'Close CaleByte AI options' : 'Open CaleByte AI Live Call or Chat'}
-                title="CaleByte AI • Live Call & Chat"
+                aria-label={menuOpen ? 'Close CaleByte Support options' : 'Open CaleByte Support Live Call or Chat'}
+                title="CaleByte Support • Live Call & Chat"
               >
                 <span className="shiny-content flex items-center justify-center relative z-10 w-full h-full text-white">
                   {menuOpen ? (
@@ -603,15 +603,7 @@ export default function CaleByteAIWidget() {
                 />
                 <div className="flex items-center gap-2 min-w-0">
                   <h3 className="text-sm font-bold font-display text-white leading-tight truncate">
-                    {mode === 'call' ? (
-                      <>
-                        Cale<span className="text-accent-teal">Byte</span> Support
-                      </>
-                    ) : (
-                      <>
-                        Cale<span className="text-accent-teal">Byte</span> AI
-                      </>
-                    )}
+                    Cale<span className="text-accent-teal">Byte</span> Support
                   </h3>
                 </div>
               </div>
