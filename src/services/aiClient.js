@@ -91,16 +91,110 @@ export async function streamPortfolioChat({
 }
 
 /**
+ * Determines the caller's local time of day for a natural greeting.
+ */
+export function getLocalTimeOfDay() {
+  const hour = new Date().getHours();
+  if (hour >= 5 && hour < 12) return 'morning';
+  if (hour >= 12 && hour < 17) return 'afternoon';
+  return 'evening';
+}
+
+/**
+ * Synthesizes a soft, authentic phone ringback tone (440Hz + 480Hz) via Web Audio API
+ * while the call is connecting/ringing. Stops instantaneously when answered or cancelled.
+ */
+export class CallRingbackTone {
+  constructor() {
+    this.ctx = null;
+    this.intervalId = null;
+    this.activeOscs = [];
+    this.isRunning = false;
+  }
+
+  start() {
+    if (this.isRunning) return;
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+
+    this.isRunning = true;
+    try {
+      this.ctx = new AudioCtx();
+      if (this.ctx.state === 'suspended') {
+        this.ctx.resume().catch(() => {});
+      }
+      this._playPulse();
+      this.intervalId = setInterval(() => {
+        if (this.isRunning) this._playPulse();
+      }, 3100);
+    } catch {
+      this.stop();
+    }
+  }
+
+  _playPulse() {
+    if (!this.ctx || !this.isRunning) return;
+    try {
+      const now = this.ctx.currentTime;
+      const duration = 1.15;
+
+      const gain = this.ctx.createGain();
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.linearRampToValueAtTime(0.045, now + 0.03);
+      gain.gain.setValueAtTime(0.045, now + duration - 0.04);
+      gain.gain.linearRampToValueAtTime(0.0001, now + duration);
+      gain.connect(this.ctx.destination);
+
+      const osc1 = this.ctx.createOscillator();
+      const osc2 = this.ctx.createOscillator();
+      osc1.type = 'sine';
+      osc2.type = 'sine';
+      osc1.frequency.setValueAtTime(440, now);
+      osc2.frequency.setValueAtTime(480, now);
+
+      osc1.connect(gain);
+      osc2.connect(gain);
+      osc1.start(now);
+      osc2.start(now);
+      osc1.stop(now + duration + 0.02);
+      osc2.stop(now + duration + 0.02);
+
+      this.activeOscs = [osc1, osc2];
+    } catch {
+      // Ignore if AudioContext closed mid-pulse
+    }
+  }
+
+  stop() {
+    this.isRunning = false;
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+      this.intervalId = null;
+    }
+    this.activeOscs.forEach((osc) => {
+      try {
+        osc.stop();
+      } catch {}
+    });
+    this.activeOscs = [];
+    if (this.ctx) {
+      this.ctx.close().catch(() => {});
+      this.ctx = null;
+    }
+  }
+}
+
+/**
  * Requests a short-lived single-use ephemeral token for Gemini Live from pro-back.
  */
-export async function requestLiveCallToken(language = 'english') {
+export async function requestLiveCallToken(language = 'english', timeOfDay = getLocalTimeOfDay()) {
   const res = await fetch(`${API_BASE_URL}/api/ai/live-token`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',
     },
-    body: JSON.stringify({ language }),
+    body: JSON.stringify({ language, timeOfDay }),
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok || !data.token) {
@@ -206,14 +300,17 @@ export class GeminiLiveCallClient {
     onStatusChange,
     onTranscript,
     onAudioLevel,
+    onFirstAudio,
     onError,
     onClose,
   } = {}) {
     this.onStatusChange = onStatusChange;
     this.onTranscript = onTranscript;
     this.onAudioLevel = onAudioLevel;
+    this.onFirstAudio = onFirstAudio;
     this.onError = onError;
     this.onClose = onClose;
+    this.hasReceivedFirstAudio = false;
 
     this.session = null;
     this.micStream = null;
@@ -231,8 +328,9 @@ export class GeminiLiveCallClient {
     this.activeSources = new Set();
   }
 
-  async connect({ token, model }) {
+  async connect({ token, model, timeOfDay = getLocalTimeOfDay() }) {
     this.isClosing = false;
+    this.hasReceivedFirstAudio = false;
     this.onStatusChange?.('connecting');
 
     // 1. Request microphone access first with voice cleanup enabled
@@ -277,7 +375,6 @@ export class GeminiLiveCallClient {
       callbacks: {
         onopen: () => {
           this.isConnected = true;
-          this.onStatusChange?.('listening');
         },
         onmessage: (response) => {
           this._handleServerMessage(response);
@@ -300,18 +397,17 @@ export class GeminiLiveCallClient {
 
     this.isConnected = true;
 
-    // 4. Trigger automatic welcome greeting right when the call connects
+    // 4. Trigger natural time-of-day welcome greeting right when the call connects
     try {
       this.session.sendRealtimeInput({
-        text: 'The visitor just connected to the live call. Greet them warmly right now in 1 to 2 short sentences in the selected language, introducing yourself as CaleByte AI and asking how you can help.',
+        text: `A caller just connected (their local time of day is ${timeOfDay}). Immediately answer the call warmly as CaleByte Support with "Hello", a ${timeOfDay} greeting, welcome them, and ask how you can help — strictly in the selected call language.`,
       });
     } catch {
       // Ignore if session closed immediately
     }
 
     // 5. Start microphone PCM capture (16kHz mono) with brief initial settle delay so click sounds don't interrupt the greeting
-    await this._startMicCapture(500);
-    this.onStatusChange?.('listening');
+    await this._startMicCapture(650);
   }
 
   async _startMicCapture(initialIgnoreMs = 0) {
@@ -324,8 +420,8 @@ export class GeminiLiveCallClient {
     this.sourceNode = this.inputAudioCtx.createMediaStreamSource(this.micStream);
     const inputRate = this.inputAudioCtx.sampleRate;
 
-    const NOISE_GATE_THRESHOLD = 0.005; // Gentle threshold preserves soft tonal starts in Igbo/Yoruba/Hausa
-    const NOISE_GATE_HANGOVER_MS = 500; // Keep streaming smoothly across brief word pauses and tonal endings
+    const NOISE_GATE_THRESHOLD = 0.018; // Balanced threshold: blocks ambient room/fan noise while keeping speech crisp
+    const NOISE_GATE_HANGOVER_MS = 420; // Smoothly holds open across brief word pauses so endings aren't clipped
     const micReadyAt = Date.now() + initialIgnoreMs;
     let lastVoiceActivityAt = 0;
     let wasStreamingSpeech = false;
@@ -450,6 +546,11 @@ export class GeminiLiveCallClient {
 
     const float32 = base64Pcm24kToFloat32(base64Pcm);
     if (float32.length === 0) return;
+
+    if (!this.hasReceivedFirstAudio) {
+      this.hasReceivedFirstAudio = true;
+      this.onFirstAudio?.();
+    }
 
     const audioBuffer = this.outputAudioCtx.createBuffer(1, float32.length, 24000);
     audioBuffer.copyToChannel(float32, 0);

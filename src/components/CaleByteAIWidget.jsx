@@ -19,6 +19,8 @@ import {
   fetchAiStatus,
   streamPortfolioChat,
   requestLiveCallToken,
+  getLocalTimeOfDay,
+  CallRingbackTone,
   GeminiLiveCallClient,
 } from '../services/aiClient.js';
 
@@ -125,6 +127,9 @@ export default function CaleByteAIWidget() {
   const [maxCallSeconds, setMaxCallSeconds] = useState(180);
   const [callError, setCallError] = useState('');
   const liveClientRef = useRef(null);
+  const ringbackRef = useRef(null);
+  const ringbackTimeoutRef = useRef(null);
+  const callCancelledRef = useRef(false);
   const timerRef = useRef(null);
   const langDropdownRef = useRef(null);
 
@@ -239,6 +244,8 @@ export default function CaleByteAIWidget() {
     return () => {
       abortRef.current?.abort?.();
       if (timerRef.current) clearInterval(timerRef.current);
+      if (ringbackTimeoutRef.current) clearTimeout(ringbackTimeoutRef.current);
+      ringbackRef.current?.stop?.();
       if (liveClientRef.current) {
         liveClientRef.current.disconnect();
         liveClientRef.current = null;
@@ -310,9 +317,21 @@ export default function CaleByteAIWidget() {
     setChatError('');
   };
 
+  const stopRingback = () => {
+    if (ringbackTimeoutRef.current) {
+      clearTimeout(ringbackTimeoutRef.current);
+      ringbackTimeoutRef.current = null;
+    }
+    if (ringbackRef.current) {
+      ringbackRef.current.stop();
+      ringbackRef.current = null;
+    }
+  };
+
   // --- Live Call Handlers ---
   const startLiveCall = async () => {
     if (isCallActive) return;
+    callCancelledRef.current = false;
     setCallError('');
     setLangMenuOpen(false);
     setCallElapsed(0);
@@ -322,23 +341,37 @@ export default function CaleByteAIWidget() {
     // Automatically pause background music so it doesn't interfere with voice input
     window.dispatchEvent(new Event('ai_live_call_start'));
 
+    // Start authentic phone ringback tone immediately while dialing & waiting for pickup
+    stopRingback();
+    const ringback = new CallRingbackTone();
+    ringbackRef.current = ringback;
+    ringback.start();
+
     try {
-      const tokenData = await requestLiveCallToken(callLanguage);
+      const timeOfDay = getLocalTimeOfDay();
+      const tokenData = await requestLiveCallToken(callLanguage, timeOfDay);
+      if (callCancelledRef.current) return;
       if (tokenData.maxCallSeconds) {
         setMaxCallSeconds(tokenData.maxCallSeconds);
       }
 
       const client = new GeminiLiveCallClient({
         onStatusChange: (status) => {
-          setCallStatus(status);
+          if (!callCancelledRef.current) setCallStatus(status);
         },
         onAudioLevel: (lvl) => {
           setAudioLevel(lvl);
         },
+        onFirstAudio: () => {
+          // Stop ringing the exact millisecond Support picks up and starts speaking
+          stopRingback();
+        },
         onError: (msg) => {
+          stopRingback();
           setCallError(msg);
         },
         onClose: () => {
+          stopRingback();
           liveClientRef.current = null;
           setCallStatus('idle');
           setAudioLevel(0);
@@ -350,9 +383,24 @@ export default function CaleByteAIWidget() {
       await client.connect({
         token: tokenData.token,
         model: tokenData.model,
+        timeOfDay,
       });
+
+      if (callCancelledRef.current) {
+        client.disconnect();
+        liveClientRef.current = null;
+        return;
+      }
+
+      // Safety fallback: stop ringing if connected and greeting hasn't started within 5s
+      ringbackTimeoutRef.current = setTimeout(() => {
+        stopRingback();
+        setCallStatus((prev) => (prev === 'connecting' ? 'listening' : prev));
+      }, 5000);
     } catch (err) {
+      if (callCancelledRef.current) return;
       console.error('[Live Call Start Error]', err);
+      stopRingback();
       if (liveClientRef.current) {
         liveClientRef.current.disconnect();
         liveClientRef.current = null;
@@ -360,13 +408,15 @@ export default function CaleByteAIWidget() {
       setCallStatus('idle');
       setAudioLevel(0);
       setCallError(
-        err?.message || 'Could not start Live Call. Try again or use Text Chat.'
+        err?.message || 'Could not start the call. Try again or switch to Chat.'
       );
       window.dispatchEvent(new Event('ai_live_call_end'));
     }
   };
 
   const endLiveCall = (noticeMessage = '') => {
+    callCancelledRef.current = true;
+    stopRingback();
     if (timerRef.current) {
       clearInterval(timerRef.current);
       timerRef.current = null;
@@ -387,14 +437,6 @@ export default function CaleByteAIWidget() {
     setIsMuted(nextMuted);
     liveClientRef.current?.setMuted(nextMuted);
   };
-
-  const statusLabel = {
-    idle: 'Ready for a live voice call',
-    connecting: 'Connecting to CaleByte AI...',
-    listening: 'Listening — speak naturally',
-    speaking: 'CaleByte AI is speaking...',
-    muted: 'Microphone muted',
-  }[callStatus];
 
   const handleLauncherClick = () => {
     if (isOpen) {
@@ -561,13 +603,16 @@ export default function CaleByteAIWidget() {
                 />
                 <div className="flex items-center gap-2 min-w-0">
                   <h3 className="text-sm font-bold font-display text-white leading-tight truncate">
-                    Cale<span className="text-accent-teal">Byte</span> AI
+                    {mode === 'call' ? (
+                      <>
+                        Cale<span className="text-accent-teal">Byte</span> Support
+                      </>
+                    ) : (
+                      <>
+                        Cale<span className="text-accent-teal">Byte</span> AI
+                      </>
+                    )}
                   </h3>
-                  {mode === 'call' && isCallActive && (
-                    <span className="text-[11px] font-mono font-bold text-emerald-300">
-                      {formatSeconds(callElapsed)} / {formatSeconds(maxCallSeconds)}
-                    </span>
-                  )}
                 </div>
               </div>
 
@@ -726,15 +771,22 @@ export default function CaleByteAIWidget() {
                     <motion.div
                       animate={{
                         scale:
-                          callStatus === 'speaking'
-                            ? [1, 1.07, 0.98, 1.05, 1]
-                            : isCallActive && !isMuted
-                              ? 1 + audioLevel * 0.18
-                              : 1,
+                          callStatus === 'connecting'
+                            ? [1, 1.06, 1]
+                            : callStatus === 'speaking'
+                              ? [1, 1.07, 0.98, 1.05, 1]
+                              : isCallActive && !isMuted
+                                ? 1 + audioLevel * 0.18
+                                : 1,
+                        rotate:
+                          callStatus === 'connecting'
+                            ? [0, -8, 8, -6, 6, 0]
+                            : 0,
                       }}
                       transition={{
-                        duration: callStatus === 'speaking' ? 0.9 : 0.1,
-                        repeat: callStatus === 'speaking' ? Infinity : 0,
+                        duration: callStatus === 'connecting' ? 1.15 : callStatus === 'speaking' ? 0.9 : 0.1,
+                        repeat: callStatus === 'connecting' || callStatus === 'speaking' ? Infinity : 0,
+                        repeatDelay: callStatus === 'connecting' ? 1.9 : 0,
                       }}
                       className={`relative z-10 w-24 h-24 rounded-full flex items-center justify-center border shadow-2xl transition-colors ${
                         callStatus === 'speaking'
@@ -742,51 +794,54 @@ export default function CaleByteAIWidget() {
                           : callStatus === 'listening'
                             ? 'bg-gradient-to-br from-emerald-500/90 to-accent-teal border-emerald-300/60 shadow-emerald-500/35'
                             : callStatus === 'connecting'
-                              ? 'bg-white/10 border-accent-teal/50'
+                              ? 'bg-gradient-to-br from-accent-teal/80 to-cyan-500/80 border-cyan-300/60 shadow-accent-teal/35'
                               : 'bg-white/[0.06] border-white/15'
                       }`}
                     >
                       {callStatus === 'connecting' ? (
-                        <svg
-                          className="animate-spin w-8 h-8 text-accent-teal"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                        >
-                          <circle
-                            className="opacity-25"
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            stroke="currentColor"
-                            strokeWidth="4"
-                          />
-                          <path
-                            className="opacity-75"
-                            fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                          />
-                        </svg>
+                        <Phone className="w-8 h-8 text-white" />
                       ) : isMuted ? (
                         <MicOff className="w-8 h-8 text-slate-300" />
                       ) : callStatus === 'speaking' ? (
                         <Volume2 className="w-8 h-8 text-white" />
-                      ) : (
+                      ) : isCallActive ? (
                         <Mic className="w-8 h-8 text-white" />
+                      ) : (
+                        <Phone className="w-8 h-8 text-white" />
                       )}
                     </motion.div>
                   </div>
 
+                  {/* Minimal Phone-Call Info: Idle = Title + Duration; Ringing = Calling...; Active = Language + Timer ONLY */}
                   <div className="text-center space-y-1.5 max-w-xs">
-                    <p className="text-sm font-bold text-white">{statusLabel}</p>
-                    <p className="text-xs text-slate-400 leading-relaxed">
-                      {isCallActive
-                        ? `${activeLanguageObj.label} • ${formatSeconds(callElapsed)} / ${formatSeconds(maxCallSeconds)}`
-                        : 'Talk directly with CaleByte AI about projects, skills, store, or support.'}
-                    </p>
-                    {!isCallActive && (
-                      <p className="text-[11px] font-medium text-accent-teal/90">
-                        Each call lasts up to {Math.max(1, Math.round(maxCallSeconds / 60))} minutes.
-                      </p>
+                    {!isCallActive ? (
+                      <>
+                        <p className="text-base font-bold font-display text-white">
+                          Cale<span className="text-accent-teal">Byte</span> Support
+                        </p>
+                        <p className="text-[11px] font-medium text-accent-teal/90">
+                          Calls last up to {Math.max(1, Math.round(maxCallSeconds / 60))} minutes.
+                        </p>
+                      </>
+                    ) : callStatus === 'connecting' ? (
+                      <>
+                        <p className="text-sm font-bold text-white tracking-wide">Calling...</p>
+                        <p className="text-xs text-slate-400">{activeLanguageObj.label}</p>
+                      </>
+                    ) : (
+                      <>
+                        <p className="text-sm font-bold text-white tracking-wide">
+                          {activeLanguageObj.label}
+                        </p>
+                        <p className="text-xs font-mono text-slate-300">
+                          {formatSeconds(callElapsed)} / {formatSeconds(maxCallSeconds)}
+                        </p>
+                        {isMuted && (
+                          <span className="inline-block px-2.5 py-0.5 rounded-full bg-amber-500/15 border border-amber-400/30 text-[10px] font-bold text-amber-300 uppercase tracking-wider">
+                            Muted
+                          </span>
+                        )}
+                      </>
                     )}
                   </div>
                 </div>
@@ -880,7 +935,7 @@ export default function CaleByteAIWidget() {
                         className="w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-accent-teal to-cyan-500 hover:brightness-110 text-white text-xs sm:text-sm font-bold shadow-lg shadow-accent-teal/30 flex items-center justify-center gap-2 transition-all cursor-pointer"
                       >
                         <Phone className="w-4 h-4" />
-                        <span>Start Live Voice Call</span>
+                        <span>Call Now</span>
                       </button>
                     </>
                   ) : (
